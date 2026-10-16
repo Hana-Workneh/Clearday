@@ -59,7 +59,7 @@
   --shine: #ffffff;
   --tip: #6B4EFF;
   --sun: #FFC93C;
-  --cheek: oklch(0.8 0.1 10);
+  --cheek: #FF9AA8;
   --ink: #0B1411;
   --chip-green: #E3F7EC;
   --chip-green-text: #087A4A;
@@ -117,10 +117,16 @@
 @utility anim-jump { animation: jump 1s ease-in-out infinite; }
 @utility anim-sway { animation: sway 4s ease-in-out infinite; transform-origin: 50% 100%; }
 
+@keyframes sprout-wave { 0%,100% { transform: rotate(0deg) } 50% { transform: rotate(-12deg) } }
+@keyframes sprout-dance { 0%,100% { transform: translateY(0) rotate(-6deg) } 25% { transform: translateY(-8px) rotate(6deg) } 50% { transform: translateY(0) rotate(6deg) } 75% { transform: translateY(-8px) rotate(-6deg) } }
+.wave-arm { animation: sprout-wave 2.4s ease-in-out infinite; transform-origin: 94px 74px; transform-box: view-box; }
+.sprout-sway { animation: sway 5s ease-in-out infinite; transform-origin: 60px 108px; }
+.sprout-dance { animation: sprout-dance 1.6s ease-in-out infinite; transform-origin: 60px 108px; }
+
 @keyframes confetti { 0% { transform: translateY(-10vh) rotate(0) } 100% { transform: translateY(110vh) rotate(720deg) } }
 @utility anim-confetti { animation: confetti 3s linear forwards; }
 
 @media (prefers-reduced-motion: reduce) {
   .anim-confetti { display: none; }
-  .anim-bob, .anim-wave, .anim-jump, .anim-sway { animation: none !important; }
+  .anim-bob, .anim-wave, .anim-jump, .anim-sway, .wave-arm, .sprout-sway, .sprout-dance { animation: none !important; }
 }

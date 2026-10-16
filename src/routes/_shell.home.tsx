@@ -13,6 +13,8 @@ export const Route = createFileRoute("/_shell/home")({
       { name: "description", content: "Your loans and your debt free date, all in one place." },
       { property: "og:title", content: "Home · Clearday" },
       { property: "og:description", content: "Your loans and your debt free date, all in one place." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,

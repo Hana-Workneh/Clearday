@@ -1,72 +1,52 @@
-export type SproutMood = "waving" | "happy" | "thinking" | "cheering" | "calm";
+export type SproutMood = "waving" | "happy" | "thinking" | "cheering" | "calm" | "crowned";
 
 const bodyAnim: Record<SproutMood, string> = {
-  waving: "anim-bob",
+  waving: "",
   happy: "anim-bob",
-  thinking: "anim-sway",
+  thinking: "anim-bob",
   cheering: "anim-jump",
-  calm: "anim-sway",
+  calm: "sprout-sway",
+  crowned: "sprout-dance",
 };
 
 export function Sprout({ mood = "happy", size = 120, className = "" }: { mood?: SproutMood; size?: number; className?: string }) {
-  const eyeCy = mood === "thinking" ? 70 : 74;
+  const cheers = mood === "cheering" || mood === "crowned";
+  const openEyes = mood === "waving" || mood === "thinking";
   return (
-    <svg viewBox="0 0 120 130" width={size} height={size * 1.08} className={className} role="img" aria-label={`Sprout, feeling ${mood}`}>
+    <svg viewBox="0 0 120 120" width={size} height={size} className={className} role="img" aria-label={`Sprout, feeling ${mood}`}>
+      <ellipse cx="60" cy="113" rx="26" ry="4" className="fill-ink" fillOpacity="0.1" />
       <g className={bodyAnim[mood]}>
-        {/* stem */}
-        <path d="M60 36 V18" className="stroke-green" strokeWidth="4" strokeLinecap="round" />
-        {/* top leaves: dark green left, light mint right */}
-        <path d="M60 20 C54 8 40 5 33 11 C39 21 52 25 60 20 Z" className="fill-leaf-dark" />
-        <path d="M60 20 C66 8 80 5 87 11 C81 21 68 25 60 20 Z" className="fill-leaf-mint" />
-        {/* body: leaf shape, small pointed corner bottom-left */}
-        <path d="M26 116 L74 116 A26 26 0 0 0 100 90 L100 60 A26 26 0 0 0 74 34 L46 34 A26 26 0 0 0 20 60 L20 110 A6 6 0 0 0 26 116 Z" className="fill-green" />
-        {/* eyes */}
-        {mood === "cheering" || mood === "calm" ? (
-          <>
-            <path d="M41 74 q5 -6 10 0" className="stroke-ink" strokeWidth="3.5" fill="none" strokeLinecap="round" />
-            <path d="M69 74 q5 -6 10 0" className="stroke-ink" strokeWidth="3.5" fill="none" strokeLinecap="round" />
-          </>
-        ) : (
-          <>
-            <ellipse cx="45" cy={eyeCy} rx="6.5" ry="8.5" className="fill-ink" />
-            <ellipse cx="75" cy={eyeCy} rx="6.5" ry="8.5" className="fill-ink" />
-            <circle cx="47.5" cy={eyeCy - 3.5} r="2" className="fill-shine" />
-            <circle cx="77.5" cy={eyeCy - 3.5} r="2" className="fill-shine" />
-          </>
-        )}
-        {/* cheeks */}
-        <ellipse cx="33" cy="86" rx="7" ry="4.5" className="fill-cheek" opacity=".85" />
-        <ellipse cx="87" cy="86" rx="7" ry="4.5" className="fill-cheek" opacity=".85" />
-        {/* mouth */}
-        {mood === "thinking" ? (
-          <path d="M54 91 q6 -3 12 0" className="stroke-ink" strokeWidth="3" fill="none" strokeLinecap="round" />
-        ) : mood === "cheering" ? (
-          <path d="M50 86 q10 14 20 0 Z" className="fill-ink" />
-        ) : (
-          <path d="M52 88 q8 8 16 0" className="stroke-ink" strokeWidth="3.5" fill="none" strokeLinecap="round" />
-        )}
-        {/* arms: thin rounded, same green as body */}
-        {mood === "waving" && (
-          <path d="M100 78 q14 -8 16 -24" className="stroke-green anim-wave" strokeWidth="5" fill="none" strokeLinecap="round" />
-        )}
-        {mood === "cheering" && (
-          <>
-            <path d="M20 78 q-13 -9 -13 -25" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M100 78 q13 -9 13 -25" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <circle cx="7" cy="43" r="3" className="fill-sun" />
-            <circle cx="113" cy="43" r="3" className="fill-sun" />
-          </>
-        )}
-        {mood === "thinking" && (
-          <path d="M20 88 q12 8 24 -4" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
-        )}
-        {mood === "calm" && (
-          <>
-            <path d="M20 84 q14 14 30 18" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M100 84 q-14 14 -30 18" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M60 112 c-10 -6 -14 -12 -10 -16 c3 -3 7 -1 10 3 c3 -4 7 -6 10 -3 c4 4 0 10 -10 16Z" className="fill-cheek" />
-          </>
-        )}
+        <path d="M60 36 V30" className="stroke-leaf-dark" strokeWidth="3" strokeLinecap="round" />
+        <path d="M60 31 C52 19 40 19 35 23 C43 31 52 33 60 31 Z" className="fill-leaf-dark" />
+        <path d="M60 31 C68 15 82 15 88 19 C80 29 70 33 60 31 Z" className="fill-leaf-mint" />
+        {mood === "waving" && <>
+          <path d="M26 82 Q15 90 18 99" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />
+          <g className="wave-arm"><path d="M94 74 Q109 60 105 46" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" /></g>
+        </>}
+        {cheers && <>
+          <path d="M27 74 Q12 62 15 46" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />
+          <path d="M93 74 Q108 62 105 46" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />
+        </>}
+        <path d="M24 72 A36 36 0 0 1 60 36 H62 A34 34 0 0 1 96 70 V74 A34 34 0 0 1 62 108 H30 A6 6 0 0 1 24 102 Z" className="fill-green" />
+        {openEyes ? mood === "thinking" ? <>
+          <circle cx="48" cy="67" r="4" className="fill-ink" />
+          <circle cx="72" cy="67" r="4" className="fill-ink" />
+        </> : <>
+          <ellipse cx="48" cy="70" rx="5" ry="7" className="fill-ink" />
+          <ellipse cx="72" cy="70" rx="5" ry="7" className="fill-ink" />
+          <circle cx="50" cy="67" r="1.8" className="fill-shine" />
+          <circle cx="74" cy="67" r="1.8" className="fill-shine" />
+        </> : <>
+          <path d={mood === "calm" ? "M43 70 Q48 74 53 70" : "M43 70 Q48 63 53 70"} className="stroke-ink" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+          <path d={mood === "calm" ? "M67 70 Q72 74 77 70" : "M67 70 Q72 63 77 70"} className="stroke-ink" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+        </>}
+        <ellipse cx="39" cy="82" rx="5" ry="3" className="fill-cheek" fillOpacity="0.7" />
+        <ellipse cx="81" cy="82" rx="5" ry="3" className="fill-cheek" fillOpacity="0.7" />
+        {cheers ? <path d="M50 80 Q60 96 70 80 Z" className="fill-ink" /> :
+          <path d={mood === "calm" ? "M54 84 Q60 88 66 84" : mood === "waving" ? "M52 84 Q60 92 68 84" : "M52 82 Q60 90 68 82"} className="stroke-ink" strokeWidth="3" strokeLinecap="round" fill="none" />}
+        {mood === "thinking" && <path d="M94 86 Q103 96 84 82" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />}
+        {mood === "calm" && <path d="M60 104 C52 98 50 92 54 89 C57 87 60 89 60 92 C60 89 63 87 66 89 C70 92 68 98 60 104 Z" className="fill-sun" />}
+        {mood === "crowned" && <path d="M46 40 L50 30 L56 37 L60 28 L64 37 L70 30 L74 40 Z" className="fill-sun" />}
       </g>
     </svg>
   );

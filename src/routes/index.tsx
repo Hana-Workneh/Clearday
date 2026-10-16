@@ -11,6 +11,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Add your loans and see the exact month you'll be debt free." },
       { property: "og:title", content: "Clearday — See the day you'll be free" },
       { property: "og:description", content: "Add your loans and see the exact month you'll be debt free." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Welcome,

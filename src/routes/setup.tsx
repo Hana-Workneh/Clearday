@@ -13,6 +13,8 @@ export const Route = createFileRoute("/setup")({
       { name: "description", content: "Add your income and loans to see the month you'll be debt free." },
       { property: "og:title", content: "Set up · Clearday" },
       { property: "og:description", content: "Add your income and loans to see the month you'll be debt free." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Setup,
