@@ -85,7 +85,7 @@ function Home() {
         </section>
         <div className="grid min-w-0 gap-5 xl:grid-cols-2">
           <div className={`${card} flex min-w-0 flex-col items-start justify-between gap-4`}>
-            <span className="grid size-10 place-items-center rounded-full bg-chip-yellow text-chip-yellow-text"><CircleDollarSign className="size-5" /></span>
+            <span className="grid size-10 place-items-center rounded-full bg-track text-muted-foreground"><CircleDollarSign className="size-5" /></span>
             <div className="w-full">
             <p className="text-sm font-semibold text-muted-foreground">Interest still to pay</p>
             <p className="mt-3 break-words font-heading text-3xl font-bold">{usd(plan.totalInterest)}</p></div>

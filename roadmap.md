@@ -1,5 +1,5 @@
 # My plan
-- [ ] Add yellow win and milestone accents across Home, badges, payment celebration, timeline and debt-free card; verify both themes.
+- [x] Add yellow win and milestone accents across Home, badges, payment celebration, timeline and debt-free card; verify both themes.
 - [x] Refresh setup header, desktop companion preview, progress bar, larger fields and phone layout; verify unchanged saving flow in both themes.
 - [x] Add welcome dashboard preview, exact headline break and fact heading; check desktop and phone in both themes.
 - [x] Redesign Home hierarchy, progress, personal greeting, bright tip and phone payment action; replace header mascot with clearday logo and sun/moon pill; verify both themes and phone layout.
