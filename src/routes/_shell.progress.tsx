@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Lock, Leaf } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
+import { Button } from "@/components/ui/button";
 import { simulate, formatMonth } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid, today } from "@/lib/store";
 
@@ -98,6 +99,8 @@ function Progress() {
           <p className="font-heading text-2xl font-bold">Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}</p>
         </div>
       </div>
+
+      {profile.demo && <Button asChild variant="outline" className="btn-secondary w-fit max-w-full whitespace-normal"><Link to="/debt-free" search={{preview: true}}>Preview the debt free moment</Link></Button>}
 
       <div className={card}>
         <h2 className="text-xl font-semibold">Total debt over time</h2>

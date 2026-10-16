@@ -6,6 +6,8 @@ import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, daysOfWork } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
+import { DebtFreeMoment } from "@/components/DebtFreeMoment";
+import { isDebtFree } from "@/lib/celebration";
 
 export const Route = createFileRoute("/_shell/home")({
   head: () => ({
@@ -41,6 +43,7 @@ function Home() {
   }
 
   const pct = percentPaid(profile.loans);
+  if (isDebtFree(profile)) return <DebtFreeMoment profile={profile} />;
   const filled = Math.round(pct / 10);
 
   return (

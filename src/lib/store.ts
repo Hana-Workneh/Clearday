@@ -14,6 +14,7 @@ export type Profile = {
   currency?: Currency | undefined;
   theme?: "light" | "dark" | undefined;
   demo?: boolean;
+  savingsGoal?: { name: string; amount: number } | undefined;
   loans: Loan[];
   plan?: PlanOptions | undefined;
   payments?: Payment[] | undefined;
