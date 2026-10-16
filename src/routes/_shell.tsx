@@ -31,7 +31,7 @@ function Shell() {
             </Link>
           ))}
         </nav>
-        <button onClick={() => openPayment()} className="btn-main mt-auto flex items-center justify-center gap-2 text-sm">
+        <button onClick={() => openPayment()} className="btn-main mt-auto whitespace-nowrap !px-4 text-sm">
           <Plus className="h-4 w-4" /> I made a payment
         </button>
       </aside>

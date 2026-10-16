@@ -61,7 +61,7 @@ function Home() {
           <p className="mt-6 font-semibold">{pct}% of your debt paid</p>
           <div className="mt-2 flex gap-1.5" aria-label={`${pct}% paid`}>
             {Array.from({ length: 10 }, (_, i) => (
-              <span key={i} className={`h-3 flex-1 rounded-full ${i < filled ? "bg-green" : "bg-secondary"}`} />
+              <span key={i} className={`h-3 flex-1 rounded-full ${i < filled ? "bg-green" : "bg-track"}`} />
             ))}
           </div>
         </div>
@@ -93,7 +93,7 @@ function Home() {
                     <span className="font-semibold">{l.name}</span>
                     <span className="text-muted-foreground">{usd(l.balance)} left</span>
                   </div>
-                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-secondary">
+                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-track">
                     <div className="h-full rounded-full bg-green" style={{ width: `${p}%` }} />
                   </div>
                   {uw && <p className="mt-2 text-sm text-tip">This payment doesn't cover the interest yet. Paying at least {usd(uw.minPayment)} a month will start shrinking it.</p>}
