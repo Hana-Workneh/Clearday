@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, usd, daysOfWork } from "@/lib/debt";
-import { useProfile } from "@/lib/store";
+import { useProfile, planOptions, percentPaid } from "@/lib/store";
+import { QuietCard } from "@/components/QuietCard";
 
 export const Route = createFileRoute("/_shell/home")({
   head: () => ({
@@ -21,7 +22,7 @@ const card = "leaf border bg-card p-6";
 
 function Home() {
   const profile = useProfile();
-  const plan = useMemo(() => (profile ? simulate(profile.loans, new Date(), profile.plan) : null), [profile]);
+  const plan = useMemo(() => (profile ? simulate(profile.loans, new Date(), planOptions(profile)) : null), [profile]);
 
   if (profile === undefined) return null;
   if (!profile || !plan) {
@@ -35,9 +36,7 @@ function Home() {
     );
   }
 
-  const start = profile.loans.reduce((s, l) => s + l.startBalance, 0);
-  const left = profile.loans.reduce((s, l) => s + l.balance, 0);
-  const pct = start > 0 ? Math.round(((start - left) / start) * 100) : 0;
+  const pct = percentPaid(profile.loans);
   const filled = Math.round(pct / 10);
 
   return (
@@ -49,6 +48,8 @@ function Home() {
           <p className="text-muted-foreground">Every payment brings your free day closer.</p>
         </div>
       </div>
+
+      <QuietCard profile={profile} />
 
       <div className="grid gap-5 md:grid-cols-3">
         <div className={`${card} md:col-span-2`}>
