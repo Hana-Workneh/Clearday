@@ -1,4 +1,5 @@
 # My plan
+- [ ] Security review: permission table, input enforcement, dependency fixes and scan verification.
 - [x] Simplify Your loans: automatic save on continue, compact editable saved loans, field hints and kind validation.
 - [x] Redesign welcome previews and add Why Clearday story, facts and quotes.
 - [x] Add completed-loan celebration, image sharing, new goal and safe demo preview.
