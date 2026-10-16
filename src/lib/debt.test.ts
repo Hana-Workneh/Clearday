@@ -53,3 +53,30 @@ describe("debt engine", () => {
     expect(r.schedule[0]!.balances["small"]!).toBeCloseTo(500 + 500 * 0.05 / 12 - 150, 2);
   });
 });
+
+import { daysCloser, quietLoans, skippedMonth, catchUpAmount } from "./debt";
+describe("payments and quiet months", () => {
+  const ls = [
+    { id: "a", name: "A", balance: 1000, startBalance: 1000, rate: 12, payment: 100 },
+    { id: "b", name: "B", balance: 2000, startBalance: 2000, rate: 6, payment: 100 },
+  ];
+  const now = new Date(2026, 5, 15);
+  it("days closer scales with share of monthly payments", () => {
+    expect(daysCloser(200, ls)).toBe(30);
+    expect(daysCloser(0, ls)).toBe(0);
+  });
+  it("flags a loan with no payment for over a month", () => {
+    const q = quietLoans(ls, [{ loanId: "a", date: "2026-06-10" }, { loanId: "b", date: "2026-04-20" }], "2026-01-01", now);
+    expect(q.map((l) => l.id)).toEqual(["b"]);
+  });
+  it("does not flag again once handled", () => {
+    expect(quietLoans(ls, [], "2026-04-01", now, { a: "2026-04-01", b: "2026-04-01" })).toEqual([]);
+  });
+  it("skipping a month moves the date later, catching up brings it back", () => {
+    const { grown, oldDate, newDate } = skippedMonth(ls, "b", now);
+    expect(newDate!.getTime()).toBeGreaterThan(oldDate!.getTime());
+    const amt = catchUpAmount(grown, oldDate!, now, {}, 3)!;
+    expect(amt).toBeGreaterThan(0);
+    expect(simulate(grown, now, { boost: { amount: amt, months: 3 } }).debtFreeDate!.getTime()).toBeLessThanOrEqual(oldDate!.getTime());
+  });
+});

@@ -23,7 +23,8 @@ export const MAX_MONTHS = 50 * 12;
 export const monthlyInterest = (balance: number, rate: number) => balance * (rate / 100 / 12);
 
 export type Strategy = "avalanche" | "snowball";
-export type PlanOptions = { extra?: number; strategy?: Strategy };
+/** boost: a temporary extra amount for the first `months` months (used for "catch up slowly"). */
+export type PlanOptions = { extra?: number; strategy?: Strategy; boost?: { amount: number; months: number } };
 
 export function simulate(loans: Loan[], start: Date = new Date(), opts: PlanOptions = {}): PlanResult {
   const extra = Math.max(0, opts.extra ?? 0);
@@ -44,7 +45,7 @@ export function simulate(loans: Loan[], start: Date = new Date(), opts: PlanOpti
 
   while (left() > 0.005 && month < MAX_MONTHS) {
     month++;
-    let pool = extra;
+    let pool = extra + (opts.boost && month <= opts.boost.months ? Math.max(0, opts.boost.amount) : 0);
     let interestThisMonth = 0;
     for (const l of loans) {
       let b = bal[l.id] ?? 0;
@@ -93,3 +94,42 @@ export function addMonths(d: Date, n: number) {
 
 export const formatMonth = (d: Date) => d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 export const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+const DAY = 86400000;
+
+/** Calendar days the debt free day moves closer after paying `amount`, based on how much goes to debt each month. */
+export function daysCloser(amount: number, loans: Loan[], opts: PlanOptions = {}) {
+  const monthly = loans.filter((l) => l.balance > 0).reduce((s, l) => s + l.payment, 0) + (opts.extra ?? 0);
+  if (monthly <= 0 || amount <= 0) return 0;
+  return Math.max(1, Math.round((amount / monthly) * 30.4));
+}
+
+export type PaymentLog = { loanId: string; date: string };
+
+/** Loans with a balance and no payment logged for over a month (since the last payment, or since starting). */
+export function quietLoans(loans: Loan[], payments: PaymentLog[], startedAt: string, now: Date, seen: Record<string, string> = {}) {
+  return loans.filter((l) => {
+    if (l.balance <= 0) return false;
+    const last = payments.filter((p) => p.loanId === l.id).map((p) => p.date).sort().pop() ?? startedAt;
+    if (seen[l.id] && seen[l.id]! >= last) return false; // already handled this quiet stretch
+    return now.getTime() - new Date(last).getTime() > 31 * DAY;
+  });
+}
+
+/** Old vs new date when one month's payment on `loanId` was skipped. */
+export function skippedMonth(loans: Loan[], loanId: string, start: Date, opts: PlanOptions = {}) {
+  const grown = loans.map((l) => (l.id === loanId ? { ...l, balance: l.balance + monthlyInterest(l.balance, l.rate) } : l));
+  const paid = loans.map((l) =>
+    l.id === loanId ? { ...l, balance: Math.max(0, l.balance + monthlyInterest(l.balance, l.rate) - l.payment) } : l,
+  );
+  return { grown, oldDate: simulate(paid, start, opts).debtFreeDate, newDate: simulate(grown, start, opts).debtFreeDate };
+}
+
+/** Smallest extra (in $5 steps) for the next `months` months that brings the date back to `target`. */
+export function catchUpAmount(loans: Loan[], target: Date, start: Date, opts: PlanOptions = {}, months = 3) {
+  for (let a = 5; a <= 2000; a += 5) {
+    const d = simulate(loans, start, { ...opts, boost: { amount: a, months } }).debtFreeDate;
+    if (d && d.getTime() <= target.getTime()) return a;
+  }
+  return null;
+}
