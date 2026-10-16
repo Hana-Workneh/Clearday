@@ -25,7 +25,7 @@ export const monthlyInterest = (balance: number, rate: number) => balance * (rat
 /** avalanche: highest rate first; snowball: smallest balance first; order: the order the loans were added. */
 export type Strategy = "avalanche" | "snowball" | "order";
 /** boost: a temporary extra amount for the first `months` months (used for "catch up slowly"). */
-export type PlanOptions = { extra?: number; strategy?: Strategy; boost?: { amount: number; months: number } };
+export type PlanOptions = { extra?: number | undefined; strategy?: Strategy | undefined; boost?: { amount: number; months: number } | undefined };
 
 export function simulate(loans: Loan[], start: Date = new Date(), opts: PlanOptions = {}): PlanResult {
   const extra = Math.max(0, opts.extra ?? 0);

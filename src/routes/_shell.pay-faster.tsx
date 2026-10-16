@@ -1,8 +1,9 @@
+import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { Slider } from "@/components/ui/slider";
-import { simulate, formatMonth, usd, type PlanResult, type Strategy } from "@/lib/debt";
+import { simulate, formatMonth, type PlanResult, type Strategy } from "@/lib/debt";
 import { saveProfile, useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
@@ -32,11 +33,14 @@ const options: { key: Strategy; title: string; text: string }[] = [
 
 function PayFaster() {
   const profile = useProfile();
+  const usd = (n: number) => money(n, profile?.currency);
   const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
   const [extra, setExtra] = useState(0);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
+  const [isSaving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (profile) {
@@ -73,8 +77,11 @@ function PayFaster() {
   const newWidth = Math.max(4, Math.round(((next.monthsLeft ?? 600) / nowMonths) * 100));
   const label = next.debtFreeDate ? formatMonth(next.debtFreeDate) : "Not yet";
 
-  const use = () => {
-    saveProfile({ ...profile, plan: { extra, strategy } });
+  const use = async () => {
+    setSaving(true); setError("");
+    try { await saveProfile({ ...profile, plan: { extra, strategy } }); }
+    catch { setError("Your plan couldn't save. Please try again."); setSaving(false); return; }
+    setSaving(false);
     setSaved(true);
     setTimeout(() => navigate({ to: "/home" }), 1600);
   };
@@ -101,7 +108,7 @@ function PayFaster() {
             <p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p>
           </div>
           <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
-          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>$0</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
+          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{usd(0)}</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
 
           <div className="leaf mt-6 bg-background p-6">
             <p className="text-sm font-semibold text-muted-foreground">New debt free date</p>
@@ -154,7 +161,8 @@ function PayFaster() {
             </p>
           </div>
 
-          <button onClick={use} disabled={saved} className="btn-main w-full">Make this my plan</button>
+          {error && <p role="alert" className="text-sm text-tip">{error}</p>}
+          <button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Make this my plan"}</button>
         </section>
       </div>
     </div>

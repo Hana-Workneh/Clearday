@@ -1,0 +1,8 @@
+import { describe, expect, it } from "vitest";
+import { currencies, mergeLocalData, money, profileSchema } from "./account-data";
+const profile = profileSchema.parse({ name: "Hana", income: 500, job: "Marketing officer", loans: [{ id: "phone", name: "Phone loan", balance: 140, startBalance: 300, rate: 9, payment: 40 }], payments: [{id: "one", loanId: "phone", amount: 40, date: "2026-10-08"}] });
+describe("Private account data", () => {
+  it("defaults to USD and supports only USD, RWF, KES and ETB", () => { expect(profile.currency).toBe("USD"); expect(currencies).toEqual(["USD", "RWF", "KES", "ETB"]); expect(profileSchema.safeParse({...profile, currency: "EUR"}).success).toBe(false); });
+  it("imports existing progress without duplicating loans or payments", () => { const result = mergeLocalData(profile, {...profile, loans: [...profile.loans, {...profile.loans[0], id: "other", name: "Personal loan", balance: 280, startBalance: 600, rate: 15, payment: 80}], payments: [...(profile.payments ?? []), {id: "two", loanId: "other", amount: 80, date: "2026-10-08"}]}); expect(result.loans.map(l => l.id)).toEqual(["phone", "other"]); expect(result.payments?.map(p => p.id)).toEqual(["one", "two"]); });
+  it("keeps the original amounts when changing currency", () => { expect(money(500, "USD")).toBe("$500"); expect(money(500, "RWF")).toContain("500"); expect(profileSchema.parse({...profile, currency: "KES"}).income).toBe(500); });
+});

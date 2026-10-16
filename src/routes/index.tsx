@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { saveProfile, demoProfile } from "@/lib/store";
+import { startDemo, useAccount } from "@/lib/store";
+import { Button } from "@/components/ui/button";
 import { PlusCircle, CalendarHeart, Rocket } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -26,6 +27,7 @@ const steps = [
 
 function Welcome() {
   const navigate = useNavigate();
+  const account = useAccount();
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
@@ -33,7 +35,7 @@ function Welcome() {
           <Sprout size={34} />
           <span className="font-heading text-xl font-semibold">Clearday</span>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-3"><Button asChild variant="ghost"><Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link></Button><ThemeToggle /></div>
       </header>
       <section className="mx-auto flex max-w-3xl flex-col items-center px-5 pt-8 text-center md:pt-14">
         <Sprout mood="waving" size={150} />
@@ -44,9 +46,9 @@ function Welcome() {
           <Link to="/setup" className="btn-main">
             Find my debt free date
           </Link>
-          <button onClick={() => { saveProfile(demoProfile); navigate({ to: "/home" }); }} className="btn-secondary">
+          <Button variant="outline" onClick={() => { startDemo(); navigate({ to: "/home" }); }} className="btn-secondary">
             Try the demo
-          </button>
+          </Button>
         </div>
       </section>
       <section className="mx-auto max-w-5xl px-5 py-16 md:py-24">

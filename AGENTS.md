@@ -11,7 +11,9 @@
 
 ## Architecture
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.
-- Existing user profiles remain browser-local via `src/lib/store.ts`; Cloud currently powers AI only — avoids changing account and storage flows during the My plan addition.
+- `src/lib/store.ts` reads and writes authenticated progress in an owner-scoped Cloud profile JSON document; anonymous real drafts stay local until imported, while demos use separate session storage — prevents sample imports and account-to-account cache leaks.
+- Shared demo and account pages remain public; private reads and writes use authenticated RLS and account deletion uses a middleware-verified server function — supports no-signup demos without weakening data privacy.
+- Account profile documents are validated with `src/lib/account-data.ts` and imported by stable loan/payment IDs — preserves browser progress with idempotent import.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
 - My plan timeline and suggestion impact calculations live in pure `src/lib/plan.ts` with tests; AI supplies ideas, never payoff calculations — keeps estimates consistent with the debt engine.

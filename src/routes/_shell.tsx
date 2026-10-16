@@ -3,6 +3,8 @@ import { Home, Zap, Map, TrendingUp, Settings, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaymentFlow, openPayment } from "@/components/PaymentFlow";
+import { useAccount, useProfile, leaveDemo, refreshAccount } from "@/lib/store";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_shell")({ component: Shell });
 
@@ -15,6 +17,8 @@ const nav = [
 ] as const;
 
 function Shell() {
+  const profile = useProfile();
+  const account = useAccount();
   return (
     <div className="flex min-h-screen w-full">
       <aside className="sticky top-0 hidden h-screen w-[230px] shrink-0 flex-col border-r bg-card p-5 md:flex">
@@ -46,10 +50,12 @@ function Shell() {
               <Plus className="h-4 w-4" /> Payment
             </button>
             <ThemeToggle />
+            <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link to={account.id ? "/settings" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link></Button>
           </div>
         </header>
         <main className="flex-1 px-5 pb-28 md:px-10 md:pb-10">
-          <Outlet />
+          {profile?.demo && <div className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-between gap-3 border-y bg-chip-purple px-4 py-3 text-chip-purple-text"><p className="text-sm font-semibold">You're viewing a demo</p><Button asChild variant="outline" className="btn-secondary !h-10 !px-4 text-sm"><Link to="/auth" onClick={leaveDemo}>Start my own</Link></Button></div>}
+          {account.error ? <div role="alert" className="mx-auto max-w-xl py-12 text-center"><p>{account.error}</p><Button onClick={() => refreshAccount()} className="btn-main mt-5">Reload my account</Button></div> : <Outlet />}
         </main>
       </div>
       <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t bg-card px-2 py-2 md:hidden">

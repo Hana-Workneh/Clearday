@@ -2,3 +2,10 @@
 - [x] Build monthly timeline and milestones with current-month marker.
 - [x] Add private, streaming Lovable AI practical ideas with safe estimates.
 - [x] Connect Try this to Pay faster and verify calculations and live flow.
+
+# Demo and accounts
+- [x] Add Hana demo and demo banner without importing sample data into accounts.
+- [x] Add Google sign-in, private account storage and browser-data transfer.
+- [x] Build Settings, currencies, loan editing, sign-out and account deletion.
+- [x] Verify demo, currency persistence and loan editing/deletion.
+- [ ] Verify signed-in saving, account isolation, import and account deletion — blocked until a real user signs in; no auth users exist yet.
