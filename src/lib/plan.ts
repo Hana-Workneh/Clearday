@@ -6,19 +6,33 @@ import { cleanText } from "./account-data";
 export const adviceInputSchema = z.object({
   currency: z.enum(["USD", "RWF", "KES", "ETB"]).default("USD"),
   job: z.string().transform(cleanText).pipe(z.string().max(160)), income: z.number().finite().min(0).max(100000000),
+  skills: z.string().transform(cleanText).pipe(z.string().max(160)).optional(),
   loans: z.array(z.object({ id: z.string().min(1).max(100), name: z.string().max(120), balance: z.number().finite().min(0).max(100000000), startBalance: z.number().finite().min(0).max(100000000), rate: z.number().finite().min(0).max(1000), payment: z.number().finite().min(0).max(1000000) })).min(1).max(30),
   plan: z.object({ extra: z.number().finite().min(0).max(1000000).optional(), strategy: z.enum(["avalanche", "snowball", "order"]).optional(), boost: z.object({ amount: z.number().finite().min(0).max(1000000), months: z.number().int().min(0).max(600) }).optional() }),
 });
 export type AdviceInput = z.infer<typeof adviceInputSchema>;
-export const adviceSchema = z.object({ ideas: z.array(z.object({ title: z.string(), detail: z.string(), monthlyAmount: z.number(), kind: z.enum(["earn", "save"]) }).strict()) }).strict();
-export type Idea = z.infer<typeof adviceSchema>["ideas"][number];
+/** Strict schema the AI must return. jobLabel is the cleaned job ("" when empty, unclear, a joke or offensive). */
+export const adviceSchema = z.object({ jobLabel: z.string(), ideas: z.array(z.object({ title: z.string(), detail: z.string(), monthlyAmount: z.number(), kind: z.enum(["earn", "save"]), forJob: z.boolean() }).strict()) }).strict();
+const ideaSchema = z.object({ title: z.string(), detail: z.string(), monthlyAmount: z.number(), kind: z.enum(["earn", "save"]), tag: z.string().max(120).optional() });
+export type Idea = z.infer<typeof ideaSchema>;
 
 const unsafe = /\b(gambl\w*|betting|lotter\w*|casino\w*|crypto\w*|bitcoin|forex|day trad\w*|new loans?|payday loans?|borrow\w*|refinanc\w*|leverage\w*|stock trad\w*|options trad\w*|multilevel|mlm)\b/i;
+const rude = /\b(fuck\w*|shit\w*|bitch\w*|cunt\w*|dick\w*|porn\w*|whore\w*|slut\w*|nazi\w*|asshole\w*|bastard\w*|wank\w*|retard\w*)\b/i;
+/** Keeps only safe ideas with rounded, capped monthly amounts (cached or fresh). */
 export function safeIdeas(value: unknown): Idea[] {
-  const parsed = adviceSchema.parse(value);
-  const ideas = parsed.ideas.filter(i => !unsafe.test(`${i.title} ${i.detail}`) && i.monthlyAmount > 0 && Number.isFinite(i.monthlyAmount)).slice(0, 5).map(i => ({ ...i, title: i.title.slice(0, 80), detail: i.detail.slice(0, 500), monthlyAmount: Math.min(300, Math.max(5, Math.floor(i.monthlyAmount / 5) * 5)) }));
+  const parsed = z.object({ ideas: z.array(ideaSchema) }).parse(value);
+  const ideas = parsed.ideas.filter(i => !unsafe.test(`${i.title} ${i.detail}`) && !rude.test(`${i.title} ${i.detail} ${i.tag ?? ""}`) && i.monthlyAmount > 0 && Number.isFinite(i.monthlyAmount)).slice(0, 5).map(i => ({ ...i, title: i.title.slice(0, 80), detail: i.detail.slice(0, 500), monthlyAmount: Math.min(300, Math.max(5, Math.floor(i.monthlyAmount / 5) * 5)) }));
   if (ideas.length < 3) throw new Error("No safe suggestions were returned. Please generate a fresh set when you're ready.");
   return ideas;
+}
+/** Turns the AI answer into tagged ideas. Job ideas come first; note=true asks the user to add a clearer job. */
+export function safeAdvice(value: unknown): { ideas: Idea[]; note: boolean } {
+  const parsed = adviceSchema.parse(value);
+  const label = cleanText(parsed.jobLabel).slice(0, 60);
+  const usable = label.length > 1 && !rude.test(label);
+  const sorted = [...parsed.ideas].sort((a, b) => Number(b.forJob) - Number(a.forJob));
+  const ideas = safeIdeas({ ideas: sorted.map(({ forJob, ...i }) => ({ ...i, ...(usable && forJob ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label.toLowerCase()}` } : {}) })) });
+  return { ideas, note: !usable };
 }
 
 export function extraFromIdea(plan: PlanOptions, amount: number) {
