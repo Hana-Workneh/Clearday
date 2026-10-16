@@ -1,4 +1,7 @@
 # My plan
+- [ ] Redesign welcome previews and add Why Clearday story, facts and quotes.
+- [ ] Add completed-loan celebration, image sharing, new goal and safe demo preview.
+- [ ] Polish loading/empty states and verify all pages on phone/desktop in both themes.
 - [x] Build monthly timeline and milestones with current-month marker.
 - [x] Add private, streaming Lovable AI practical ideas with safe estimates.
 - [x] Connect Try this to Pay faster and verify calculations and live flow.
