@@ -12,9 +12,9 @@ const steps = [
   { icon: Rocket, title: "Pay it off faster", text: "Little changes. A closer free day.", accent: "bg-chip-yellow text-chip-yellow-text", preview: "bg-chip-yellow" },
 ];
 const facts = [
-  { value: 32, suffix: "%", tone: "green", text: "Kenyan adults who borrowed through mobile money", source: "World Bank Global Findex 2025", href: "https://www.citizen.digital/business/bank-borrowing-in-kenya-shrinks-as-many-opt-for-mobile-money-loans-world-bank-n366707", note: "2024 borrowing data" },
-  { value: 8, suffix: "M+", tone: "purple", text: "Digital borrowers every month in Kenya", source: "Digital Financial Services Association of Kenya", href: "https://www.citizen.digital/business/kenyans-borrowing-ksh-500m-daily-from-digital-lenders-report-n359881", note: "2025 industry estimate" },
-  { value: 65, suffix: "%", tone: "gold", text: "US millennials with debt who don't know when they'll pay it off or think they never will", source: "CreditCards.com survey, 2017", href: "https://www.nasdaq.com/articles/poll-2-3-us-adults-debt-doubt-theyll-ever-live-debt-free-2018-01-10", note: "Survey fielded December 2017" },
+  { value: 32, suffix: "%", text: "Kenyan adults who borrowed through mobile money", source: "World Bank Global Findex 2025", href: "https://www.citizen.digital/business/bank-borrowing-in-kenya-shrinks-as-many-opt-for-mobile-money-loans-world-bank-n366707", note: "2024 borrowing data" },
+  { value: 8, suffix: "M+", text: "Digital borrowers every month in Kenya", source: "Digital Financial Services Association of Kenya", href: "https://www.citizen.digital/business/kenyans-borrowing-ksh-500m-daily-from-digital-lenders-report-n359881", note: "2025 industry estimate" },
+  { value: 65, suffix: "%", text: "US millennials with debt who don't know when they'll pay it off or think they never will", source: "CreditCards.com survey, 2017", href: "https://www.nasdaq.com/articles/poll-2-3-us-adults-debt-doubt-theyll-ever-live-debt-free-2018-01-10", note: "Survey fielded December 2017" },
 ] as const;
 
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
