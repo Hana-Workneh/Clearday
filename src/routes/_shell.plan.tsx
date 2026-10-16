@@ -34,6 +34,8 @@ function MyPlan() {
   const [error, setError] = useState("");
   const [terminal, setTerminal] = useState(false);
   const abort = useRef<AbortController | null>(null);
+  const [step, setStep] = useState(0);
+  const [cacheKey, setCacheKey] = useState<string | null>(null);
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
   useEffect(() => { setIdeas(profile?.demo ? [
@@ -42,7 +44,22 @@ function MyPlan() {
     {title: "Pause an unused subscription", detail: "Check your subscriptions for one you no longer use. Pausing a small service could save around 10 each month.", monthlyAmount: 10, kind: "save"},
   ] : []); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
   const autoRun = useRef<(() => void) | null>(null);
-  useEffect(() => { if (!profile || profile.demo) return; const t = setTimeout(() => autoRun.current?.(), 0); return () => clearTimeout(t); }, [fingerprint, profile?.demo]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!profile || profile.demo) return;
+    let live = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!live) return;
+      const key = session ? `clearday-ideas:${session.user.id}` : null;
+      setCacheKey(key);
+      try {
+        const saved = key ? JSON.parse(localStorage.getItem(key) ?? "null") : null;
+        if (saved && saved.fingerprint === fingerprint && Array.isArray(saved.ideas) && saved.ideas.length) { setIdeas(safeIdeas({ ideas: saved.ideas })); return; }
+      } catch { /* ignore broken cache */ }
+      autoRun.current?.();
+    });
+    return () => { live = false; };
+  }, [fingerprint, profile?.demo]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!loading) return; setStep(0); const t = setInterval(() => setStep(n => Math.min(n + 1, 2)), 2000); return () => clearInterval(t); }, [loading]);
   if (profile === undefined) return null;
   if (!profile) return <div className="mx-auto max-w-xl text-center"><Sprout mood="thinking" size={100} /><h1 className="page-title mt-4">Your plan starts here</h1><Button asChild className="btn-main mt-6"><Link to="/setup">Add your loans <ArrowRight /></Link></Button></div>;
   const result = simulate(profile.loans, now, options);
@@ -53,7 +70,9 @@ function MyPlan() {
   const generate = async () => {
     if (loading || terminal) return;
     const controller = new AbortController(); abort.current = controller;
-    setLoading(true); setError("");
+    setLoading(true); setError(""); setIdeas([]);
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; controller.abort(); }, 15000);
     try {
       const {data: {session}} = await supabase.auth.getSession();
       if (!session) throw new Error("Sign in to find your personal ideas.");
@@ -73,13 +92,16 @@ function MyPlan() {
           if (!line.trim()) continue;
           const event = JSON.parse(line);
           if (event.type === "error") throw new Error(event.message);
-          if (event.type === "result") { setIdeas(safeIdeas({ ideas: event.ideas })); received = true; }
+          if (event.type === "result") { const fresh = safeIdeas({ ideas: event.ideas }); setIdeas(fresh); received = true; if (cacheKey && fresh.length) localStorage.setItem(cacheKey, JSON.stringify({ fingerprint, ideas: fresh })); }
         }
         if (chunk.done) break;
       }
       if (!received) throw new Error("No suggestions were returned. Start a fresh request when you're ready.");
-    } catch (err) { if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Suggestions aren't available right now."); }
-    finally { if (abort.current === controller) setLoading(false); }
+    } catch (err) {
+      if (timedOut) setError("timeout");
+      else if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "timeout");
+    }
+    finally { clearTimeout(timer); if (abort.current === controller) setLoading(false); }
   };
 
   autoRun.current = generate;
@@ -106,11 +128,14 @@ function MyPlan() {
       <section aria-label="Ideas for you" className="min-w-0">
         <div className="flex items-center gap-2"><Sparkles className="size-5 text-tip" /><h2 className="font-heading text-xl font-semibold">A little extra, your way</h2></div>
         <p className="mt-2 text-sm text-muted-foreground">{profile.job ? `Small possibilities for you as a ${profile.job.toLowerCase()}.` : "Small possibilities that fit your budget."}</p>
-        {(loading || (ideas.length === 0 && !error)) && <div className="leaf mt-6 flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text" role="status"><Sprout mood="thinking" size={76} /><p className="flex-1 font-heading text-lg font-semibold">{profile.job ? `Finding ideas for ${/^[aeiou]/i.test(profile.job) ? "an" : "a"} ${profile.job.toLowerCase()}...` : "Finding ideas for you..."}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>}
-        {error && <div className="mt-6" role="alert"><p className="text-sm text-muted-foreground">{error}</p>{!terminal && <Button variant="outline" className="btn-secondary mt-3" onClick={generate}>Generate new ideas</Button>}</div>}
+        {(loading || (ideas.length === 0 && !error)) && <div className="mt-6" role="status" aria-live="polite">
+          <div className="leaf flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text"><span className="sprout-think-bob shrink-0"><Sprout mood="thinking" size={76} /></span><p key={step} className="idea-in min-w-0 flex-1 font-heading text-lg font-semibold">{["Looking at your loans...", profile.job ? `Thinking about ideas for ${/^[aeiou]/i.test(profile.job) ? "an" : "a"} ${profile.job.toLowerCase()}...` : "Thinking about ideas for you...", "Almost ready..."][step]}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>
+          <div className="mt-5 grid gap-4" aria-hidden="true">{[0,1,2].map(i => <div key={i} className="leaf border bg-card p-5"><div className="idea-shimmer h-3 w-24 rounded-full" /><div className="idea-shimmer mt-4 h-5 w-3/4 rounded-full" /><div className="idea-shimmer mt-3 h-3 w-full rounded-full" /><div className="idea-shimmer mt-2 h-3 w-5/6 rounded-full" /><div className="idea-shimmer mt-5 h-10 w-full rounded-full" /></div>)}</div>
+        </div>}
+        {error && !loading && <div className="leaf mt-6 flex flex-col items-center gap-3 border bg-card p-6 text-center" role="alert"><Sprout mood="calm" size={80} /><p className="font-heading text-lg font-semibold">{error === "timeout" || !terminal ? "That took too long. Try again?" : error}</p>{error !== "timeout" && !terminal && error.length > 0 && <p className="text-sm text-muted-foreground">{error}</p>}{!terminal && <Button className="btn-main" onClick={generate}>Try again</Button>}</div>}
         <div className="mt-5 grid gap-4">{ideas.map((idea,i) => {
           const impact = ideaImpact(profile.loans, options, idea.monthlyAmount, now);
-          return <article key={`${idea.title}-${i}`} className="leaf bg-chip-purple p-5 text-chip-purple-text">
+          return <article key={`${idea.title}-${i}`} style={{ animationDelay: `${i * 150}ms` }} className="idea-in leaf bg-chip-purple p-5 text-chip-purple-text">
             <div className="flex items-center justify-between gap-2"><span className="text-xs font-bold uppercase">{idea.kind === "earn" ? "Earn a little" : "Save a little"}</span><Sparkles className="size-4" /></div>
             <h3 className="font-heading mt-3 text-lg font-semibold">{idea.title}</h3><p className="mt-2 text-sm leading-relaxed">{idea.detail}</p>
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1"><p className="font-heading text-2xl font-bold text-foreground">~{usd(idea.monthlyAmount)}<span className="text-sm font-normal"> / month</span></p><span className="text-sm font-semibold">{impact.monthsSooner === null ? impact.nextDate ? `Debt free ${formatMonth(impact.nextDate)}` : "Explore your new date" : impact.monthsSooner > 0 ? `${impact.monthsSooner} ${impact.monthsSooner === 1 ? "month" : "months"} sooner` : "Less interest, same month"}</span></div>
@@ -118,6 +143,7 @@ function MyPlan() {
           </article>;
         })}</div>
         {ideas.length > 0 && <p className="mt-3 text-xs text-muted-foreground">Amounts are estimates, not guaranteed. Each idea is compared separately with your chosen plan.</p>}
+        {ideas.length > 0 && !loading && !profile.demo && <button type="button" onClick={generate} className="mt-3 text-sm font-semibold text-green-text underline-offset-4 hover:underline">Get new ideas</button>}
         <p className="mt-6 text-xs text-muted-foreground">Powered by Lovable AI</p>
       </section>
     </div>
