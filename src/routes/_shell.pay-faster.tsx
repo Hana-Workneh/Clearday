@@ -7,7 +7,7 @@ import { saveProfile, useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
   validateSearch: (search: Record<string, unknown>): { extra?: number } => {
-    const extra = Number(search.extra);
+    const extra = Number(search['extra']);
     return Number.isFinite(extra) && extra >= 0 && extra <= 1000000 ? { extra } : {};
   },
   head: () => ({

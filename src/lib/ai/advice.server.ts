@@ -49,7 +49,7 @@ export async function handleAdvice(request: Request) {
   const iterator = result.fullStream[Symbol.asyncIterator]();
   const firstPart = iterator.next();
   // Network failures settle this too, without an artificial timeout or billed retry.
-  void result.text.catch(() => resolveUpstream(null));
+  void Promise.resolve(result.text).catch(() => resolveUpstream(null));
   const upstream = await upstreamReady;
   if (!upstream || upstream.status >= 400) {
     void firstPart.catch(() => {});
