@@ -43,6 +43,7 @@
   --color-bar: var(--bar);
   --color-track: var(--track);
   --color-line-strong: var(--line-strong);
+  --color-setup-panel: var(--setup-panel);
   --color-chip-yellow: var(--chip-yellow);
   --color-chip-yellow-text: var(--chip-yellow-text);
 }
@@ -68,6 +69,7 @@
   --cheek: #FF9AA8;
   --ink: #0B1411;
   --chip-green: #E3F7EC;
+  --setup-panel: #E3F7EC;
   --chip-green-text: #087A4A;
   --chip-purple: #ECE8FF;
   --chip-purple-text: #4A33C9;
@@ -93,6 +95,7 @@
   --green-text: #00DF81;
   --tip: #8B74FF;
   --chip-green: #0F2A1E;
+  --setup-panel: #12201A;
   --chip-green-text: #00DF81;
   --chip-purple: #221C40;
   --chip-purple-text: #B3A5FF;
@@ -147,6 +150,7 @@
 
 .welcome-step { transition: transform 220ms ease, box-shadow 220ms ease; }
 .welcome-dashboard-card, .welcome-dashboard-tip { box-shadow: var(--shadow-product); }
+.setup-preview { box-shadow: var(--shadow-lift); }
 @media (min-width: 768px) { .welcome-dashboard-card { transform: rotate(-2deg); } }
 .btn-main { height: 54px; border-radius: 9999px; padding-inline: 1.75rem; }
 .btn-secondary { height: 54px; border-radius: 9999px; padding-inline: 1.75rem; border: 1.5px solid var(--line-strong); background: var(--card); }
