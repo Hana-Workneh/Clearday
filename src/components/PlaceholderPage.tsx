@@ -3,7 +3,7 @@ import { Sprout, type SproutMood } from "./Sprout";
 export function PlaceholderPage({ title, text, mood }: { title: string; text: string; mood: SproutMood }) {
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="text-3xl font-semibold md:text-4xl">{title}</h1>
+      <h1 className="page-title">{title}</h1>
       <div className="mt-6 grid gap-5 md:grid-cols-2">
         <div className="leaf-lg flex items-center gap-5 border bg-card p-6">
           <Sprout mood={mood} size={90} />

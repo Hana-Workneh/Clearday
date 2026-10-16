@@ -167,7 +167,7 @@ function Setup() {
             ) : plan.debtFreeDate ? (
               <div className="animate-in fade-in zoom-in-95 duration-700">
                 <p className="mt-6 text-lg font-semibold text-muted-foreground">You'll be debt free by</p>
-                <h1 className="mt-2 text-5xl font-bold text-green-text md:text-7xl">{formatMonth(plan.debtFreeDate)}</h1>
+                <h1 className="big-date mt-3">{formatMonth(plan.debtFreeDate)}</h1>
                 <p className="mt-4 text-muted-foreground">
                   That's {plan.monthsLeft} months away. Interest still to pay: {usd(plan.totalInterest)} ({daysOfWork(plan.totalInterest, +income)} {daysOfWork(plan.totalInterest, +income) === 1 ? "day" : "days"} of work).
                 </p>

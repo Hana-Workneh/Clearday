@@ -81,8 +81,8 @@ function Progress() {
       <div className="flex items-center gap-4">
         <Sprout mood="cheering" size={70} />
         <div>
-          <h1 className="text-3xl font-semibold">Look how far you've come</h1>
-          <p className="text-muted-foreground">{pct}% of your debt paid. Every payment counts!</p>
+          <h1 className="page-title">Look how far you've come</h1>
+          <p className="page-sub mt-1">{pct}% of your debt paid. Every payment counts!</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ function Progress() {
         </div>
         <div>
           <p className="text-sm font-semibold text-muted-foreground">Now</p>
-          <p className="font-heading text-2xl font-bold text-green-text">Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}</p>
+          <p className="font-heading text-2xl font-bold">Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}</p>
         </div>
       </div>
 

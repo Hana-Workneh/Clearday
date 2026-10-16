@@ -44,8 +44,8 @@ function Home() {
       <div className="flex items-center gap-4">
         <Sprout mood="happy" size={70} />
         <div>
-          <h1 className="text-3xl font-semibold">Hi {profile.name}!</h1>
-          <p className="text-muted-foreground">Every payment brings your free day closer.</p>
+          <h1 className="page-title">Hi {profile.name}!</h1>
+          <p className="page-sub mt-1">Every payment brings your free day closer.</p>
         </div>
       </div>
 
@@ -54,7 +54,7 @@ function Home() {
       <div className="grid gap-5 md:grid-cols-3">
         <div className={`${card} md:col-span-2`}>
           <p className="text-sm font-semibold text-muted-foreground">Debt free by</p>
-          <p className="mt-1 font-heading text-4xl font-bold text-green-text animate-in fade-in zoom-in-95 duration-700 md:text-5xl">
+          <p className="mt-1 big-date mt-2 animate-in fade-in zoom-in-95 duration-700">
             {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "Not yet — let's tweak"}
           </p>
           {plan.monthsLeft && <p className="mt-1 text-muted-foreground">{plan.monthsLeft} months to go</p>}
