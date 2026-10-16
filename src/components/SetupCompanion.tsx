@@ -2,7 +2,8 @@ import { Sprout } from "@/components/Sprout";
 
 const messages = ["Hi! Let's start with you.", "Now your loans. Rough numbers are fine.", "Here it comes..."];
 
-export function SetupCompanion({ step, name, income, loans, date, ready }: {
+export function SetupCompanion({ step, name, income, loans, date, ready, message }: {
+  message?: string;
   step: number;
   name: string;
   income: string;
@@ -16,7 +17,7 @@ export function SetupCompanion({ step, name, income, loans, date, ready }: {
       <div className="mx-auto w-full max-w-sm">
         <div className="mb-8 flex items-center gap-3">
           <Sprout mood={mood} size={112} />
-          <p className="leaf flex-1 bg-card px-5 py-4 text-sm font-semibold leading-relaxed">{messages[step]}</p>
+          <p className="leaf flex-1 bg-card px-5 py-4 text-sm font-semibold leading-relaxed">{message ?? messages[step]}</p>
         </div>
         <div className="leaf-lg setup-preview border bg-card p-7" aria-live="polite">
           <p className="text-xs font-semibold text-muted-foreground">clearday</p>
@@ -35,7 +36,7 @@ export function SetupCompanion({ step, name, income, loans, date, ready }: {
     </aside>
     <div className="mb-7 flex items-center gap-3 lg:hidden">
       <Sprout mood={mood} size={64} />
-      <p className="leaf max-w-72 bg-setup-panel px-4 py-3 text-sm font-semibold">{messages[step]}</p>
+      <p className="leaf max-w-72 bg-setup-panel px-4 py-3 text-sm font-semibold">{message ?? messages[step]}</p>
     </div>
   </>;
 }

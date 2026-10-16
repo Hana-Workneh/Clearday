@@ -10,7 +10,7 @@ describe("loan actions", () => {
   });
   it("mark as paid off sets balance to 0 and logs the rest as a payment", () => {
     const r = markPaidOff({ loans, payments }, "a", "2026-10-16", "x");
-    expect(r.loans[0].balance).toBe(0);
+    expect(r.loans[0]?.balance).toBe(0);
     expect(r.payments!.at(-1)).toEqual({ id: "x", loanId: "a", amount: 300, date: "2026-10-16" });
   });
 });

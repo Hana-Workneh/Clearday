@@ -1,5 +1,6 @@
 import { money } from "@/lib/account-data";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { LoanMenu } from "@/components/LoanMenu";
 import { useMemo } from "react";
 import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
@@ -117,6 +118,7 @@ function Home() {
                     <span className={`break-words font-semibold ${highlighted ? "text-green-text" : ""}`}>{l.name}</span>
                     {highlighted && <span className="chip-green !px-2.5 !py-1 text-xs"><Sparkles className="mr-1 size-3" />Closest to done</span>}
                     {l.balance === 0 && <span className="chip-green !px-2.5 !py-1 text-xs"><Check className="mr-1 size-3" />Paid off</span>}
+                    <span className="ml-auto -my-2"><LoanMenu loan={l} onEdit={() => navigate({ to: "/setup", search: { step: 1, edit: l.id } })} /></span>
                   </div>
                   <div className="mt-3 flex flex-wrap justify-between gap-2 text-xs"><span className="text-muted-foreground">{usd(l.balance)} left</span><span className={`font-bold ${highlighted ? "text-green-text" : "text-muted-foreground"}`}>{p}% paid</span></div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-track" role="progressbar" aria-label={`${l.name} paid`} aria-valuenow={p} aria-valuemin={0} aria-valuemax={100}>
