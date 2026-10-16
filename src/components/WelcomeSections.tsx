@@ -12,10 +12,15 @@ const steps = [
   { icon: Rocket, title: "Pay it off faster", text: "Little changes. A closer free day.", accent: "bg-chip-yellow text-chip-yellow-text", preview: "bg-chip-yellow" },
 ];
 const facts = [
-  { value: 32, suffix: "%", text: "Kenyan adults who borrowed through mobile money", source: "World Bank Global Findex 2025", href: "https://www.citizen.digital/business/bank-borrowing-in-kenya-shrinks-as-many-opt-for-mobile-money-loans-world-bank-n366707", note: "2024 borrowing data" },
-  { value: 8, suffix: "M+", text: "Digital borrowers every month in Kenya", source: "Digital Financial Services Association of Kenya", href: "https://www.citizen.digital/business/kenyans-borrowing-ksh-500m-daily-from-digital-lenders-report-n359881", note: "2025 industry estimate" },
-  { value: 65, suffix: "%", text: "US millennials with debt who don't know when they'll pay it off or think they never will", source: "CreditCards.com survey, 2017", href: "https://www.nasdaq.com/articles/poll-2-3-us-adults-debt-doubt-theyll-ever-live-debt-free-2018-01-10", note: "Survey fielded December 2017" },
+  { value: 32, suffix: "%", tone: "green", text: "Kenyan adults who borrowed through mobile money", source: "World Bank Global Findex 2025", href: "https://www.citizen.digital/business/bank-borrowing-in-kenya-shrinks-as-many-opt-for-mobile-money-loans-world-bank-n366707", note: "2024 borrowing data" },
+  { value: 8, suffix: "M+", tone: "purple", text: "Digital borrowers every month in Kenya", source: "Digital Financial Services Association of Kenya", href: "https://www.citizen.digital/business/kenyans-borrowing-ksh-500m-daily-from-digital-lenders-report-n359881", note: "2025 industry estimate" },
+  { value: 65, suffix: "%", tone: "gold", text: "US millennials with debt who don't know when they'll pay it off or think they never will", source: "CreditCards.com survey, 2017", href: "https://www.nasdaq.com/articles/poll-2-3-us-adults-debt-doubt-theyll-ever-live-debt-free-2018-01-10", note: "Survey fielded December 2017" },
 ];
+const factTone: Record<string, { number: string; bar: string }> = {
+  green: { number: "text-stat-green", bar: "bg-stat-bar-green" },
+  purple: { number: "text-stat-purple", bar: "bg-stat-bar-purple" },
+  gold: { number: "text-stat-gold", bar: "bg-stat-bar-gold" },
+};
 
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -164,7 +169,8 @@ export function WelcomeSections() {
           {facts.map((fact, index) => (
             <Reveal key={fact.suffix + fact.value} delay={index * 120}>
               <article className="leaf-lg flex h-full flex-col border bg-card p-6">
-                <p className="font-heading text-5xl font-bold"><CountUp value={fact.value} suffix={fact.suffix} /></p>
+                <p className={`font-heading text-5xl font-bold ${factTone[fact.tone].number}`}><CountUp value={fact.value} suffix={fact.suffix} /></p>
+                <span aria-hidden="true" className={`mt-3 h-2 w-12 rounded-full ${factTone[fact.tone].bar}`} />
                 <p className="mb-6 mt-4 text-sm leading-relaxed">{fact.text}</p>
                 <a className="mt-auto flex items-start gap-2 text-xs leading-relaxed text-muted-foreground underline-offset-4 hover:underline" href={fact.href} target="_blank" rel="noreferrer">{fact.source}<ArrowUpRight className="mt-0.5 size-3 shrink-0" /></a>
                 <p className="mt-1 text-[11px] text-muted-foreground">{fact.note}</p>
