@@ -1,11 +1,13 @@
 import { money, type Currency } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Check, Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Check, Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { simulate, formatMonth, daysOfWork, type Loan } from "@/lib/debt";
 import { loadProfile, saveProfile, useProfile } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { emptyLoan, loanErrors, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -26,8 +28,6 @@ const field = "leaf w-full border bg-background px-4 py-3 outline-none focus:rin
 const label = "mb-1.5 block text-sm font-semibold";
 const mainBtn = "btn-main";
 
-const emptyLoan = { name: "", balance: "", rate: "", payment: "" };
-
 function Setup() {
   const navigate = useNavigate();
   const profile = useProfile();
@@ -39,6 +39,8 @@ function Setup() {
   const [job, setJob] = useState("");
   const [loans, setLoans] = useState<Loan[]>([]);
   const [draft, setDraft] = useState(emptyLoan);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Partial<Record<keyof LoanDraft, boolean>>>({});
   const [revealed, setRevealed] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -50,22 +52,42 @@ function Setup() {
     }
   }, [profile]);
 
-  const draftValid = draft.name.trim() && +draft.balance > 0 && draft.rate !== "" && +draft.rate >= 0 && +draft.payment > 0;
-  const addLoan = () => {
-    if (!draftValid) return;
-    const b = +draft.balance;
-    setLoans([...loans, { id: crypto.randomUUID(), name: draft.name.trim(), balance: b, startBalance: b, rate: +draft.rate, payment: +draft.payment }]);
-    setDraft(emptyLoan);
+  const errors = loanErrors(draft);
+  const markAll = () => setTouched({name: true, balance: true, rate: true, payment: true});
+  const nextLoans = () => {
+    if (draftIsEmpty(draft) && !editingId) return loans;
+    markAll();
+    const next = commitLoan(draft, loans, editingId ?? crypto.randomUUID());
+    if (!next) {
+      const first = Object.keys(errors)[0] as keyof LoanDraft | undefined;
+      if (first) document.getElementById({name: "ln", balance: "lb", rate: "lr", payment: "lp"}[first])?.focus();
+    }
+    return next;
+  };
+  const persistLoans = async (next: Loan[]) => {
+    setSaving(true); setError("");
+    try { await saveProfile({...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans: next}); setLoans(next); return true; }
+    catch { setError("Your details couldn't save. Please try again."); return false; }
+    finally { setSaving(false); }
+  };
+  const resetDraft = () => {setDraft(emptyLoan); setEditingId(null); setTouched({});};
+  const addLoan = async () => {
+    if (draftIsEmpty(draft)) {markAll(); document.getElementById("ln")?.focus(); return;}
+    const next = nextLoans();
+    if (next && await persistLoans(next)) {resetDraft(); document.getElementById("ln")?.focus();}
+  };
+  const editLoan = (loan: Loan) => {
+    setEditingId(loan.id); setDraft({name: loan.name, balance: String(loan.balance), rate: String(loan.rate), payment: String(loan.payment)}); setTouched({});
+    document.getElementById("ln")?.focus();
   };
 
   const plan = useMemo(() => simulate(loans), [loans]);
 
   const goTo = async (s: number) => {
     if (s === 2) {
-      setSaving(true); setError("");
-      try { await saveProfile({ ...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans }); }
-      catch { setError("Your details couldn't save. Please try again."); setSaving(false); return; }
-      setSaving(false);
+      const next = nextLoans();
+      if (!next?.length || !await persistLoans(next)) return;
+      resetDraft();
       setRevealed(false);
       setTimeout(() => setRevealed(true), 1200);
     }
@@ -121,53 +143,17 @@ function Setup() {
 
         {step === 1 && (
           <section className="grid gap-5">
+            {loans.length > 0 && <ul className="grid gap-3" aria-label="Saved loans">{loans.map(loan => <li key={loan.id} className={`leaf grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border bg-card p-4 ${editingId === loan.id ? "border-foreground" : ""}`}><div className="min-w-0"><p className="break-words font-semibold">{loan.name}</p><p className="mt-1 text-sm text-muted-foreground">{usd(loan.balance)} left{editingId === loan.id ? " · Editing" : ""}</p></div><div className="flex shrink-0"><Button variant="ghost" size="icon" disabled={saving} aria-label={`Edit ${loan.name}`} title={`Edit ${loan.name}`} onClick={() => editLoan(loan)}><Pencil /></Button><Button variant="ghost" size="icon" disabled={saving} aria-label={`Remove ${loan.name}`} title={`Remove ${loan.name}`} onClick={async () => {if (await persistLoans(loans.filter(l => l.id !== loan.id)) && editingId === loan.id) resetDraft();}}><Trash2 /></Button></div></li>)}</ul>}
             <div className="leaf-lg border bg-card p-6 md:p-8">
               <h1 className="text-2xl font-semibold">Your loans</h1>
               <p className="text-muted-foreground">Add each one. Rough numbers are totally fine.</p>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2"><label className={label} htmlFor="ln">Loan name</label>
-                  <input id="ln" className={field} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Phone loan" /></div>
-                <div><label className={label} htmlFor="lb">Amount left to pay ({currency})</label>
-                  <input id="lb" type="number" min="0" className={field} value={draft.balance} onChange={(e) => setDraft({ ...draft, balance: e.target.value })} placeholder="1200" /></div>
-                <div><label className={label} htmlFor="lr">Interest rate per year (%)</label>
-                  <input id="lr" type="number" min="0" step="0.1" className={field} value={draft.rate} onChange={(e) => setDraft({ ...draft, rate: e.target.value })} placeholder="12" /></div>
-                <div className="sm:col-span-2"><label className={label} htmlFor="lp">Monthly payment ({currency})</label>
-                  <input id="lp" type="number" min="0" className={field} value={draft.payment} onChange={(e) => setDraft({ ...draft, payment: e.target.value })} placeholder="80" /></div>
-              </div>
-              <button onClick={addLoan} disabled={!draftValid} className="btn-secondary mt-5 flex items-center gap-2">
-                <Plus className="h-4 w-4" /> {loans.length ? "Add another loan" : "Add this loan"}
-              </button>
+              <form id="loan-form" noValidate onSubmit={e => {e.preventDefault(); void goTo(2);}} className="mt-6 grid gap-4 sm:grid-cols-2">
+                {([{key: "name", id: "ln", title: "Loan name", example: "Phone loan"}, {key: "balance", id: "lb", title: `Amount left to pay (${currency})`, example: "1,200"}, {key: "rate", id: "lr", title: "Interest rate per year (%)", example: "12"}, {key: "payment", id: "lp", title: `Monthly payment (${currency})`, example: "100"}] as const).map(f => <div key={f.key} className={f.key === "name" || f.key === "payment" ? "sm:col-span-2" : ""}><label className={label} htmlFor={f.id}>{f.title}</label><input id={f.id} className={field} type="text" inputMode={f.key === "name" ? "text" : "decimal"} placeholder={f.example} value={draft[f.key]} aria-invalid={!!(touched[f.key] && errors[f.key])} aria-describedby={touched[f.key] && errors[f.key] ? `${f.id}-error` : undefined} onChange={e => setDraft({...draft, [f.key]: e.target.value})} onBlur={() => setTouched(t => ({...t, [f.key]: true}))} />{touched[f.key] && errors[f.key] && <p id={`${f.id}-error`} className="mt-1.5 text-xs text-tip">{errors[f.key]}</p>}</div>)}
+                <Button type="button" variant="link" disabled={saving} onClick={() => {void addLoan();}} className="h-auto w-fit justify-start p-0 text-sm text-green-text sm:col-span-2"><Plus className="size-4" />{editingId ? "Save changes & add another loan" : "Add another loan"}</Button>
+              </form>
+              {editingId && <Button variant="ghost" className="mt-3" onClick={resetDraft}>Cancel edit</Button>}
             </div>
-
-            {loans.length > 0 && (
-              <div className="leaf-lg border bg-card p-6">
-                <h2 className="text-lg font-semibold">Added so far 🌱</h2>
-                <ul className="mt-3 grid gap-2">
-                  {loans.map((l) => {
-                    const uw = plan.underwater.find((u) => u.id === l.id);
-                    return (
-                      <li key={l.id} className="leaf bg-secondary p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="break-words font-semibold">{l.name}</p>
-                            <p className="text-sm text-muted-foreground">{usd(l.balance)} left · {l.rate}% a year · {usd(l.payment)}/month</p>
-                          </div>
-                          <button aria-label={`Remove ${l.name}`} onClick={() => setLoans(loans.filter((x) => x.id !== l.id))} className="leaf shrink-0 p-2 text-muted-foreground hover:bg-card">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                        {uw && <UnderwaterNote min={uw.minPayment} currency={currency} />}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-
-            <div className="flex justify-between">
-              <button onClick={() => setStep(0)} className="leaf flex items-center gap-2 px-5 py-3 font-semibold text-muted-foreground hover:bg-secondary"><ArrowLeft className="h-4 w-4" /> Back</button>
-              <button className={mainBtn} disabled={!loans.length || saving} onClick={() => goTo(2)}>{saving ? "Saving…" : "See my date"}</button>
-            </div>
+            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3"><Button variant="ghost" onClick={() => setStep(0)} className="mt-2"><ArrowLeft />Back</Button><div className="min-w-0 justify-self-end"><Button type="submit" form="loan-form" className={mainBtn} disabled={!canContinueLoans(draft, loans) || saving}>{saving ? "Saving…" : "See my date"}</Button>{!canContinueLoans(draft, loans) && <p className="mt-2 max-w-48 text-right text-xs text-muted-foreground">Add at least one loan to continue.</p>}</div></div>
           </section>
         )}
 
