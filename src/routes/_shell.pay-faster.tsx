@@ -3,9 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { Slider } from "@/components/ui/slider";
 import { simulate, formatMonth, usd, type PlanResult, type Strategy } from "@/lib/debt";
-import { saveProfile, useProfile } from "@/lib/store";
+import { saveProfile, useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
+  validateSearch: (search: Record<string, unknown>): { extra?: number } => {
+    const extra = Number(search.extra);
+    return Number.isFinite(extra) && extra >= 0 && extra <= 1000000 ? { extra } : {};
+  },
   head: () => ({
     meta: [
       { title: "Pay faster · Clearday" },
@@ -28,22 +32,23 @@ const options: { key: Strategy; title: string; text: string }[] = [
 
 function PayFaster() {
   const profile = useProfile();
+  const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
   const [extra, setExtra] = useState(0);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (profile?.plan) {
-      setExtra(profile.plan.extra ?? 0);
-      setStrategy(profile.plan.strategy ?? "avalanche");
+    if (profile) {
+      setExtra(suggested ?? profile.plan?.extra ?? 0);
+      setStrategy(profile.plan?.strategy ?? "avalanche");
     }
-  }, [profile]);
+  }, [profile, suggested]);
 
   const loans = profile?.loans ?? [];
   const now = useMemo(() => new Date(), []);
   const base = useMemo(() => simulate(loans, now), [loans, now]);
-  const next = useMemo(() => simulate(loans, now, { extra, strategy }), [loans, now, extra, strategy]);
+  const next = useMemo(() => simulate(loans, now, { ...(profile ? planOptions(profile, now) : {}), extra, strategy }), [profile, loans, now, extra, strategy]);
   const byStrategy = useMemo(
     () => Object.fromEntries(options.map((o) => [o.key, simulate(loans, now, { extra, strategy: o.key })])) as Record<Strategy, PlanResult>,
     [loans, now, extra],
@@ -95,8 +100,8 @@ function PayFaster() {
             <p className="font-semibold text-muted-foreground">Extra each month</p>
             <p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p>
           </div>
-          <Slider className="mt-6" min={0} max={300} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
-          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>$0</span><span>$300</span></div>
+          <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
+          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>$0</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
 
           <div className="leaf mt-6 bg-background p-6">
             <p className="text-sm font-semibold text-muted-foreground">New debt free date</p>

@@ -11,6 +11,9 @@
 
 ## Architecture
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.
-- User data is stored in localStorage via `src/lib/store.ts` until Lovable Cloud is added — single place to swap storage later.
+- Existing user profiles remain browser-local via `src/lib/store.ts`; Cloud currently powers AI only — avoids changing account and storage flows during the My plan addition.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
+- My plan timeline and suggestion impact calculations live in pure `src/lib/plan.ts` with tests; AI supplies ideas, never payoff calculations — keeps estimates consistent with the debt engine.
+- AI runs in a streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — keeps prompts/keys private and prevents replaying access denials.
+- Suggested extras travel through validated Pay faster search state and are saved only with the existing plan confirmation — lets users review ideas before committing.
