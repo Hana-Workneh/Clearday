@@ -41,4 +41,15 @@ describe("debt engine", () => {
     expect(daysOfWork(1000, 2200)).toBe(10);
     expect(daysOfWork(1050, 2200)).toBe(11);
   });
+
+  it("extra money each month shortens the plan", () => {
+    const r = simulate([L("a", 1000, 0, 100)], start, { extra: 100 });
+    expect(r.monthsLeft).toBe(5);
+  });
+
+  it("snowball puts extra on the smallest loan first", () => {
+    const loans = [L("big", 5000, 20, 50), L("small", 500, 5, 50)];
+    const r = simulate(loans, start, { extra: 100, strategy: "snowball" });
+    expect(r.schedule[0]!.balances["small"]!).toBeCloseTo(500 + 500 * 0.05 / 12 - 150, 2);
+  });
 });

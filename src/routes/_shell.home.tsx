@@ -21,7 +21,7 @@ const card = "leaf border bg-card p-6";
 
 function Home() {
   const profile = useProfile();
-  const plan = useMemo(() => (profile ? simulate(profile.loans) : null), [profile]);
+  const plan = useMemo(() => (profile ? simulate(profile.loans, new Date(), profile.plan) : null), [profile]);
 
   if (profile === undefined) return null;
   if (!profile || !plan) {
