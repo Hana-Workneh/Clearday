@@ -188,7 +188,7 @@ export function WelcomeSections() {
 
       <section className="band-green" aria-labelledby="end-title">
         <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center md:py-20">
-          <Sprout mood="cheering" size={96} />
+          <span className="grid size-28 place-items-center rounded-full bg-white/85"><Sprout mood="cheering" size={96} /></span>
           <h2 id="end-title" className="mt-5 font-heading text-3xl font-bold leading-tight md:text-4xl">Your debt free day is waiting.</h2>
           <p className="mt-3 max-w-md text-base font-medium opacity-80">Add your loans, see your date, and start moving it closer. It takes two minutes.</p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
