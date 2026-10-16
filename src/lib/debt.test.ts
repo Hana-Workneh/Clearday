@@ -58,11 +58,11 @@ import { daysCloser, quietLoans, skippedMonth, catchUpAmount } from "./debt";
 describe("payments and quiet months", () => {
   const ls = [
     { id: "a", name: "A", balance: 1000, startBalance: 1000, rate: 12, payment: 100 },
-    { id: "b", name: "B", balance: 2000, startBalance: 2000, rate: 6, payment: 100 },
+    { id: "b", name: "B", balance: 2000, startBalance: 2000, rate: 6, payment: 400 },
   ];
   const now = new Date(2026, 5, 15);
   it("days closer scales with share of monthly payments", () => {
-    expect(daysCloser(200, ls)).toBe(30);
+    expect(daysCloser(500, ls)).toBe(30);
     expect(daysCloser(0, ls)).toBe(0);
   });
   it("flags a loan with no payment for over a month", () => {
