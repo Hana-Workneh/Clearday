@@ -18,6 +18,7 @@
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
 - Header branding uses the shared `CleardayLogo` with light/dark assets derived from the same logo; Home estimates reuse the existing debt engine — keeps branding consistent without changing financial rules.
+- The welcome dashboard preview is an isolated presentational component with sample values, shared Sprout and theme tokens — shows the product without reading or changing user finances.
 - My plan timeline and suggestion impact calculations live in pure `src/lib/plan.ts` with tests; AI supplies ideas, never payoff calculations — keeps estimates consistent with the debt engine.
 - AI runs in a bearer-verified streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — prevents anonymous paid requests and keeps prompts/keys private.
 - Suggested extras travel through validated Pay faster search state and are saved only with the existing plan confirmation — lets users review ideas before committing.
