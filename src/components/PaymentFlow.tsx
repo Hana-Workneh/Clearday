@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Sprout } from "@/components/Sprout";
 import { daysCloser } from "@/lib/debt";
 import { loadProfile, saveProfile, percentPaid, planOptions, today } from "@/lib/store";
+import { Button } from "@/components/ui/button";
 
 const OPEN = "clearday-open-payment";
 /** Open the payment window from anywhere, optionally with a loan picked. */
@@ -59,6 +60,7 @@ export function PaymentFlow() {
     }); } catch { setError("Your payment couldn't save. Please try again."); setSaving(false); return; }
     setSaving(false);
     setOpen(false);
+    if (nextLoans.length > 0 && nextLoans.every(l => l.balance <= 0)) { navigate({to: "/debt-free", search: {preview: false}}); return; }
     setParty({ days, pct: percentPaid(nextLoans) });
     setTimeout(() => {
       setParty(null);
@@ -90,7 +92,7 @@ export function PaymentFlow() {
               <input className={field} type="date" required max={today()} value={date} onChange={(e) => setDate(e.target.value)} />
             </label>
             {error && <p role="alert" className="text-sm text-tip">{error}</p>}
-            <button disabled={saving} className="btn-main mt-2">{saving ? "Saving…" : "Save payment"}</button>
+            <Button disabled={saving} className="btn-main mt-2">{saving ? "Saving…" : "Save payment"}</Button>
           </form>
         </DialogContent>
       </Dialog>

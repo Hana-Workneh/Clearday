@@ -148,11 +148,11 @@ function Setup() {
                     return (
                       <li key={l.id} className="leaf bg-secondary p-4">
                         <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <p className="font-semibold">{l.name}</p>
+                          <div className="min-w-0">
+                            <p className="break-words font-semibold">{l.name}</p>
                             <p className="text-sm text-muted-foreground">{usd(l.balance)} left · {l.rate}% a year · {usd(l.payment)}/month</p>
                           </div>
-                          <button aria-label={`Remove ${l.name}`} onClick={() => setLoans(loans.filter((x) => x.id !== l.id))} className="leaf p-2 text-muted-foreground hover:bg-card">
+                          <button aria-label={`Remove ${l.name}`} onClick={() => setLoans(loans.filter((x) => x.id !== l.id))} className="leaf shrink-0 p-2 text-muted-foreground hover:bg-card">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
