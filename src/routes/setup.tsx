@@ -1,14 +1,14 @@
 import { money, type Currency } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Check, Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
-import { Sprout } from "@/components/Sprout";
+import { Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
+import { SetupCompanion } from "@/components/SetupCompanion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CleardayLogo } from "@/components/CleardayLogo";
 import { simulate, formatMonth, daysOfWork, type Loan } from "@/lib/debt";
 import { loadProfile, saveProfile, useProfile } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { emptyLoan, loanErrors, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
+import { emptyLoan, loanErrors, loanNumber, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/setup")({
 });
 
 const steps = ["Your income", "Your loans", "Your date"];
-const field = "leaf w-full border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-ring";
+const field = "leaf min-h-14 w-full border bg-card px-5 py-4 text-base outline-none focus:ring-2 focus:ring-ring";
 const label = "mb-1.5 block text-sm font-semibold";
 const mainBtn = "btn-main";
 
@@ -83,6 +83,10 @@ function Setup() {
   };
 
   const plan = useMemo(() => simulate(loans), [loans]);
+  const previewLoans = loans.filter(loan => loan.id !== editingId).map(loan => ({id: loan.id, name: loan.name, amount: usd(loan.balance)}));
+  if (!draftIsEmpty(draft)) previewLoans.push({id: editingId ?? "draft", name: draft.name, amount: Number.isFinite(loanNumber(draft.balance)) && draft.balance.trim() ? usd(loanNumber(draft.balance)) : "—"});
+  const companionProps = {step, name, income: +income > 0 ? `${usd(+income)} / month` : "", loans: previewLoans, date: plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : null, ready: revealed};
+  const incomeHint = !(+income > 0) ? "Fill in your pay to continue" : "Add your first name to continue";
 
   const goTo = async (s: number) => {
     if (s === 2) {
@@ -97,37 +101,39 @@ function Setup() {
 
   return (
     <div className="min-h-screen">
-      <header className="mx-auto flex max-w-2xl items-center justify-between px-5 py-5">
-        <Link to="/" className="flex items-center gap-2">
+      <header className="flex h-20 items-center justify-between gap-4 border-b bg-card px-5 sm:px-8 lg:px-10">
+        <Link to="/" aria-label="Clearday welcome page" className="flex items-center gap-2">
           <CleardayLogo />
         </Link>
-        <ThemeToggle />
+        <div className="flex items-center gap-4 sm:gap-6"><Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">Exit</Link><ThemeToggle /></div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-5 pb-16">
+      <main className="min-h-[calc(100svh-5rem)] lg:grid lg:grid-cols-[2fr_3fr]">
+        <div className="hidden bg-setup-panel lg:grid"><SetupCompanion {...companionProps} /></div>
+        <div className="px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12 xl:px-20">
+        <div className="mx-auto max-w-xl">
+        <div className="lg:hidden"><SetupCompanion {...companionProps} /></div>
         {error && <p role="alert" className="mb-4 text-sm text-tip">{error}</p>}
-        <ol className="mb-8 flex items-center gap-2">
+        <div className="mb-10">
+        <div role="progressbar" aria-label="Setup progress" aria-valuemin={0} aria-valuemax={3} aria-valuenow={step + 1} className="mb-3 grid h-1.5 grid-cols-3 gap-1 overflow-hidden rounded-full bg-track">{steps.map((s, i) => <span key={s} className={i <= step ? "bg-green" : "bg-track"} />)}</div>
+        <ol className="grid grid-cols-3 gap-2">
           {steps.map((s, i) => (
-            <li key={s} className="flex flex-1 items-center gap-2">
-              <span className={`leaf grid h-8 w-8 shrink-0 place-items-center text-sm font-bold ${i < step ? "bg-green text-ink" : i === step ? "bg-primary text-primary-foreground" : "border bg-card text-muted-foreground"}`}>
-                {i < step ? <Check className="h-4 w-4" /> : i + 1}
-              </span>
-              <span className={`hidden text-sm font-semibold sm:block ${i === step ? "" : "text-muted-foreground"}`}>{s}</span>
-              {i < steps.length - 1 && <span className={`h-1 flex-1 rounded-full ${i < step ? "bg-green" : "bg-secondary"}`} />}
+            <li key={s} aria-current={i === step ? "step" : undefined} className={`text-xs font-semibold sm:text-sm ${i === 1 ? "text-center" : i === 2 ? "text-right" : ""} ${i <= step ? "text-foreground" : "text-muted-foreground"}`}>
+              {s}
             </li>
           ))}
         </ol>
+        </div>
 
         {step === 0 && (
-          <section className="leaf-lg border bg-card p-6 md:p-8">
-            <div className="flex items-center gap-4">
-              <Sprout mood="waving" size={70} />
+          <section>
+            <div>
               <div>
-                <h1 className="text-2xl font-semibold">Let's start with you</h1>
-                <p className="text-muted-foreground">This helps us show how your money and time add up.</p>
+                <h1 className="text-3xl font-semibold">Let's start with you</h1>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">This helps us show how your money and time add up.</p>
               </div>
             </div>
-            <div className="mt-6 grid gap-4">
+            <div className="mt-8 grid gap-6">
               <div><label className={label} htmlFor="name">Your first name</label>
                 <input id="name" className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex" /></div>
               <div><label className={label} htmlFor="income">Monthly take-home pay ({currency})</label>
@@ -135,8 +141,9 @@ function Setup() {
               <div><label className={label} htmlFor="job">Job title</label>
                 <input id="job" className={field} value={job} onChange={(e) => setJob(e.target.value)} placeholder="Barista" /></div>
             </div>
-            <div className="mt-6 flex justify-end">
-              <button className={mainBtn} disabled={!name.trim() || !(+income > 0)} onClick={() => goTo(1)}>Next</button>
+            <div className="mt-8 flex flex-col items-end gap-2">
+              <Button className={`${mainBtn} w-full sm:w-auto sm:min-w-40`} disabled={!name.trim() || !(+income > 0)} aria-describedby={!name.trim() || !(+income > 0) ? "income-hint" : undefined} onClick={() => goTo(1)}>Next</Button>
+              {(!name.trim() || !(+income > 0)) && <p id="income-hint" className="text-xs text-muted-foreground">{incomeHint}</p>}
             </div>
           </section>
         )}
@@ -144,10 +151,10 @@ function Setup() {
         {step === 1 && (
           <section className="grid gap-5">
             {loans.length > 0 && <ul className="grid gap-3" aria-label="Saved loans">{loans.map(loan => <li key={loan.id} className={`leaf grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border bg-card p-4 ${editingId === loan.id ? "border-foreground" : ""}`}><div className="min-w-0"><p className="break-words font-semibold">{loan.name}</p><p className="mt-1 text-sm text-muted-foreground">{usd(loan.balance)} left{editingId === loan.id ? " · Editing" : ""}</p></div><div className="flex shrink-0"><Button variant="ghost" size="icon" disabled={saving} aria-label={`Edit ${loan.name}`} title={`Edit ${loan.name}`} onClick={() => editLoan(loan)}><Pencil /></Button><Button variant="ghost" size="icon" disabled={saving} aria-label={`Remove ${loan.name}`} title={`Remove ${loan.name}`} onClick={async () => {if (await persistLoans(loans.filter(l => l.id !== loan.id)) && editingId === loan.id) resetDraft();}}><Trash2 /></Button></div></li>)}</ul>}
-            <div className="leaf-lg border bg-card p-6 md:p-8">
-              <h1 className="text-2xl font-semibold">Your loans</h1>
-              <p className="text-muted-foreground">Add each one. Rough numbers are totally fine.</p>
-              <form id="loan-form" noValidate onSubmit={e => {e.preventDefault(); void goTo(2);}} className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <h1 className="text-3xl font-semibold">Your loans</h1>
+              <p className="mt-3 text-sm text-muted-foreground">Add each one. Rough numbers are totally fine.</p>
+              <form id="loan-form" noValidate onSubmit={e => {e.preventDefault(); void goTo(2);}} className="mt-8 grid gap-6 sm:grid-cols-2">
                 {([{key: "name", id: "ln", title: "Loan name", example: "Phone loan"}, {key: "balance", id: "lb", title: `Amount left to pay (${currency})`, example: "1,200"}, {key: "rate", id: "lr", title: "Interest rate per year (%)", example: "12"}, {key: "payment", id: "lp", title: `Monthly payment (${currency})`, example: "100"}] as const).map(f => <div key={f.key} className={f.key === "name" || f.key === "payment" ? "sm:col-span-2" : ""}><label className={label} htmlFor={f.id}>{f.title}</label><input id={f.id} className={field} type="text" inputMode={f.key === "name" ? "text" : "decimal"} placeholder={f.example} value={draft[f.key]} aria-invalid={!!(touched[f.key] && errors[f.key])} aria-describedby={touched[f.key] && errors[f.key] ? `${f.id}-error` : undefined} onChange={e => setDraft({...draft, [f.key]: e.target.value})} onBlur={() => setTouched(t => ({...t, [f.key]: true}))} />{touched[f.key] && errors[f.key] && <p id={`${f.id}-error`} className="mt-1.5 text-xs text-tip">{errors[f.key]}</p>}</div>)}
                 <Button type="button" variant="link" disabled={saving} onClick={() => {void addLoan();}} className="h-auto w-fit justify-start p-0 text-sm text-green-text sm:col-span-2"><Plus className="size-4" />{editingId ? "Save changes & add another loan" : "Add another loan"}</Button>
               </form>
@@ -158,8 +165,7 @@ function Setup() {
         )}
 
         {step === 2 && (
-          <section className="leaf-lg border bg-card p-6 text-center md:p-10">
-            <div className="flex justify-center"><Sprout mood={revealed ? "cheering" : "thinking"} size={130} /></div>
+          <section className="py-8 text-center lg:py-12">
             {!revealed ? (
               <p className="mt-6 text-lg text-muted-foreground">Crunching your numbers…</p>
             ) : plan.debtFreeDate ? (
@@ -185,12 +191,14 @@ function Setup() {
             )}
             {revealed && (
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <button onClick={() => setStep(1)} className="btn-secondary">Edit loans</button>
-                <button className={mainBtn} onClick={() => navigate({ to: "/home" })}>Go to my home</button>
+                <Button variant="outline" onClick={() => setStep(1)} className="btn-secondary">Edit loans</Button>
+                <Button className={mainBtn} onClick={() => navigate({ to: "/home" })}>Go to my home</Button>
               </div>
             )}
           </section>
         )}
+        </div>
+        </div>
       </main>
     </div>
   );
