@@ -138,7 +138,6 @@ function Progress() {
               <span className="min-w-0">{next && <span className="block text-xs font-bold uppercase tracking-wide text-muted-foreground">Next up</span>}<span className={`font-semibold ${b.got || next ? "" : "text-muted-foreground"}`}>{b.name}</span></span>
             </div>
           ); })}
-          ))}
         </div>
       </div>
 
