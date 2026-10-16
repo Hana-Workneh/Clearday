@@ -87,6 +87,10 @@
 @utility anim-jump { animation: jump 1s ease-in-out infinite; }
 @utility anim-sway { animation: sway 4s ease-in-out infinite; transform-origin: 50% 100%; }
 
+@keyframes confetti { 0% { transform: translateY(-10vh) rotate(0) } 100% { transform: translateY(110vh) rotate(720deg) } }
+@utility anim-confetti { animation: confetti 3s linear forwards; }
+
 @media (prefers-reduced-motion: reduce) {
+  .anim-confetti { display: none; }
   .anim-bob, .anim-wave, .anim-jump, .anim-sway { animation: none !important; }
 }
