@@ -27,6 +27,9 @@
   --color-ring: var(--green);
   --color-green: var(--green);
   --color-green-text: var(--green-text);
+  --color-leaf-dark: var(--leaf-dark);
+  --color-leaf-mint: var(--leaf-mint);
+  --color-shine: var(--shine);
   --color-tip: var(--tip);
   --color-sun: var(--sun);
   --color-cheek: var(--cheek);
@@ -42,8 +45,11 @@
   --muted-foreground: oklch(0.46 0.02 165);
   --primary: oklch(0.17 0.015 165);
   --primary-foreground: oklch(0.97 0.004 165);
-  --green: oklch(0.74 0.18 155);
+  --green: #00C875;
   --green-text: oklch(0.5 0.12 155);
+  --leaf-dark: #087A4A;
+  --leaf-mint: #4EE0A0;
+  --shine: #ffffff;
   --tip: oklch(0.55 0.23 285);
   --sun: oklch(0.86 0.16 85);
   --cheek: oklch(0.8 0.1 10);
@@ -59,7 +65,7 @@
   --muted-foreground: oklch(0.7 0.017 165);
   --primary: oklch(0.965 0.005 165);
   --primary-foreground: oklch(0.17 0.015 165);
-  --green: oklch(0.8 0.19 158);
+  --green: #00DF81;
   --green-text: oklch(0.8 0.19 158);
   --tip: oklch(0.64 0.19 285);
 }
