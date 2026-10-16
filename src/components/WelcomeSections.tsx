@@ -140,7 +140,7 @@ export function WelcomeSections() {
             <article className="leaf-lg flex h-full flex-col border bg-card p-6 md:p-7">
               <span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground"><CloudRain className="size-5" /></span>
               <h3 className="mt-4 font-heading text-xl font-semibold">Without a plan</h3>
-              <p className="mt-2 text-2xl font-heading font-semibold text-muted-foreground">“I owe $4,000… someday it’ll be gone.”</p>
+              <p className="mt-2 text-balance text-2xl font-heading font-semibold text-muted-foreground">“I owe $4,000… someday it’ll be gone.”</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">A heavy number with no end. It sits in the back of your mind, and it's easier not to look at it.</p>
             </article>
           </Reveal>
@@ -148,7 +148,7 @@ export function WelcomeSections() {
             <article className="leaf-lg flex h-full flex-col border-2 border-green bg-card p-6 md:p-7">
               <span className="grid size-11 place-items-center rounded-full bg-chip-green text-chip-green-text"><Sunrise className="size-5" /></span>
               <h3 className="mt-4 font-heading text-xl font-semibold">With Clearday</h3>
-              <p className="mt-2 text-2xl font-heading font-semibold">“I’ll be debt free in June 2029.”</p>
+              <p className="mt-2 text-balance text-2xl font-heading font-semibold">“I’ll be debt free in June 2029.”</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">A day to look forward to. Every payment moves it closer, and you can see it happen.</p>
             </article>
           </Reveal>
