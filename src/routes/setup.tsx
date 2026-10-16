@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Check, Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CleardayLogo } from "@/components/CleardayLogo";
 import { simulate, formatMonth, daysOfWork, type Loan } from "@/lib/debt";
 import { loadProfile, saveProfile, useProfile } from "@/lib/store";
 import { Button } from "@/components/ui/button";
@@ -98,8 +99,7 @@ function Setup() {
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-2xl items-center justify-between px-5 py-5">
         <Link to="/" className="flex items-center gap-2">
-          <Sprout size={32} />
-          <span className="font-heading text-xl font-semibold">Clearday</span>
+          <CleardayLogo />
         </Link>
         <ThemeToggle />
       </header>
