@@ -61,7 +61,11 @@ export function Sprout({ mood = "happy", size = 120, className = "" }: { mood?: 
           <path d="M20 88 q12 8 24 -4" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
         )}
         {mood === "calm" && (
-          <path d="M60 112 c-10 -6 -14 -12 -10 -16 c3 -3 7 -1 10 3 c3 -4 7 -6 10 -3 c4 4 0 10 -10 16Z" className="fill-sun" />
+          <>
+            <path d="M20 84 q14 14 30 18" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M100 84 q-14 14 -30 18" className="stroke-green" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M60 112 c-10 -6 -14 -12 -10 -16 c3 -3 7 -1 10 3 c3 -4 7 -6 10 -3 c4 4 0 10 -10 16Z" className="fill-cheek" />
+          </>
         )}
       </g>
     </svg>
