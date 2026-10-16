@@ -30,6 +30,7 @@ export const Route = createFileRoute("/_shell/home")({
 const card = "leaf-lg border bg-card p-6";
 
 function Home() {
+  const navigate = useNavigate();
   const profile = useProfile();
   const usd = (n: number) => money(n, profile?.currency);
   const plan = useMemo(() => (profile ? simulate(profile.loans, new Date(), planOptions(profile)) : null), [profile]);
