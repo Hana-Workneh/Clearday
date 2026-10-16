@@ -37,7 +37,7 @@ function PayFaster() {
   const [extra, setExtra] = useState(0);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [isSaving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -160,7 +160,7 @@ function PayFaster() {
           </div>
 
           {error && <p role="alert" className="text-sm text-tip">{error}</p>}
-          <button onClick={use} disabled={saved || saving} className="btn-main w-full">{saving ? "Saving…" : "Make this my plan"}</button>
+          <button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Make this my plan"}</button>
         </section>
       </div>
     </div>

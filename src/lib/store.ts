@@ -11,16 +11,16 @@ export type Profile = {
   name: string;
   income: number;
   job: string;
-  currency?: Currency;
-  theme?: "light" | "dark";
+  currency?: Currency | undefined;
+  theme?: "light" | "dark" | undefined;
   demo?: boolean;
   loans: Loan[];
-  plan?: PlanOptions;
-  payments?: Payment[];
-  startedAt?: string; // ISO date the user started
-  startDebtFree?: string | null; // debt free date when they started
-  catchUp?: CatchUp;
-  quietSeen?: Record<string, string>; // loanId -> date handled up to
+  plan?: PlanOptions | undefined;
+  payments?: Payment[] | undefined;
+  startedAt?: string | undefined; // ISO date the user started
+  startDebtFree?: string | null | undefined; // debt free date when they started
+  catchUp?: CatchUp | undefined;
+  quietSeen?: Record<string, string> | undefined; // loanId -> date handled up to
 };
 const KEY = "clearday-profile";
 const EVENT = "clearday-profile-change";
