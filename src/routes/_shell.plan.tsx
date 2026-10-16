@@ -23,7 +23,7 @@ function MyPlan() {
   const profile = useProfile();
   const navigate = useNavigate();
   const now = useMemo(() => new Date(), []);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
