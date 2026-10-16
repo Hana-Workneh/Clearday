@@ -140,6 +140,8 @@
 }
 
 .welcome-step { transition: transform 220ms ease, box-shadow 220ms ease; }
+.btn-main { height: 54px; border-radius: 9999px; padding-inline: 1.75rem; }
+.btn-secondary { height: 54px; border-radius: 9999px; padding-inline: 1.75rem; border: 1.5px solid var(--line-strong); background: var(--card); }
 @media (hover: hover) { .welcome-step:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); } }
 .share-leaf { border-radius: 48px 48px 48px 12px; }
 .share-sprout * { animation: none !important; }
