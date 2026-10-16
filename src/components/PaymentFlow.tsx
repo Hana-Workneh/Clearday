@@ -103,7 +103,7 @@ export function PaymentFlow() {
   );
 }
 
-const colors = ["bg-green", "bg-tip", "bg-sun"];
+const colors = ["bg-sun", "bg-green", "bg-sun", "bg-tip", "bg-sun"];
 
 function Celebration({ days, pct }: { days: number; pct: number }) {
   const bits = useMemo(
@@ -111,7 +111,7 @@ function Celebration({ days, pct }: { days: number; pct: number }) {
       left: Math.random() * 100,
       delay: Math.random() * 1.2,
       size: 6 + Math.random() * 8,
-      color: colors[i % 3],
+      color: colors[i % colors.length],
       round: i % 2 === 0,
     })),
     [],
@@ -123,7 +123,7 @@ function Celebration({ days, pct }: { days: number; pct: number }) {
           style={{ left: `${b.left}%`, width: b.size, height: b.size * (b.round ? 1 : 1.6), animationDelay: `${b.delay}s`, transform: "translateY(-10vh)" }} />
       ))}
       <Sprout mood="cheering" size={150} />
-      <h2 className="mt-6 text-3xl font-bold md:text-4xl">Nice! You're {days} {days === 1 ? "day" : "days"} closer to debt free.</h2>
+      <h2 className="mt-6 max-w-2xl rounded-full bg-chip-yellow px-6 py-4 font-heading text-xl font-bold text-chip-yellow-text md:text-3xl">Nice! You're {days} {days === 1 ? "day" : "days"} closer to debt free.</h2>
       <p className="mt-4 font-heading text-6xl font-bold tracking-tight animate-in zoom-in-50 duration-700">{pct}%</p>
       <p className="mt-1 font-semibold text-muted-foreground">of your debt paid</p>
     </div>

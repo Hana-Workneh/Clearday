@@ -77,7 +77,8 @@
   --track: #EEF1EF;
   --line-strong: #D5DAD7;
   --chip-yellow: #FFF4D6;
-  --chip-yellow-text: #786018;
+  --chip-yellow-text: #3D2E00;
+  --shadow-win: 0 0 14px color-mix(in srgb, var(--sun) 24%, transparent);
   --shadow-lift: 0 12px 28px -12px color-mix(in srgb, var(--ink) 18%, transparent);
   --shadow-product: 0 20px 48px -18px color-mix(in srgb, var(--ink) 22%, transparent);
 }
@@ -102,7 +103,7 @@
   --bar: #3A4440;
   --track: #232A27;
   --line-strong: #2E3733;
-  --chip-yellow: #302A18;
+  --chip-yellow: #2A2410;
   --chip-yellow-text: #F7D778;
   --shadow-lift: 0 12px 28px -12px color-mix(in srgb, var(--ink) 70%, transparent);
   --shadow-product: 0 20px 48px -12px color-mix(in srgb, var(--ink) 85%, transparent);
@@ -121,6 +122,8 @@
 @utility btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 54px; padding: 0 1.75rem; border-radius: 9999px; border: 1.5px solid var(--line-strong); background: var(--card); color: var(--foreground); font-family: var(--font-heading); font-weight: 600; transition: background .15s; &:hover { background: var(--secondary) } &:disabled { opacity: .45 } }
 @utility chip-green { display: inline-flex; align-items: center; border-radius: 9999px; padding: .3rem .8rem; font-size: 13px; font-weight: 700; background: var(--chip-green); color: var(--chip-green-text); }
 @utility chip-purple { display: inline-flex; align-items: center; border-radius: 9999px; padding: .3rem .8rem; font-size: 13px; font-weight: 700; background: var(--chip-purple); color: var(--chip-purple-text); }
+@utility chip-yellow { display: inline-flex; align-items: center; gap: .5rem; border-radius: 9999px; padding: .5rem 1rem; font-size: 13px; font-weight: 700; background: var(--chip-yellow); color: var(--chip-yellow-text); }
+@utility badge-win { box-shadow: var(--shadow-win); }
 @utility page-title { font-family: var(--font-heading); font-size: 30px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.15; }
 @utility page-sub { font-size: 14px; color: var(--muted-foreground); }
 @utility big-date { font-family: var(--font-heading); font-size: 52px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; color: var(--foreground); @media (min-width: 768px) { font-size: 58px } }

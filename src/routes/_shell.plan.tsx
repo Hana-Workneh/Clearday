@@ -89,10 +89,10 @@ function MyPlan() {
         <div className="flex items-center justify-between gap-2"><h2 className="font-heading text-xl font-semibold">Your path to freedom</h2><span className="text-xs text-muted-foreground">{result.monthsLeft ?? "600+"} months to go</span></div>
         <ol className="mt-5">
           {visible.map(row => <li key={row.date.toISOString()} className="relative ml-3 border-l-2 border-border pb-6 pl-7 last:border-transparent">
-            <span className={`absolute -left-[9px] top-1 flex size-4 items-center justify-center rounded-full ${row.current ? "bg-green ring-4 ring-chip-green" : row.milestones.length ? "bg-chip-purple text-chip-purple-text" : "border-2 border-border bg-background"}`}>{row.milestones.length > 0 && <Check className="size-3" />}</span>
+            <span className={`absolute -left-[9px] top-1 flex size-4 items-center justify-center rounded-full ${row.milestones.length ? `bg-sun text-ink ${row.current ? "ring-4 ring-green" : "ring-4 ring-chip-yellow"}` : row.current ? "bg-green ring-4 ring-chip-green" : "border-2 border-border bg-background"}`}>{row.milestones.length > 0 && <Check className="size-3" />}</span>
             <div className="flex flex-wrap items-center gap-2"><h3 className="font-heading font-semibold">{formatMonth(row.date)}</h3>{row.current && <span className="chip-green">You are here</span>}</div>
             <p className="mt-1 text-sm text-muted-foreground">{row.past ? row.logged > 0 ? `${usd(row.logged)} logged` : "No payments logged" : row.current ? `${usd(row.totalLeft ?? 0)} left` : `${usd(row.plannedPayment ?? 0)} planned · ${usd(row.totalLeft ?? 0)} left`}</p>
-            <div className="mt-2 flex flex-wrap gap-2">{row.milestones.map(label => <span key={label} className="chip-purple max-w-full"><Flag className="mr-1.5 size-3 shrink-0" /><span className="min-w-0 break-words">{label}{row.current && label !== "Debt free" ? " reached" : ""}</span></span>)}</div>
+            <div className="mt-2 flex flex-wrap gap-2">{row.milestones.map(label => <span key={label} className="chip-yellow max-w-full"><Flag className="size-3 shrink-0 fill-sun text-sun" /><span className="min-w-0 break-words">{label}{row.current && label !== "Debt free" ? " reached" : ""}</span></span>)}</div>
           </li>)}
         </ol>
         <Button variant="outline" className="btn-secondary w-full" onClick={() => setExpanded(!expanded)}>{expanded ? <ChevronUp /> : <ChevronDown />}{expanded ? "Show key moments" : `Show every month (${timeline.length})`}</Button>
