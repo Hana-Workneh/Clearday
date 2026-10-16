@@ -17,14 +17,14 @@ export function SeeItInAction() {
       </div>
       <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
         {shots.map((s) => (
-          <figure key={s.caption} className="w-[82%] shrink-0 snap-center md:w-auto">
+          <figure key={s.caption} className="w-[82%] min-w-0 shrink-0 snap-center md:w-auto">
             <div className="leaf overflow-hidden border bg-card shadow-[var(--shadow-product)]">
               <div className="flex gap-1.5 border-b px-3 py-2" aria-hidden="true">
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
               </div>
-              <img src={s.src} alt={s.alt} loading="lazy" width={1200} height={800} className="block aspect-[3/2] w-full object-cover object-top" />
+              <img src={s.src} alt={s.alt} loading="lazy" width={1200} height={800} className="block aspect-[3/2] h-auto w-full max-w-full object-cover object-top" />
             </div>
             <figcaption className="mt-3 text-center text-sm text-muted-foreground">{s.caption}</figcaption>
           </figure>
