@@ -31,13 +31,12 @@ function Progress() {
     const now = new Date();
     const plan = simulate(profile.loans, now, planOptions(profile));
     const payments = [...(profile.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date));
-    const startTotal = profile.loans.reduce((s, l) => s + l.startBalance, 0);
     const leftNow = profile.loans.reduce((s, l) => s + l.balance, 0);
     // Past: from the starting total, step down with each logged payment, ending at today's balance.
     const paidLogged = payments.reduce((s, p) => s + p.amount, 0);
     let running = leftNow + paidLogged;
     const chart: { t: number; label: string; paid?: number; plan?: number }[] = [
-      { t: new Date(profile.startedAt ?? today()).getTime(), label: short(new Date(profile.startedAt ?? today())), paid: Math.max(running, Math.min(startTotal, running)) },
+      { t: new Date(profile.startedAt ?? today()).getTime(), label: short(new Date(profile.startedAt ?? today())), paid: Math.round(running) },
     ];
     for (const p of payments) {
       running -= p.amount;
