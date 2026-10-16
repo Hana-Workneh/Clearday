@@ -4,6 +4,21 @@ export function isDebtFree(profile: Pick<Profile, "loans">) {
   return profile.loans.length > 0 && profile.loans.every(loan => loan.balance <= 0);
 }
 
+/** Display-only milestones; never changes a balance or a saved plan. */
+export function nextWin(profile: Pick<Profile, "loans" | "payments">) {
+  const initial = profile.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
+  if (initial <= 0) return null;
+  const left = profile.loans.reduce((sum, loan) => sum + loan.balance, 0);
+  const paid = Math.max(0, initial - left);
+  const latest = [...(profile.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
+  const before = Math.max(0, paid - (latest?.amount ?? 0));
+  const milestones = [{ fraction: .1, name: "10% paid" }, { fraction: .25, name: "25% paid" }, { fraction: .5, name: "Halfway there" }, { fraction: 1, name: "Debt free" }];
+  const reached = milestones.filter(m => paid >= initial * m.fraction && before < initial * m.fraction).at(-1);
+  if (latest && reached) return { name: reached.name, reached: true, remaining: 0 };
+  const next = milestones.find(m => paid < initial * m.fraction);
+  return next ? { name: next.name, reached: false, remaining: Math.round((initial * next.fraction - paid) * 100) / 100 } : { name: "Debt free", reached: true, remaining: 0 };
+}
+
 export function celebrationStats(profile: Profile, now = new Date()) {
   const last = [...(profile.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
   const date = last ? new Date(`${last.date}T12:00:00`) : now;

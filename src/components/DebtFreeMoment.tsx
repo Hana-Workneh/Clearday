@@ -39,7 +39,7 @@ export function DebtFreeMoment({profile, preview = false}: {profile: Profile; pr
     <div className="my-8 grid grid-cols-3 gap-2 border-y py-6 sm:gap-6">
       {[{value: stats.loansPaid, label: "Loans paid off"}, {value: money(stats.totalPaid, profile.currency), label: "Total paid", note: "From logged payments"}, {value: stats.monthsEarlier ?? "—", label: "Months earlier", note: "Than your first plan"}].map(s => <div key={s.label} className="min-w-0"><p className="break-words font-heading text-2xl font-bold sm:text-4xl">{s.value}</p><p className="mt-2 text-sm font-semibold">{s.label}</p>{s.note && <p className="mt-1 text-xs text-muted-foreground">{s.note}</p>}</div>)}
     </div>
-    <div ref={card} className="share-leaf mx-auto flex min-h-80 w-full max-w-md flex-col items-center justify-center bg-green p-7 text-ink sm:aspect-[5/4]">
+    <div ref={card} className="share-leaf mx-auto flex min-h-80 w-full max-w-md flex-col items-center justify-center bg-sun p-7 text-ink sm:aspect-[5/4]">
       <div className="flex items-center gap-2 font-heading text-sm font-semibold"><Leaf className="h-4 w-4" />Clearday</div>
       <div className="my-4 grid size-28 place-items-center rounded-full bg-shine"><Sprout mood="crowned" size={104} className="share-sprout" /></div>
       <p className="max-w-full break-words font-heading text-3xl font-bold">{profile.name}'s free day</p>

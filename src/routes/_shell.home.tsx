@@ -1,13 +1,13 @@
 import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness } from "lucide-react";
+import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, daysOfWork } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
-import { isDebtFree } from "@/lib/celebration";
+import { isDebtFree, nextWin } from "@/lib/celebration";
 import { ideaImpact, extraFromIdea } from "@/lib/plan";
 import { Button } from "@/components/ui/button";
 
@@ -47,6 +47,7 @@ function Home() {
   const pct = percentPaid(profile.loans);
   if (isDebtFree(profile)) return <DebtFreeMoment profile={profile} />;
   const filled = Math.round(pct / 10);
+  const win = nextWin(profile);
   const options = planOptions(profile);
   const tipAmount = 20;
   const impact = ideaImpact(profile.loans, options, tipAmount, new Date());
@@ -66,6 +67,8 @@ function Home() {
       </div>
 
       <QuietCard profile={profile} />
+
+      {win && <div role="status" className="chip-yellow w-fit max-w-full"><Star aria-hidden className="size-4 shrink-0 fill-sun text-sun" /><span>{win.reached ? `You reached ${win.name}!` : `Next win: ${win.name}, ${usd(win.remaining)} to go`}</span></div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
         <section className={`${card} flex min-h-64 min-w-0 flex-col justify-between md:p-8`} aria-label="Your debt free date">

@@ -130,8 +130,8 @@ function Progress() {
         <h2 className="text-xl font-semibold">Badges</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {badges.map((b) => (
-            <div key={b.name} className={`leaf flex items-center gap-3 border p-4 ${b.got ? "bg-sun/25" : "bg-secondary opacity-60 grayscale"}`}>
-              <span className={`leaf flex h-10 w-10 shrink-0 items-center justify-center ${b.got ? "bg-green text-primary-foreground" : "bg-muted-foreground/20 text-muted-foreground"}`}>
+            <div key={b.name} className={`leaf flex items-center gap-3 border p-4 ${b.got ? "badge-win border-sun bg-chip-yellow text-chip-yellow-text ring-1 ring-sun" : "bg-secondary opacity-60 grayscale"}`}>
+              <span className={`leaf flex h-10 w-10 shrink-0 items-center justify-center ${b.got ? "bg-sun text-ink" : "bg-muted-foreground/20 text-muted-foreground"}`}>
                 {b.got ? <Leaf className="h-5 w-5" /> : <Lock className="h-4 w-4" />}
               </span>
               <span className={`font-semibold ${b.got ? "" : "text-muted-foreground"}`}>{b.name}</span>
