@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { formatMonth, simulate } from "@/lib/debt";
 import { buildTimeline, extraFromIdea, ideaImpact, safeIdeas, type Idea } from "@/lib/plan";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_shell/plan")({
   head: () => ({ meta: [
@@ -50,7 +51,9 @@ function MyPlan() {
     const controller = new AbortController(); abort.current = controller;
     setLoading(true); setError("");
     try {
-      const response = await fetch("/api/advice", { method: "POST", headers: { "Content-Type": "application/json" }, body: fingerprint, signal: controller.signal });
+      const {data: {session}} = await supabase.auth.getSession();
+      if (!session) throw new Error("Sign in to find your personal ideas.");
+      const response = await fetch("/api/advice", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` }, body: fingerprint, signal: controller.signal });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         if ([401,402,403,404].includes(response.status)) setTerminal(true);

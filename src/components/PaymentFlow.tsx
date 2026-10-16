@@ -49,7 +49,9 @@ export function PaymentFlow() {
     e.preventDefault();
     const p = loadProfile();
     const amt = +amount;
-    if (!p || !loanId || !(amt > 0)) return;
+    if (!p || !p.loans.some(loan => loan.id === loanId) || !Number.isFinite(amt) || !(amt > 0) || amt > 100000000) { setError("Add a valid payment amount."); return; }
+    const parsedDate = new Date(date);
+    if (!Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || date > today()) {setError("Choose a real payment date up to today."); return;}
     const days = daysCloser(amt, p.loans, planOptions(p));
     const nextLoans = p.loans.map((l) => (l.id === loanId ? { ...l, balance: Math.max(0, Math.round((l.balance - amt) * 100) / 100) } : l));
     setSaving(true); setError("");
