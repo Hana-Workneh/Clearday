@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { WelcomeSections } from "@/components/WelcomeSections";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CleardayLogo } from "@/components/CleardayLogo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,8 +27,7 @@ function Welcome() {
     <div className="min-h-screen">
       <header className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-5 py-5 sm:flex sm:justify-between">
         <div className="flex min-w-0 items-center gap-2">
-          <Sprout size={34} />
-          <span className="font-heading text-xl font-semibold">Clearday</span>
+          <CleardayLogo />
         </div>
         <div className="flex items-center gap-3"><Button asChild variant="ghost"><Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link></Button><ThemeToggle /></div>
       </header>
