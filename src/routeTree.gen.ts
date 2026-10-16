@@ -10,33 +10,93 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShellRouteImport } from './routes/_shell'
+import { Route as ShellHomeRouteImport } from './routes/_shell.home'
+import { Route as ShellPayFasterRouteImport } from './routes/_shell.pay-faster'
+import { Route as ShellPlanRouteImport } from './routes/_shell.plan'
+import { Route as ShellProgressRouteImport } from './routes/_shell.progress'
+import { Route as ShellSettingsRouteImport } from './routes/_shell.settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShellRoute = ShellRouteImport.update({
+  id: '/_shell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShellHomeRoute = ShellHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellPayFasterRoute = ShellPayFasterRouteImport.update({
+  id: '/pay-faster',
+  path: '/pay-faster',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellPlanRoute = ShellPlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellProgressRoute = ShellProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellSettingsRoute = ShellSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ShellRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/home': typeof ShellHomeRoute
+  '/pay-faster': typeof ShellPayFasterRoute
+  '/plan': typeof ShellPlanRoute
+  '/progress': typeof ShellProgressRoute
+  '/settings': typeof ShellSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/home': typeof ShellHomeRoute
+  '/pay-faster': typeof ShellPayFasterRoute
+  '/plan': typeof ShellPlanRoute
+  '/progress': typeof ShellProgressRoute
+  '/settings': typeof ShellSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_shell': typeof ShellRouteWithChildren
+  '/_shell/home': typeof ShellHomeRoute
+  '/_shell/pay-faster': typeof ShellPayFasterRoute
+  '/_shell/plan': typeof ShellPlanRoute
+  '/_shell/progress': typeof ShellProgressRoute
+  '/_shell/settings': typeof ShellSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/home' | '/pay-faster' | '/plan' | '/progress' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/home' | '/pay-faster' | '/plan' | '/progress' | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/_shell'
+    | '/_shell/home'
+    | '/_shell/pay-faster'
+    | '/_shell/plan'
+    | '/_shell/progress'
+    | '/_shell/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ShellRoute: typeof ShellRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +108,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_shell': {
+      id: '/_shell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_shell/home': {
+      id: '/_shell/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof ShellHomeRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/pay-faster': {
+      id: '/_shell/pay-faster'
+      path: '/pay-faster'
+      fullPath: '/pay-faster'
+      preLoaderRoute: typeof ShellPayFasterRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/plan': {
+      id: '/_shell/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof ShellPlanRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/progress': {
+      id: '/_shell/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ShellProgressRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/settings': {
+      id: '/_shell/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ShellSettingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
   }
 }
 
+interface ShellRouteChildren {
+  ShellHomeRoute: typeof ShellHomeRoute
+  ShellPayFasterRoute: typeof ShellPayFasterRoute
+  ShellPlanRoute: typeof ShellPlanRoute
+  ShellProgressRoute: typeof ShellProgressRoute
+  ShellSettingsRoute: typeof ShellSettingsRoute
+}
+
+const ShellRouteChildren: ShellRouteChildren = {
+  ShellHomeRoute: ShellHomeRoute,
+  ShellPayFasterRoute: ShellPayFasterRoute,
+  ShellPlanRoute: ShellPlanRoute,
+  ShellProgressRoute: ShellProgressRoute,
+  ShellSettingsRoute: ShellSettingsRoute,
+}
+
+const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ShellRoute: ShellRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
