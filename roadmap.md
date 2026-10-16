@@ -19,4 +19,4 @@
 - [x] Build Settings, currencies, loan editing, sign-out and account deletion.
 - [x] Verify demo, currency persistence and loan editing/deletion.
 - [x] Verify signed-in import, final payment, image download and saved goal read-back; restore original account data.
-- [ ] Verify account isolation across two users and account deletion — needs a second test account and permission for destructive deletion.
+- [ ] Verify account isolation across two users and account deletion — needs a second test account and permission for destructive deletion.- [x] AI ideas tailored to any job title, skills/hobbies field, tested with 9 job titles
