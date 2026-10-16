@@ -23,7 +23,7 @@ export function PaymentFlow() {
   useEffect(() => {
     const h = (e: Event) => {
       const p = loadProfile();
-      if (!p) return navigate({ to: "/setup" });
+      if (!p) { navigate({ to: "/setup" }); return; }
       const id = (e as CustomEvent<string | undefined>).detail;
       const loan = p.loans.find((l) => l.id === id && l.balance > 0) ?? p.loans.find((l) => l.balance > 0);
       if (!loan) return;
