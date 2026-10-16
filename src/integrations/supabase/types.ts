@@ -64,7 +64,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      clean_clearday_json: { Args: { value: Json }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
