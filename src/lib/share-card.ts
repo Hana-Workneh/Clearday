@@ -7,7 +7,20 @@ export async function renderShareCard(element: HTMLElement, name: string, date: 
   ctx.fillStyle = style.backgroundColor;
   ctx.beginPath(); ctx.roundRect(0, 0, 1000, 800, [108, 108, 108, 27]); ctx.fill();
   ctx.fillStyle = style.color; ctx.textAlign = "center";
-  ctx.font = '600 32px Outfit'; ctx.fillText("Clearday", 500, 95);
+  {
+    const dark = document.documentElement.classList.contains("dark");
+    const ox = 410, oy = 62, k = 44 / 52;
+    ctx.save(); ctx.translate(ox, oy); ctx.scale(k, k);
+    const g = ctx.createLinearGradient(0, 52, 52, 0);
+    g.addColorStop(0, dark ? "#8B74FF" : "#6B4EFF"); g.addColorStop(1, dark ? "#00DF81" : "#00C875");
+    ctx.strokeStyle = g; ctx.lineWidth = 9; ctx.lineCap = "round";
+    ctx.stroke(new Path2D("M40.1 11.9 A20 20 0 1 0 45.3 31.2"));
+    ctx.fillStyle = "#FFC93C"; ctx.beginPath(); ctx.arc(44, 15, 6.5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = style.color; ctx.textAlign = "left";
+    ctx.font = '600 34px Outfit'; ctx.fillText("clearday", ox + 54, 96);
+    ctx.textAlign = "center";
+  }
   ctx.fillStyle = style.getPropertyValue("--shine").trim();
   ctx.beginPath(); ctx.arc(500, 255, 130, 0, Math.PI * 2); ctx.fill();
   const svg = element.querySelector("svg[aria-label]");

@@ -72,6 +72,8 @@
   --tip-solid: oklch(0.552 0.248 285.5);
   --tip-foreground: oklch(1 0 0);
   --sun: #FFC93C;
+  --logo-ring-a: #6B4EFF;
+  --logo-ring-b: #00C875;
   --cheek: #FF9AA8;
   --ink: #0B1411;
   --chip-green: #E3F7EC;
@@ -96,6 +98,8 @@
 }
 
 .dark {
+  --logo-ring-a: #8B74FF;
+  --logo-ring-b: #00DF81;
   --background: #0A0D0C;
   --foreground: #F1F5F3;
   --card: #141917;
@@ -196,3 +200,12 @@
 .band-btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; border: 1.5px solid rgba(11,20,17,.35); color: #0B1411; font-family: var(--font-heading); font-weight: 600; transition: background .15s; }
 .band-btn-ghost:hover { background: rgba(11,20,17,.08); }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .float-leaf { animation: none; } }
+
+.logo-animate .logo-ring { stroke-dasharray: 100; stroke-dashoffset: 100; animation: logo-draw 1.1s cubic-bezier(.6,0,.3,1) .15s forwards; }
+.logo-animate .logo-dot { transform-box: fill-box; transform-origin: center; transform: scale(0); animation: logo-pop .45s cubic-bezier(.34,1.8,.5,1) 1.2s forwards; }
+@keyframes logo-draw { to { stroke-dashoffset: 0; } }
+@keyframes logo-pop { to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .logo-animate .logo-ring { animation: none; stroke-dashoffset: 0; }
+  .logo-animate .logo-dot { animation: none; transform: none; }
+}
