@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { Home, Zap, Map, TrendingUp, Settings, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PaymentFlow, openPayment } from "@/components/PaymentFlow";
 
 export const Route = createFileRoute("/_shell")({ component: Shell });
 
@@ -30,7 +31,7 @@ function Shell() {
             </Link>
           ))}
         </nav>
-        <button className="leaf mt-auto flex items-center justify-center gap-2 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
+        <button onClick={() => openPayment()} className="leaf mt-auto flex items-center justify-center gap-2 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
           <Plus className="h-4 w-4" /> I made a payment
         </button>
       </aside>
@@ -40,7 +41,12 @@ function Shell() {
             <Sprout size={30} />
             <span className="font-heading text-lg font-semibold">Clearday</span>
           </Link>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <button onClick={() => openPayment()} className="leaf flex items-center gap-1.5 bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground md:hidden">
+              <Plus className="h-4 w-4" /> Payment
+            </button>
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 px-5 pb-28 md:px-10 md:pb-10">
           <Outlet />
@@ -54,6 +60,7 @@ function Shell() {
           </Link>
         ))}
       </nav>
+      <PaymentFlow />
     </div>
   );
 }
