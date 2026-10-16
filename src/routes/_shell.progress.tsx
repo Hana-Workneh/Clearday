@@ -79,7 +79,7 @@ function Progress() {
   return (
     <div className="mx-auto grid max-w-5xl gap-5">
       <div className="flex items-center gap-4">
-        <Sprout mood="cheering" size={70} />
+        <Sprout mood={profile.loans.every((loan) => loan.balance <= 0) ? "crowned" : "cheering"} size={70} />
         <div>
           <h1 className="page-title">Look how far you've come</h1>
           <p className="page-sub mt-1">{pct}% of your debt paid. Every payment counts!</p>

@@ -12,3 +12,5 @@
 ## Architecture
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.
 - User data is stored in localStorage via `src/lib/store.ts` until Lovable Cloud is added — single place to swap storage later.
+
+- All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
