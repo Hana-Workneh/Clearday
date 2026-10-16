@@ -54,7 +54,7 @@ function Setup() {
 
   const goTo = (s: number) => {
     if (s === 2) {
-      saveProfile({ name: name.trim(), income: +income, job: job.trim(), loans });
+      saveProfile({ ...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans });
       setRevealed(false);
       setTimeout(() => setRevealed(true), 1200);
     }

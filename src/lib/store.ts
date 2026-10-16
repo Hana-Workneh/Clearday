@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Loan } from "./debt";
+import type { Loan, PlanOptions } from "./debt";
 
-export type Profile = { name: string; income: number; job: string; loans: Loan[] };
+export type Profile = { name: string; income: number; job: string; loans: Loan[]; plan?: PlanOptions };
 const KEY = "clearday-profile";
 
 export function loadProfile(): Profile | null {
