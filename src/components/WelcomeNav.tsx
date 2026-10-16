@@ -65,7 +65,7 @@ export function WelcomeNav() {
             }}
             aria-label="Back to top"
           >
-            <CleardayLogo />
+            <CleardayLogo animate />
           </a>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Page sections">
             {links.map((link) => (
