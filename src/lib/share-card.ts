@@ -8,6 +8,8 @@ export async function renderShareCard(element: HTMLElement, name: string, date: 
   ctx.beginPath(); ctx.roundRect(0, 0, 1000, 800, [108, 108, 108, 27]); ctx.fill();
   ctx.fillStyle = style.color; ctx.textAlign = "center";
   ctx.font = '600 32px Outfit'; ctx.fillText("Clearday", 500, 95);
+  ctx.fillStyle = style.getPropertyValue("--shine").trim();
+  ctx.beginPath(); ctx.arc(500, 255, 130, 0, Math.PI * 2); ctx.fill();
   const svg = element.querySelector("svg[aria-label]");
   if (svg) {
     const clone = svg.cloneNode(true) as SVGElement;

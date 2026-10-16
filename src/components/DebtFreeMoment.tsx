@@ -41,7 +41,7 @@ export function DebtFreeMoment({profile, preview = false}: {profile: Profile; pr
     </div>
     <div ref={card} className="share-leaf mx-auto flex min-h-80 w-full max-w-md flex-col items-center justify-center bg-green p-7 text-ink sm:aspect-[5/4]">
       <div className="flex items-center gap-2 font-heading text-sm font-semibold"><Leaf className="h-4 w-4" />Clearday</div>
-      <div className="my-4"><Sprout mood="crowned" size={104} className="share-sprout" /></div>
+      <div className="my-4 grid size-28 place-items-center rounded-full bg-shine"><Sprout mood="crowned" size={104} className="share-sprout" /></div>
       <p className="max-w-full break-words font-heading text-3xl font-bold">{profile.name}'s free day</p>
       <p className="mt-2 font-heading text-xl font-semibold">{stats.date.toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric"})}</p>
       <p className="mt-5 text-sm font-semibold">Debt free. A new chapter begins.</p>
