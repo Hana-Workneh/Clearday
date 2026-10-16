@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { celebrationStats } from "@/lib/celebration";
 import { money } from "@/lib/account-data";
 import { deliverImage } from "@/lib/download";
+import { renderShareCard } from "@/lib/share-card";
 import { saveProfile, type Profile } from "@/lib/store";
 
 export function DebtFreeMoment({profile, preview = false}: {profile: Profile; preview?: boolean}) {
@@ -23,9 +24,8 @@ export function DebtFreeMoment({profile, preview = false}: {profile: Profile; pr
     async function prepare() {
       try {
         await document.fonts.ready;
-        const {toBlob} = await import("html-to-image");
         if (!card.current || !active) return;
-        const blob = await toBlob(card.current, {pixelRatio: 2, cacheBust: false});
+        const blob = await renderShareCard(card.current, profile.name, stats.date.toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric"}));
         if (active && blob) setImage(blob);
       } catch { if (active) setError("Your card couldn't load. Please refresh to try again."); }
     }
@@ -39,10 +39,10 @@ export function DebtFreeMoment({profile, preview = false}: {profile: Profile; pr
     <div className="my-8 grid grid-cols-3 gap-2 border-y py-6 sm:gap-6">
       {[{value: stats.loansPaid, label: "Loans paid off"}, {value: money(stats.totalPaid, profile.currency), label: "Total paid", note: "From logged payments"}, {value: stats.monthsEarlier ?? "—", label: "Months earlier", note: "Than your first plan"}].map(s => <div key={s.label} className="min-w-0"><p className="break-words font-heading text-2xl font-bold sm:text-4xl">{s.value}</p><p className="mt-2 text-sm font-semibold">{s.label}</p>{s.note && <p className="mt-1 text-xs text-muted-foreground">{s.note}</p>}</div>)}
     </div>
-    <div ref={card} className="share-leaf mx-auto flex aspect-[5/4] w-full max-w-md flex-col items-center justify-center bg-green p-7 text-ink">
+    <div ref={card} className="share-leaf mx-auto flex min-h-80 w-full max-w-md flex-col items-center justify-center bg-green p-7 text-ink sm:aspect-[5/4]">
       <div className="flex items-center gap-2 font-heading text-sm font-semibold"><Leaf className="h-4 w-4" />Clearday</div>
       <div className="my-4"><Sprout mood="crowned" size={104} className="share-sprout" /></div>
-      <p className="font-heading text-3xl font-bold">{profile.name}'s free day</p>
+      <p className="max-w-full break-words font-heading text-3xl font-bold">{profile.name}'s free day</p>
       <p className="mt-2 font-heading text-xl font-semibold">{stats.date.toLocaleDateString("en-US", {month: "long", day: "numeric", year: "numeric"})}</p>
       <p className="mt-5 text-sm font-semibold">Debt free. A new chapter begins.</p>
     </div>

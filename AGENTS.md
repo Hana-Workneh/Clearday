@@ -20,4 +20,4 @@
 - AI runs in a streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — keeps prompts/keys private and prevents replaying access denials.
 - Suggested extras travel through validated Pay faster search state and are saved only with the existing plan confirmation — lets users review ideas before committing.
 - Completed-loan stats and nonmutating demo previews live in pure `src/lib/celebration.ts` with tests; all completion screens use `DebtFreeMoment` — keeps earned milestones separate from sample previews.
-- Celebration image exports are prepared client-side from the visible leaf card before download; new savings goals stay in the existing owner-scoped profile document — preserves mobile download activation and completed-loan history.
+- Celebration image exports are prepared on a browser canvas using resolved theme colors and the exact visible Sprout before download; new savings goals stay in the existing owner-scoped profile document — avoids CSS export clipping, preserves mobile download activation and completed-loan history.
