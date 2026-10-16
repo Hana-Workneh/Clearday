@@ -28,7 +28,7 @@ function MyPlan() {
   const usd = (n: number) => money(n, profile?.currency);
   const navigate = useNavigate();
   const now = useMemo(() => new Date(), []);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -41,11 +41,13 @@ function MyPlan() {
     {title: "Bring lunch twice a week", detail: "Use food you already buy to pack lunch on two workdays. Keeping essentials covered could save around 20 each month.", monthlyAmount: 20, kind: "save"},
     {title: "Pause an unused subscription", detail: "Check your subscriptions for one you no longer use. Pausing a small service could save around 10 each month.", monthlyAmount: 10, kind: "save"},
   ] : []); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
+  const autoRun = useRef<(() => void) | null>(null);
+  useEffect(() => { if (!profile || profile.demo) return; const t = setTimeout(() => autoRun.current?.(), 0); return () => clearTimeout(t); }, [fingerprint, profile?.demo]); // eslint-disable-line react-hooks/exhaustive-deps
   if (profile === undefined) return null;
   if (!profile) return <div className="mx-auto max-w-xl text-center"><Sprout mood="thinking" size={100} /><h1 className="page-title mt-4">Your plan starts here</h1><Button asChild className="btn-main mt-6"><Link to="/setup">Add your loans <ArrowRight /></Link></Button></div>;
   const result = simulate(profile.loans, now, options);
   const timeline = buildTimeline(profile, now, options);
-  const visible = expanded ? timeline : timeline.filter((row, i) => row.current || row.milestones.length || (i > timeline.findIndex(r => r.current) && i <= timeline.findIndex(r => r.current) + 3));
+  const visible = expanded ? timeline : timeline.filter(row => row.current || row.milestones.length > 0);
   const monthly = profile.loans.reduce((s,l) => s+l.payment, 0) + (options.extra ?? 0);
 
   const generate = async () => {
@@ -80,6 +82,7 @@ function MyPlan() {
     finally { if (abort.current === controller) setLoading(false); }
   };
 
+  autoRun.current = generate;
   return <div className="mx-auto max-w-6xl space-y-7">
     <header><h1 className="page-title">My plan</h1><p className="page-sub mt-1">One month at a time. Every little step counts.</p></header>
     <div className="flex flex-wrap items-center justify-between gap-5 border-y py-6">
@@ -103,8 +106,7 @@ function MyPlan() {
       <section aria-label="Ideas for you" className="min-w-0">
         <div className="flex items-center gap-2"><Sparkles className="size-5 text-tip" /><h2 className="font-heading text-xl font-semibold">A little extra, your way</h2></div>
         <p className="mt-2 text-sm text-muted-foreground">{profile.job ? `Small possibilities for you as a ${profile.job.toLowerCase()}.` : "Small possibilities that fit your budget."}</p>
-        {ideas.length === 0 && !loading && !error && <div className="mt-6 flex items-center gap-4"><Sprout mood="thinking" size={76} /><Button className="btn-main flex-1" onClick={generate}><Sparkles />Find my ideas</Button></div>}
-        {loading && <div className="mt-6 flex items-center justify-between gap-3" role="status"><span className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />Finding practical ideas for you…</span><Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); }}><Square /></Button></div>}
+        {(loading || (ideas.length === 0 && !error)) && <div className="leaf mt-6 flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text" role="status"><Sprout mood="thinking" size={76} /><p className="flex-1 font-heading text-lg font-semibold">{profile.job ? `Finding ideas for ${/^[aeiou]/i.test(profile.job) ? "an" : "a"} ${profile.job.toLowerCase()}...` : "Finding ideas for you..."}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>}
         {error && <div className="mt-6" role="alert"><p className="text-sm text-muted-foreground">{error}</p>{!terminal && <Button variant="outline" className="btn-secondary mt-3" onClick={generate}>Generate new ideas</Button>}</div>}
         <div className="mt-5 grid gap-4">{ideas.map((idea,i) => {
           const impact = ideaImpact(profile.loans, options, idea.monthlyAmount, now);

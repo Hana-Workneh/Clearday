@@ -86,18 +86,16 @@ function Home() {
             ))}
           </div><p className="mt-3 text-sm font-semibold">{pct === 0 ? "Day 1. Your first payment fills the first pill." : `${pct}% of the way there`}</p></div>
         </section>
-        <div className="grid min-w-0 gap-5 xl:grid-cols-2">
-          <div className={`${card} flex min-w-0 flex-col items-start justify-between gap-4`}>
-            <span className="grid size-10 place-items-center rounded-full bg-track text-muted-foreground"><CircleDollarSign className="size-5" /></span>
-            <div className="w-full">
-            <p className="text-sm font-semibold text-muted-foreground">Interest still to pay</p>
-            <p className="mt-3 break-words font-heading text-3xl font-bold">{usd(plan.totalInterest)}</p></div>
+        <div className="grid min-w-0 gap-5">
+          <div className={`${card} flex min-w-0 flex-col justify-between gap-4 md:p-7`}>
+            <div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-muted-foreground">Days of work to pay interest</p><span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip-purple text-chip-purple-text"><BriefcaseBusiness className="size-5" /></span></div>
+            <p className="big-date break-words">{workDaysLabel(plan.totalInterest, profile.income)}</p>
+            <p className="font-heading text-lg font-semibold leading-snug">You'll work {workDaysLabel(plan.totalInterest, profile.income)} just to pay interest.</p>
           </div>
-          <div className={`${card} flex min-w-0 flex-col items-start justify-between gap-4`}>
-            <span className="grid size-10 place-items-center rounded-full bg-chip-purple text-chip-purple-text"><BriefcaseBusiness className="size-5" /></span>
-            <div>
-            <p className="text-sm font-semibold text-muted-foreground">Days of work to pay interest</p>
-            <p className="mt-3 font-heading text-3xl font-bold">{workDaysLabel(plan.totalInterest, profile.income)}</p></div>
+          <div className={`${card} flex min-w-0 items-center justify-between gap-4 !py-5`}>
+            <div><p className="text-sm font-semibold text-muted-foreground">Interest still to pay</p>
+            <p className="mt-1 break-words font-heading text-2xl font-bold">{usd(plan.totalInterest)}</p></div>
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-track text-muted-foreground"><CircleDollarSign className="size-5" /></span>
           </div>
         </div>
       </div>
