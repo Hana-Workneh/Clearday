@@ -1,4 +1,5 @@
 # My plan
+- [ ] Simplify Your loans: automatic save on continue, compact editable saved loans, field hints and kind validation.
 - [x] Redesign welcome previews and add Why Clearday story, facts and quotes.
 - [x] Add completed-loan celebration, image sharing, new goal and safe demo preview.
 - [x] Polish loading/empty states and verify all pages on phone/desktop in both themes.
