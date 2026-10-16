@@ -202,6 +202,7 @@ export function WelcomeSections() {
       <footer className="border-t px-5 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 text-center">
           <p className="text-xs text-muted-foreground">Clearday is a planning tool, not financial advice.</p>
+          <p className="text-xs text-muted-foreground">Your loan data is private to your account. We never sell it, and you can delete everything anytime in Settings.</p>
           <p className="text-xs text-muted-foreground">Built by Hana for Lovable SheBuilds 2026.</p>
         </div>
       </footer>
