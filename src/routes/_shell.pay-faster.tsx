@@ -75,6 +75,8 @@ function PayFaster() {
   const sooner = base.monthsLeft != null && next.monthsLeft != null ? base.monthsLeft - next.monthsLeft : 0;
   const saving = Math.max(0, Math.round(base.totalInterest - next.totalInterest));
   const better = sooner > 0 || saving > 1;
+  const daysBack = profile.income > 0 ? saving / (profile.income / 22) : 0;
+  const daysBackText = daysBack >= 1 ? `${Math.round(daysBack)} work ${Math.round(daysBack) === 1 ? "day" : "days"} back` : `${Math.round(daysBack * 10) / 10} work days back`;
   const nowMonths = base.monthsLeft ?? 600;
   const newWidth = Math.max(4, Math.round(((next.monthsLeft ?? 600) / nowMonths) * 100));
   const label = next.debtFreeDate ? formatMonth(next.debtFreeDate) : "Not yet";
@@ -118,6 +120,7 @@ function PayFaster() {
             <div className="mt-4 flex flex-wrap gap-2">
               {sooner > 0 && <span className="chip-green">{months(sooner)} sooner</span>}
               {saving > 0 && <span className="chip-purple">{usd(saving)} less interest</span>}
+              {daysBack >= 0.1 && <span className="chip-yellow">You get {daysBackText}</span>}
               {!better && <span className="text-sm text-muted-foreground">Slide to see what a little extra could do.</span>}
             </div>
           </div>
