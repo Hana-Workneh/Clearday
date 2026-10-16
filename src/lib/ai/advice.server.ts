@@ -99,8 +99,8 @@ export async function handleAdvice(request: Request) {
           if (part.value.type === "finish-step" && part.value.finishReason === "content-filter") throw new Error("Lovable AI couldn't provide suggestions for this request.");
           part = await iterator.next();
         }
-        const ideas = safeIdeas(await result.output);
-        send({ type: "result", ideas });
+        const { ideas, note } = safeAdvice(await result.output);
+        send({ type: "result", ideas, note });
       } catch (error) {
         send({ type: "error", message: request.signal.aborted ? "Suggestions stopped." : error instanceof Error ? error.message : "No suggestions were returned." });
       } finally { if (!cancelled) controller.close(); }
