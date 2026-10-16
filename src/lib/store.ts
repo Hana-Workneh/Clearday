@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { simulate, type Loan, type PlanOptions } from "./debt";
 import { supabase } from "@/integrations/supabase/client";
 import { profileSchema, mergeLocalData, type Currency } from "./account-data";
-import type { Json } from "@/integrations/supabase/types";
+import { saveAccountProfile } from "./account.functions";
 
 export type Payment = { id: string; loanId: string; amount: number; date: string }; // date: yyyy-mm-dd
 export type CatchUp = { amount: number; months: number; from: string };
@@ -55,9 +55,7 @@ export async function refreshAccount() {
         const oldDemo = candidate.demo || candidate.name === "Alex" && candidate.loans?.some((l: Loan) => l.id === "d1");
         if (!oldDemo) {
           if (version !== generation) return;
-          profile = mergeLocalData(profile, profileSchema.parse(candidate));
-          const result = await supabase.from("profiles").upsert({ id: user.id, display_name: profile.name, data: profile as unknown as Json, updated_at: new Date().toISOString() });
-          if (result.error) throw result.error;
+          profile = await saveAccountProfile({data: mergeLocalData(profile, profileSchema.parse(candidate))});
           localStorage.removeItem(KEY);
         } else localStorage.removeItem(KEY);
       }
@@ -95,6 +93,8 @@ export function loadProfile(): Profile | null {
 }
 
 export async function saveProfile(p: Profile) {
+  const cleaned = profileSchema.parse(p);
+  p = {...cleaned, ...(p.demo ? {demo: true} : {})};
   if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); notify(); return; }
   if (!p.startedAt) p = {...p, startedAt: today(), startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null};
   if (accountId) {
@@ -103,9 +103,8 @@ export async function saveProfile(p: Profile) {
     const valid = profileSchema.parse(p);
     const write = writeQueue.catch(() => {}).then(async () => {
       if (owner !== accountId) throw new Error("Please sign in again before saving.");
-      const { error } = await supabase.from("profiles").upsert({ id: owner, display_name: valid.name, data: valid as unknown as Json, updated_at: new Date().toISOString() });
-      if (error) throw new Error("Your changes could not be saved. Please try again.");
-      if (owner === accountId) { accountProfile = valid; notify(); }
+      const saved = await saveAccountProfile({data: valid});
+      if (owner === accountId) { accountProfile = saved; notify(); }
     });
     writeQueue = write;
     await write;

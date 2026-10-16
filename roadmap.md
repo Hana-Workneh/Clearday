@@ -1,4 +1,6 @@
 # My plan
+- [x] Security review: permission model, owner-only access checks, client/server/database input enforcement, dependency fixes and basic scans.
+- [ ] Run platform deep code security scan — no deep-scan trigger is available to the agent; requires the Security tab.
 - [x] Simplify Your loans: automatic save on continue, compact editable saved loans, field hints and kind validation.
 - [x] Redesign welcome previews and add Why Clearday story, facts and quotes.
 - [x] Add completed-loan celebration, image sharing, new goal and safe demo preview.
