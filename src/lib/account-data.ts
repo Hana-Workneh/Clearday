@@ -13,5 +13,6 @@ export const money = (amount: number, currency: Currency = "USD") => new Intl.Nu
 
 export function mergeLocalData(account: z.infer<typeof profileSchema> | null, local: z.infer<typeof profileSchema>) {
   if (!account) return local;
+  if (account.currency !== local.currency && local.loans.length) throw new Error("Your browser and account use different currencies. Their amounts cannot be combined automatically.");
   return { ...account, loans: [...account.loans, ...local.loans.filter(l => !account.loans.some(a => a.id === l.id))], payments: [...(account.payments ?? []), ...(local.payments ?? []).filter(p => !account.payments?.some(a => a.id === p.id))] };
 }

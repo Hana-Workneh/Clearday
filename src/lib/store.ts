@@ -53,11 +53,12 @@ export async function refreshAccount() {
         const candidate = JSON.parse(raw);
         const oldDemo = candidate.demo || candidate.name === "Alex" && candidate.loans?.some((l: Loan) => l.id === "d1");
         if (!oldDemo) {
+          if (version !== generation) return;
           profile = mergeLocalData(profile, profileSchema.parse(candidate));
           const result = await supabase.from("profiles").upsert({ id: user.id, display_name: profile.name, data: profile as unknown as Json, updated_at: new Date().toISOString() });
           if (result.error) throw result.error;
           localStorage.removeItem(KEY);
-        }
+        } else localStorage.removeItem(KEY);
       }
       if (version !== generation) return;
       accountProfile = profile;
@@ -74,10 +75,10 @@ export function leaveDemo() { sessionStorage.removeItem(DEMO_KEY); notify(); }
 export const today = () => new Date().toISOString().slice(0, 10);
 
 export function loadProfile(): Profile | null {
-  if (accountId) return accountProfile;
   try {
     const demo = sessionStorage.getItem(DEMO_KEY);
     if (demo) return JSON.parse(demo) as Profile;
+    if (accountId) return accountProfile;
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const p = JSON.parse(raw) as Profile;
@@ -93,6 +94,8 @@ export function loadProfile(): Profile | null {
 }
 
 export async function saveProfile(p: Profile) {
+  if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); notify(); return; }
+  if (!p.startedAt) p = {...p, startedAt: today(), startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null};
   if (accountId) {
     if (accountError || !ready) throw new Error("Please reload your account before saving.");
     const owner = accountId;
@@ -107,8 +110,7 @@ export async function saveProfile(p: Profile) {
     await write;
     return;
   }
-  if (p.demo) sessionStorage.setItem(DEMO_KEY, JSON.stringify(p));
-  else localStorage.setItem(KEY, JSON.stringify(p));
+  localStorage.setItem(KEY, JSON.stringify(p));
   notify();
 }
 

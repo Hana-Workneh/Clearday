@@ -33,7 +33,11 @@ function MyPlan() {
   const abort = useRef<AbortController | null>(null);
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
-  useEffect(() => { setIdeas([]); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint]);
+  useEffect(() => { setIdeas(profile?.demo ? [
+    {title: "A small weekend project", detail: "Offer a short social-media content session to a local business, with your employer’s permission. One small project could leave around 30 after costs.", monthlyAmount: 30, kind: "earn"},
+    {title: "Bring lunch twice a week", detail: "Use food you already buy to pack lunch on two workdays. Keeping essentials covered could save around 20 each month.", monthlyAmount: 20, kind: "save"},
+    {title: "Pause an unused subscription", detail: "Check your subscriptions for one you no longer use. Pausing a small service could save around 10 each month.", monthlyAmount: 10, kind: "save"},
+  ] : []); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
   if (profile === undefined) return null;
   if (!profile) return <div className="mx-auto max-w-xl text-center"><Sprout mood="thinking" size={100} /><h1 className="page-title mt-4">Your plan starts here</h1><Button asChild className="btn-main mt-6"><Link to="/setup">Add your loans <ArrowRight /></Link></Button></div>;
   const result = simulate(profile.loans, now, options);

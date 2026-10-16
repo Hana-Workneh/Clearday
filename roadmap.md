@@ -4,7 +4,8 @@
 - [x] Connect Try this to Pay faster and verify calculations and live flow.
 
 # Demo and accounts
-- [ ] Add Hana demo and demo banner without importing sample data into accounts.
-- [ ] Add Google sign-in, private account storage and browser-data transfer.
-- [ ] Build Settings, currencies, loan editing, sign-out and account deletion.
-- [ ] Verify demo and signed-in saving, isolation and account deletion.
+- [x] Add Hana demo and demo banner without importing sample data into accounts.
+- [x] Add Google sign-in, private account storage and browser-data transfer.
+- [x] Build Settings, currencies, loan editing, sign-out and account deletion.
+- [x] Verify demo, currency persistence and loan editing/deletion.
+- [ ] Verify signed-in saving, account isolation, import and account deletion — blocked until a real user signs in; no auth users exist yet.
