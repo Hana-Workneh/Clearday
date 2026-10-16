@@ -33,6 +33,7 @@ function MyPlan() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [terminal, setTerminal] = useState(false);
+  const [limited, setLimited] = useState(false);
   const abort = useRef<AbortController | null>(null);
   const [step, setStep] = useState(0);
   const [cacheKey, setCacheKey] = useState<string | null>(null);
@@ -70,7 +71,8 @@ function MyPlan() {
   const generate = async () => {
     if (loading || terminal) return;
     const controller = new AbortController(); abort.current = controller;
-    setLoading(true); setError(""); setIdeas([]);
+    const previous = ideas;
+    setLoading(true); setError(""); setLimited(false); setIdeas([]);
     let timedOut = false;
     const timer = setTimeout(() => { timedOut = true; controller.abort(); }, 15000);
     try {
@@ -79,6 +81,7 @@ function MyPlan() {
       const response = await fetch("/api/advice", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` }, body: fingerprint, signal: controller.signal });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
+        if (response.status === 429) { let saved = previous; try { const c = cacheKey ? JSON.parse(localStorage.getItem(cacheKey) ?? "null") : null; if (!saved.length && Array.isArray(c?.ideas)) saved = safeIdeas({ ideas: c.ideas }); } catch { /* ignore */ } setIdeas(saved); setLimited(true); return; }
         if ([401,402,403,404].includes(response.status)) setTerminal(true);
         throw new Error(data.message || "Lovable AI is temporarily unavailable.");
       }
@@ -128,7 +131,8 @@ function MyPlan() {
       <section aria-label="Ideas for you" className="min-w-0">
         <div className="flex items-center gap-2"><Sparkles className="size-5 text-tip" /><h2 className="font-heading text-xl font-semibold">A little extra, your way</h2></div>
         <p className="mt-2 text-sm text-muted-foreground">{profile.job ? `Small possibilities for you as a ${profile.job.toLowerCase()}.` : "Small possibilities that fit your budget."}</p>
-        {(loading || (ideas.length === 0 && !error)) && <div className="mt-6" role="status" aria-live="polite">
+        {limited && !loading && <div className="leaf mt-6 flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text" role="status"><Sprout mood="calm" size={72} /><p className="font-heading text-lg font-semibold">You've got fresh ideas for today. Come back tomorrow for more.</p></div>}
+        {(loading || (ideas.length === 0 && !error && !limited)) && <div className="mt-6" role="status" aria-live="polite">
           <div className="leaf flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text"><span className="sprout-think-bob shrink-0"><Sprout mood="thinking" size={76} /></span><p key={step} className="idea-in min-w-0 flex-1 font-heading text-lg font-semibold">{["Looking at your loans...", profile.job ? `Thinking about ideas for ${/^[aeiou]/i.test(profile.job) ? "an" : "a"} ${profile.job.toLowerCase()}...` : "Thinking about ideas for you...", "Almost ready..."][step]}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>
           <div className="mt-5 grid gap-4" aria-hidden="true">{[0,1,2].map(i => <div key={i} className="leaf border bg-card p-5"><div className="idea-shimmer h-3 w-24 rounded-full" /><div className="idea-shimmer mt-4 h-5 w-3/4 rounded-full" /><div className="idea-shimmer mt-3 h-3 w-full rounded-full" /><div className="idea-shimmer mt-2 h-3 w-5/6 rounded-full" /><div className="idea-shimmer mt-5 h-10 w-full rounded-full" /></div>)}</div>
         </div>}

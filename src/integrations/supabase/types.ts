@@ -38,6 +38,24 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_advice_usage: {
+        Row: {
+          count: number
+          day: string
+          user_id: string
+        }
+        Insert: {
+          count?: number
+          day: string
+          user_id: string
+        }
+        Update: {
+          count?: number
+          day?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           data: Json | null
@@ -64,6 +82,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_ai_advice: {
+        Args: { _limit: number; _user: string }
+        Returns: boolean
+      }
       clean_clearday_json: { Args: { value: Json }; Returns: Json }
     }
     Enums: {
