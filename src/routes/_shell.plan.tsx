@@ -2,7 +2,7 @@ import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { markStartStep } from "@/lib/start-here";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Check, ChevronDown, ChevronUp, Flag, LoaderCircle, Sparkles, Square } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ChevronUp, Flag, Sparkles, Square } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { Button } from "@/components/ui/button";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
@@ -100,7 +100,7 @@ function MyPlan() {
             <div className="mt-2 flex flex-wrap gap-2">{row.milestones.map(label => <span key={label} className="chip-yellow max-w-full"><Flag className="size-3 shrink-0 fill-sun text-sun" /><span className="min-w-0 break-words">{label}{row.current && label !== "Debt free" ? " reached" : ""}</span></span>)}</div>
           </li>)}
         </ol>
-        <Button variant="outline" className="btn-secondary w-full" onClick={() => setExpanded(!expanded)}>{expanded ? <ChevronUp /> : <ChevronDown />}{expanded ? "Show key moments" : `Show every month (${timeline.length})`}</Button>
+        <Button variant="link" className="h-auto p-0 text-green-text" onClick={() => setExpanded(!expanded)}>{expanded ? <ChevronUp /> : <ChevronDown />}{expanded ? "Show key moments" : `Show every month (${timeline.length})`}</Button>
         <p className="mt-3 text-xs text-muted-foreground">Future dates are estimates. Past months show your logged payments; milestones already reached appear at today’s marker.</p>
       </section>
       <section aria-label="Ideas for you" className="min-w-0">
