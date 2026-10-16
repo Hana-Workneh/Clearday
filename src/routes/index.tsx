@@ -19,39 +19,30 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
-function FloatingLeaves() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      <span className="float-leaf leaf-lg absolute -left-10 top-24 size-40 bg-green opacity-[0.07]" />
-      <span className="float-leaf float-leaf-slow leaf-lg absolute right-[8%] top-16 size-24 bg-tip opacity-[0.08]" />
-      <span className="float-leaf float-leaf-fast leaf-lg absolute bottom-10 left-[12%] size-20 bg-sun opacity-[0.10]" />
-      <span className="float-leaf float-leaf-slow leaf-lg absolute -right-8 bottom-24 size-32 bg-green opacity-[0.06]" />
-    </div>
-  );
-}
 
 function Welcome() {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen" id="top">
       <WelcomeNav />
-      <section className="relative mx-auto max-w-5xl px-5 pb-10 pt-28 md:pt-32">
-        <FloatingLeaves />
+      <section className="relative mx-auto max-w-5xl px-5 pb-10 pt-24 md:pt-28">
         <div className="relative grid items-center gap-10 md:grid-cols-[1.1fr_1fr] md:gap-8">
           <div className="text-center md:text-left">
             <p className="text-sm font-semibold text-green-text">See the day you'll be free.</p>
-            <h1 className="mt-3 text-[32px] font-semibold leading-tight sm:text-4xl md:text-6xl">
+            <h1 className="mt-3 text-[30px] font-semibold leading-tight sm:text-[34px] md:text-5xl">
               <span className="block">Debt feels endless.</span>
               <span className="block">It doesn't have to.</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground md:mx-0">Add your loans and see the exact month you'll be debt free.</p>
+            <p className="mx-auto mt-4 max-w-md text-balance text-lg text-muted-foreground md:mx-0">Add your loans and see the exact month you'll be debt free.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
               <Button asChild className="btn-main"><Link to="/setup">Find my debt free date</Link></Button>
               <Button variant="outline" onClick={() => { startDemo(); navigate({ to: "/home" }); }} className="btn-secondary">Try the demo</Button>
             </div>
           </div>
-          <div className="flex justify-center md:justify-end">
-            <TryItCalculator />
+          <div className="relative flex justify-center md:justify-end">
+            <span aria-hidden="true" className="pointer-events-none absolute -left-2 -top-8 size-52 rounded-full bg-tip opacity-25 blur-3xl md:-left-10 md:size-72" />
+            <span aria-hidden="true" className="pointer-events-none absolute -bottom-10 -right-2 size-52 rounded-full bg-green opacity-20 blur-3xl md:-right-8 md:size-72" />
+            <div className="relative"><TryItCalculator /></div>
           </div>
         </div>
       </section>
