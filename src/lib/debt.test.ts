@@ -26,12 +26,13 @@ describe("debt engine", () => {
 
   it("sends extra money to the highest rate first", () => {
     const r = simulate([L("free", 0, 0, 100), L("low", 1000, 1, 10), L("high", 1000, 20, 10)], start);
-    expect(r.schedule[0].balances.high).toBeLessThan(r.schedule[0].balances.low);
+    const b = r.schedule[0]!.balances;
+    expect(b["high"]!).toBeLessThan(b["low"]!);
   });
 
   it("flags payments that don't cover interest and stops at 50 years", () => {
     const r = simulate([L("a", 10000, 24, 100)], start);
-    expect(r.underwater[0].minPayment).toBe(201);
+    expect(r.underwater[0]!.minPayment).toBe(201);
     expect(r.debtFreeDate).toBeNull();
     expect(r.schedule.length).toBe(600);
   });

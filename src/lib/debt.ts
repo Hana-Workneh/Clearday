@@ -26,8 +26,8 @@ export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
   const bal: Record<string, number> = {};
   loans.forEach((l) => (bal[l.id] = Math.max(0, l.balance)));
   const underwater = loans
-    .filter((l) => bal[l.id] > 0 && l.payment <= monthlyInterest(bal[l.id], l.rate))
-    .map((l) => ({ id: l.id, name: l.name, minPayment: Math.ceil(monthlyInterest(bal[l.id], l.rate) + 1) }));
+    .filter((l) => (bal[l.id] ?? 0) > 0 && l.payment <= monthlyInterest(bal[l.id] ?? 0, l.rate))
+    .map((l) => ({ id: l.id, name: l.name, minPayment: Math.ceil(monthlyInterest(bal[l.id] ?? 0, l.rate) + 1) }));
 
   // highest interest first
   const order = [...loans].sort((a, b) => b.rate - a.rate);
