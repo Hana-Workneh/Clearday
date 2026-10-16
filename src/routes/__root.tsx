@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { supabase } from "@/integrations/supabase/client";
+import { refreshAccount, clearAccount } from "@/lib/store";
 
 function NotFoundComponent() {
   return (
@@ -118,6 +120,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    void refreshAccount();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
+      if (!["SIGNED_IN", "SIGNED_OUT", "USER_UPDATED"].includes(event)) return;
+      if (event === "SIGNED_OUT") { clearAccount(); queryClient.clear(); }
+      else setTimeout(() => { void refreshAccount(); void queryClient.invalidateQueries(); }, 0);
+      void router.invalidate();
+    });
+    return () => subscription.unsubscribe();
+  }, [queryClient, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
