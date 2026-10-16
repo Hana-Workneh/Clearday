@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShellRouteImport } from './routes/_shell'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ShellHomeRouteImport } from './routes/_shell.home'
 import { Route as ShellPayFasterRouteImport } from './routes/_shell.pay-faster'
 import { Route as ShellPlanRouteImport } from './routes/_shell.plan'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const ShellRoute = ShellRouteImport.update({
   id: '/_shell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShellHomeRoute = ShellHomeRouteImport.update({
@@ -54,6 +60,7 @@ const ShellSettingsRoute = ShellSettingsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/setup': typeof SetupRoute
   '/home': typeof ShellHomeRoute
   '/pay-faster': typeof ShellPayFasterRoute
   '/plan': typeof ShellPlanRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/setup': typeof SetupRoute
   '/home': typeof ShellHomeRoute
   '/pay-faster': typeof ShellPayFasterRoute
   '/plan': typeof ShellPlanRoute
@@ -72,6 +80,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_shell': typeof ShellRouteWithChildren
+  '/setup': typeof SetupRoute
   '/_shell/home': typeof ShellHomeRoute
   '/_shell/pay-faster': typeof ShellPayFasterRoute
   '/_shell/plan': typeof ShellPlanRoute
@@ -80,13 +89,28 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/pay-faster' | '/plan' | '/progress' | '/settings'
+  fullPaths:
+    | '/'
+    | '/setup'
+    | '/home'
+    | '/pay-faster'
+    | '/plan'
+    | '/progress'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/pay-faster' | '/plan' | '/progress' | '/settings'
+  to:
+    | '/'
+    | '/setup'
+    | '/home'
+    | '/pay-faster'
+    | '/plan'
+    | '/progress'
+    | '/settings'
   id:
     | '__root__'
     | '/'
     | '/_shell'
+    | '/setup'
     | '/_shell/home'
     | '/_shell/pay-faster'
     | '/_shell/plan'
@@ -97,6 +121,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ShellRoute: typeof ShellRouteWithChildren
+  SetupRoute: typeof SetupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -113,6 +138,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof ShellRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_shell/home': {
@@ -174,6 +206,7 @@ const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ShellRoute: ShellRouteWithChildren,
+  SetupRoute: SetupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

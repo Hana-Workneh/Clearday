@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { saveProfile, demoProfile } from "@/lib/store";
 import { PlusCircle, CalendarHeart, Rocket } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -22,6 +23,7 @@ const steps = [
 ];
 
 function Welcome() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
@@ -37,12 +39,12 @@ function Welcome() {
         <h1 className="mt-3 text-4xl font-semibold leading-tight md:text-6xl">Debt feels endless. It doesn't have to.</h1>
         <p className="mt-5 text-lg text-muted-foreground">Add your loans and see the exact month you'll be debt free.</p>
         <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <Link to="/home" className="leaf bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90">
+          <Link to="/setup" className="leaf bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90">
             Find my debt free date
           </Link>
-          <Link to="/home" className="leaf border bg-card px-7 py-3.5 font-semibold transition hover:bg-secondary">
+          <button onClick={() => { saveProfile(demoProfile); navigate({ to: "/home" }); }} className="leaf border bg-card px-7 py-3.5 font-semibold transition hover:bg-secondary">
             Try the demo
-          </Link>
+          </button>
         </div>
       </section>
       <section className="mx-auto max-w-5xl px-5 py-16 md:py-24">
