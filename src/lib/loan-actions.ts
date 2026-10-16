@@ -1,4 +1,4 @@
-import type { Profile } from "./account-data";
+import type { Profile } from "./store";
 
 /** Removes a loan and every payment logged against it. */
 export function removeLoan<P extends Pick<Profile, "loans" | "payments">>(profile: P, loanId: string): P {
