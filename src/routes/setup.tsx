@@ -21,7 +21,7 @@ export const Route = createFileRoute("/setup")({
 const steps = ["Your income", "Your loans", "Your date"];
 const field = "leaf w-full border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-ring";
 const label = "mb-1.5 block text-sm font-semibold";
-const mainBtn = "leaf bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-40";
+const mainBtn = "btn-main";
 
 const emptyLoan = { name: "", balance: "", rate: "", payment: "" };
 
@@ -85,7 +85,7 @@ function Setup() {
         </ol>
 
         {step === 0 && (
-          <section className="leaf border bg-card p-6 md:p-8">
+          <section className="leaf-lg border bg-card p-6 md:p-8">
             <div className="flex items-center gap-4">
               <Sprout mood="waving" size={70} />
               <div>
@@ -109,7 +109,7 @@ function Setup() {
 
         {step === 1 && (
           <section className="grid gap-5">
-            <div className="leaf border bg-card p-6 md:p-8">
+            <div className="leaf-lg border bg-card p-6 md:p-8">
               <h1 className="text-2xl font-semibold">Your loans</h1>
               <p className="text-muted-foreground">Add each one. Rough numbers are totally fine.</p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -122,13 +122,13 @@ function Setup() {
                 <div className="sm:col-span-2"><label className={label} htmlFor="lp">Monthly payment ($)</label>
                   <input id="lp" type="number" min="0" className={field} value={draft.payment} onChange={(e) => setDraft({ ...draft, payment: e.target.value })} placeholder="80" /></div>
               </div>
-              <button onClick={addLoan} disabled={!draftValid} className="leaf mt-5 flex items-center gap-2 border bg-card px-5 py-3 font-semibold transition hover:bg-secondary disabled:opacity-40">
+              <button onClick={addLoan} disabled={!draftValid} className="btn-secondary mt-5 flex items-center gap-2">
                 <Plus className="h-4 w-4" /> {loans.length ? "Add another loan" : "Add this loan"}
               </button>
             </div>
 
             {loans.length > 0 && (
-              <div className="leaf border bg-card p-6">
+              <div className="leaf-lg border bg-card p-6">
                 <h2 className="text-lg font-semibold">Added so far 🌱</h2>
                 <ul className="mt-3 grid gap-2">
                   {loans.map((l) => {
@@ -160,14 +160,14 @@ function Setup() {
         )}
 
         {step === 2 && (
-          <section className="leaf border bg-card p-6 text-center md:p-10">
+          <section className="leaf-lg border bg-card p-6 text-center md:p-10">
             <div className="flex justify-center"><Sprout mood={revealed ? "cheering" : "thinking"} size={130} /></div>
             {!revealed ? (
               <p className="mt-6 text-lg text-muted-foreground">Crunching your numbers…</p>
             ) : plan.debtFreeDate ? (
               <div className="animate-in fade-in zoom-in-95 duration-700">
                 <p className="mt-6 text-lg font-semibold text-muted-foreground">You'll be debt free by</p>
-                <h1 className="mt-2 text-5xl font-bold text-green-text md:text-7xl">{formatMonth(plan.debtFreeDate)}</h1>
+                <h1 className="big-date mt-3">{formatMonth(plan.debtFreeDate)}</h1>
                 <p className="mt-4 text-muted-foreground">
                   That's {plan.monthsLeft} months away. Interest still to pay: {usd(plan.totalInterest)} ({daysOfWork(plan.totalInterest, +income)} {daysOfWork(plan.totalInterest, +income) === 1 ? "day" : "days"} of work).
                 </p>
@@ -187,7 +187,7 @@ function Setup() {
             )}
             {revealed && (
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <button onClick={() => setStep(1)} className="leaf border bg-card px-6 py-3 font-semibold hover:bg-secondary">Edit loans</button>
+                <button onClick={() => setStep(1)} className="btn-secondary">Edit loans</button>
                 <button className={mainBtn} onClick={() => navigate({ to: "/home" })}>Go to my home</button>
               </div>
             )}

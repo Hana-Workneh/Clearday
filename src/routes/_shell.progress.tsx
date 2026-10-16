@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_shell/progress")({
   component: Progress,
 });
 
-const card = "leaf border bg-card p-6";
+const card = "leaf-lg border bg-card p-6";
 const short = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
 const day = (s: string) => new Date(s + (s.length === 10 ? "T12:00:00" : "")).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
@@ -67,7 +67,7 @@ function Progress() {
       <div className={`${card} mx-auto max-w-xl text-center`}>
         <div className="flex justify-center"><Sprout mood="waving" size={110} /></div>
         <h1 className="mt-4 text-2xl font-semibold">Your progress will show up here.</h1>
-        <Link to="/setup" className="leaf mt-6 inline-block bg-primary px-7 py-3.5 font-semibold text-primary-foreground">Get started</Link>
+        <Link to="/setup" className="btn-main mt-6 inline-block">Get started</Link>
       </div>
     );
   }
@@ -81,8 +81,8 @@ function Progress() {
       <div className="flex items-center gap-4">
         <Sprout mood="cheering" size={70} />
         <div>
-          <h1 className="text-3xl font-semibold">Look how far you've come</h1>
-          <p className="text-muted-foreground">{pct}% of your debt paid. Every payment counts!</p>
+          <h1 className="page-title">Look how far you've come</h1>
+          <p className="page-sub mt-1">{pct}% of your debt paid. Every payment counts!</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ function Progress() {
         </div>
         <div>
           <p className="text-sm font-semibold text-muted-foreground">Now</p>
-          <p className="font-heading text-2xl font-bold text-green-text">Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}</p>
+          <p className="font-heading text-2xl font-bold">Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}</p>
         </div>
       </div>
 

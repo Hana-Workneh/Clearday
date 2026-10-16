@@ -39,10 +39,10 @@ function Welcome() {
         <h1 className="mt-3 text-4xl font-semibold leading-tight md:text-6xl">Debt feels endless. It doesn't have to.</h1>
         <p className="mt-5 text-lg text-muted-foreground">Add your loans and see the exact month you'll be debt free.</p>
         <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <Link to="/setup" className="leaf bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90">
+          <Link to="/setup" className="btn-main">
             Find my debt free date
           </Link>
-          <button onClick={() => { saveProfile(demoProfile); navigate({ to: "/home" }); }} className="leaf border bg-card px-7 py-3.5 font-semibold transition hover:bg-secondary">
+          <button onClick={() => { saveProfile(demoProfile); navigate({ to: "/home" }); }} className="btn-secondary">
             Try the demo
           </button>
         </div>
@@ -51,7 +51,7 @@ function Welcome() {
         <h2 className="text-center text-2xl font-semibold md:text-3xl">How it works</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="leaf border bg-card p-6">
+            <div key={s.title} className="leaf-lg border bg-card p-6">
               <div className="flex items-center gap-3">
                 <span className="leaf grid h-10 w-10 place-items-center bg-green/15 text-green-text"><s.icon className="h-5 w-5" /></span>
                 <span className="text-sm font-semibold text-muted-foreground">Step {i + 1}</span>

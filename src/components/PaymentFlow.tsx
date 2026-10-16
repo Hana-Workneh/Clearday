@@ -85,7 +85,7 @@ export function PaymentFlow() {
               Date
               <input className={field} type="date" required max={today()} value={date} onChange={(e) => setDate(e.target.value)} />
             </label>
-            <button className="leaf mt-2 bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90">Save payment</button>
+            <button className="btn-main mt-2">Save payment</button>
           </form>
         </DialogContent>
       </Dialog>
@@ -115,7 +115,7 @@ function Celebration({ days, pct }: { days: number; pct: number }) {
       ))}
       <Sprout mood="cheering" size={150} />
       <h2 className="mt-6 text-3xl font-bold md:text-4xl">Nice! You're {days} {days === 1 ? "day" : "days"} closer to debt free.</h2>
-      <p className="mt-4 font-heading text-6xl font-bold text-green-text animate-in zoom-in-50 duration-700">{pct}%</p>
+      <p className="mt-4 font-heading text-6xl font-bold tracking-tight animate-in zoom-in-50 duration-700">{pct}%</p>
       <p className="mt-1 font-semibold text-muted-foreground">of your debt paid</p>
     </div>
   );

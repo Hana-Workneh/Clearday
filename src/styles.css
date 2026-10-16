@@ -7,7 +7,7 @@
 @theme inline {
   --font-heading: "Outfit", sans-serif;
   --font-sans: "Manrope", sans-serif;
-  --radius-leaf: 24px 24px 24px 6px;
+  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -34,49 +34,79 @@
   --color-sun: var(--sun);
   --color-cheek: var(--cheek);
   --color-ink: var(--ink);
+  --color-chip-green: var(--chip-green);
+  --color-chip-green-text: var(--chip-green-text);
+  --color-chip-purple: var(--chip-purple);
+  --color-chip-purple-text: var(--chip-purple-text);
+  --color-bar: var(--bar);
+  --color-track: var(--track);
+  --color-line-strong: var(--line-strong);
 }
 
 :root {
-  --background: oklch(0.973 0.004 145);
-  --foreground: oklch(0.17 0.015 165);
-  --card: oklch(1 0 0);
-  --border: oklch(0.92 0.007 145);
-  --secondary: oklch(0.95 0.006 145);
-  --muted-foreground: oklch(0.46 0.02 165);
-  --primary: oklch(0.17 0.015 165);
-  --primary-foreground: oklch(0.97 0.004 165);
+  --background: #F6F7F5;
+  --foreground: #0B1411;
+  --card: #FFFFFF;
+  --border: #E4E7E3;
+  --secondary: #F6F7F5;
+  --muted-foreground: #4E5D57;
+  --primary: #0B1411;
+  --primary-foreground: #FFFFFF;
   --green: #00C875;
-  --green-text: oklch(0.5 0.12 155);
+  --green-text: #087A4A;
   --leaf-dark: #087A4A;
   --leaf-mint: #4EE0A0;
   --shine: #ffffff;
-  --tip: oklch(0.55 0.23 285);
-  --sun: oklch(0.86 0.16 85);
+  --tip: #6B4EFF;
+  --sun: #FFC93C;
   --cheek: oklch(0.8 0.1 10);
-  --ink: oklch(0.17 0.015 165);
+  --ink: #0B1411;
+  --chip-green: #E3F7EC;
+  --chip-green-text: #087A4A;
+  --chip-purple: #ECE8FF;
+  --chip-purple-text: #4A33C9;
+  --bar: #CDD3CF;
+  --track: #EEF1EF;
+  --line-strong: #D5DAD7;
 }
 
 .dark {
-  --background: oklch(0.15 0.005 165);
-  --foreground: oklch(0.965 0.005 165);
-  --card: oklch(0.2 0.008 165);
-  --border: oklch(0.27 0.01 165);
-  --secondary: oklch(0.24 0.008 165);
-  --muted-foreground: oklch(0.7 0.017 165);
-  --primary: oklch(0.965 0.005 165);
-  --primary-foreground: oklch(0.17 0.015 165);
+  --background: #0A0D0C;
+  --foreground: #F1F5F3;
+  --card: #141917;
+  --border: #232A27;
+  --secondary: #0F1312;
+  --muted-foreground: #98A6A0;
+  --primary: #F1F5F3;
+  --primary-foreground: #0A0D0C;
   --green: #00DF81;
-  --green-text: oklch(0.8 0.19 158);
-  --tip: oklch(0.64 0.19 285);
+  --green-text: #00DF81;
+  --tip: #8B74FF;
+  --chip-green: #0F2A1E;
+  --chip-green-text: #00DF81;
+  --chip-purple: #221C40;
+  --chip-purple-text: #B3A5FF;
+  --bar: #3A4440;
+  --track: #232A27;
+  --line-strong: #2E3733;
 }
 
 @layer base {
   * { border-color: var(--color-border); }
+  button, .font-heading { font-family: var(--font-heading); }
   body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
   h1, h2, h3 { font-family: var(--font-heading); }
 }
 
-@utility leaf { border-radius: 24px 24px 24px 6px; }
+@utility leaf { border-radius: 20px 20px 20px 6px; }
+@utility leaf-lg { border-radius: 28px 28px 28px 8px; }
+@utility btn-main { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 54px; padding: 0 1.75rem; border-radius: 9999px; background: var(--primary); color: var(--primary-foreground); font-family: var(--font-heading); font-weight: 600; transition: opacity .15s; &:hover { opacity: .9 } &:disabled { opacity: .45 } }
+@utility btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 54px; padding: 0 1.75rem; border-radius: 9999px; border: 1.5px solid var(--line-strong); background: var(--card); color: var(--foreground); font-family: var(--font-heading); font-weight: 600; transition: background .15s; &:hover { background: var(--secondary) } &:disabled { opacity: .45 } }
+@utility chip-green { display: inline-flex; align-items: center; border-radius: 9999px; padding: .3rem .8rem; font-size: 13px; font-weight: 700; background: var(--chip-green); color: var(--chip-green-text); }
+@utility chip-purple { display: inline-flex; align-items: center; border-radius: 9999px; padding: .3rem .8rem; font-size: 13px; font-weight: 700; background: var(--chip-purple); color: var(--chip-purple-text); }
+@utility page-title { font-family: var(--font-heading); font-size: 30px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.15; }
+@utility page-sub { font-size: 14px; color: var(--muted-foreground); }
+@utility big-date { font-family: var(--font-heading); font-size: 52px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; color: var(--foreground); @media (min-width: 768px) { font-size: 58px } }
 
 @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
 @keyframes wave { 0%,100% { transform: rotate(0) } 50% { transform: rotate(-25deg) } }
