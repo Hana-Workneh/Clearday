@@ -34,11 +34,12 @@ function MyPlan() {
   const [error, setError] = useState("");
   const [terminal, setTerminal] = useState(false);
   const [limited, setLimited] = useState(false);
+  const [note, setNote] = useState(false);
   const abort = useRef<AbortController | null>(null);
   const [step, setStep] = useState(0);
   const [cacheKey, setCacheKey] = useState<string | null>(null);
   const options = profile ? planOptions(profile, now) : {};
-  const fingerprint = JSON.stringify(profile ? { job: profile.job, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
+  const fingerprint = JSON.stringify(profile ? { job: profile.job, skills: profile.skills || undefined, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
   useEffect(() => { setIdeas(profile?.demo ? [
     {title: "A small weekend project", detail: "Offer a short social-media content session to a local business, with your employer’s permission. One small project could leave around 30 after costs.", monthlyAmount: 30, kind: "earn"},
     {title: "Bring lunch twice a week", detail: "Use food you already buy to pack lunch on two workdays. Keeping essentials covered could save around 20 each month.", monthlyAmount: 20, kind: "save"},
@@ -54,7 +55,7 @@ function MyPlan() {
       setCacheKey(key);
       try {
         const saved = key ? JSON.parse(localStorage.getItem(key) ?? "null") : null;
-        if (saved && saved.fingerprint === fingerprint && Array.isArray(saved.ideas) && saved.ideas.length) { setIdeas(safeIdeas({ ideas: saved.ideas })); return; }
+        if (saved && saved.fingerprint === fingerprint && Array.isArray(saved.ideas) && saved.ideas.length) { setIdeas(safeIdeas({ ideas: saved.ideas })); setNote(saved.note === true); return; }
       } catch { /* ignore broken cache */ }
       autoRun.current?.();
     });
@@ -72,7 +73,7 @@ function MyPlan() {
     if (loading || terminal) return;
     const controller = new AbortController(); abort.current = controller;
     const previous = ideas;
-    setLoading(true); setError(""); setLimited(false); setIdeas([]);
+    setLoading(true); setError(""); setLimited(false); setIdeas([]); setNote(false);
     let timedOut = false;
     const timer = setTimeout(() => { timedOut = true; controller.abort(); }, 15000);
     try {
@@ -95,7 +96,7 @@ function MyPlan() {
           if (!line.trim()) continue;
           const event = JSON.parse(line);
           if (event.type === "error") throw new Error(event.message);
-          if (event.type === "result") { const fresh = safeIdeas({ ideas: event.ideas }); setIdeas(fresh); received = true; if (cacheKey && fresh.length) localStorage.setItem(cacheKey, JSON.stringify({ fingerprint, ideas: fresh })); }
+          if (event.type === "result") { const fresh = safeIdeas({ ideas: event.ideas }); const n = event.note === true; setIdeas(fresh); setNote(n); received = true; if (cacheKey && fresh.length) localStorage.setItem(cacheKey, JSON.stringify({ fingerprint, ideas: fresh, note: n })); }
         }
         if (chunk.done) break;
       }
@@ -137,10 +138,12 @@ function MyPlan() {
           <div className="mt-5 grid gap-4" aria-hidden="true">{[0,1,2].map(i => <div key={i} className="leaf border bg-card p-5"><div className="idea-shimmer h-3 w-24 rounded-full" /><div className="idea-shimmer mt-4 h-5 w-3/4 rounded-full" /><div className="idea-shimmer mt-3 h-3 w-full rounded-full" /><div className="idea-shimmer mt-2 h-3 w-5/6 rounded-full" /><div className="idea-shimmer mt-5 h-10 w-full rounded-full" /></div>)}</div>
         </div>}
         {error && !loading && <div className="leaf mt-6 flex flex-col items-center gap-3 border bg-card p-6 text-center" role="alert"><Sprout mood="calm" size={80} /><p className="font-heading text-lg font-semibold">{error === "timeout" || !terminal ? "That took too long. Try again?" : error}</p>{error !== "timeout" && !terminal && error.length > 0 && <p className="text-sm text-muted-foreground">{error}</p>}{!terminal && <Button className="btn-main" onClick={generate}>Try again</Button>}</div>}
+        {note && ideas.length > 0 && !loading && <p className="mt-5 text-sm text-muted-foreground"><Link to="/settings" className="font-semibold text-green-text underline-offset-2 hover:underline">Add your job in Settings</Link> for ideas made for you.</p>}
         <div className="mt-5 grid gap-4">{ideas.map((idea,i) => {
           const impact = ideaImpact(profile.loans, options, idea.monthlyAmount, now);
           return <article key={`${idea.title}-${i}`} style={{ animationDelay: `${i * 150}ms` }} className="idea-in leaf bg-chip-purple p-5 text-chip-purple-text">
             <div className="flex items-center justify-between gap-2"><span className="text-xs font-bold uppercase">{idea.kind === "earn" ? "Earn a little" : "Save a little"}</span><Sparkles className="size-4" /></div>
+            {idea.tag && <span className="mt-3 inline-flex rounded-full bg-card px-3 py-1 text-xs font-bold text-chip-purple-text">{idea.tag}</span>}
             <h3 className="font-heading mt-3 text-lg font-semibold">{idea.title}</h3><p className="mt-2 text-sm leading-relaxed">{idea.detail}</p>
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1"><p className="font-heading text-2xl font-bold text-foreground">~{usd(idea.monthlyAmount)}<span className="text-sm font-normal"> / month</span></p><span className="text-sm font-semibold">{impact.monthsSooner === null ? impact.nextDate ? `Debt free ${formatMonth(impact.nextDate)}` : "Explore your new date" : impact.monthsSooner > 0 ? `${impact.monthsSooner} ${impact.monthsSooner === 1 ? "month" : "months"} sooner` : "Less interest, same month"}</span></div>
             <Button variant="outline" className="btn-secondary mt-4 w-full" onClick={() => navigate({ to: "/pay-faster", search: { extra: extraFromIdea(options, idea.monthlyAmount) } })}>Try this <ArrowRight /></Button>
