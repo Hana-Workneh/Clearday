@@ -31,7 +31,7 @@ export function safeAdvice(value: unknown): { ideas: Idea[]; note: boolean } {
   const label = cleanText(parsed.jobLabel).slice(0, 60);
   const usable = label.length > 1 && !rude.test(label);
   const sorted = [...parsed.ideas].sort((a, b) => Number(b.forJob) - Number(a.forJob));
-  const ideas = safeIdeas({ ideas: sorted.map(({ forJob, ...i }) => ({ ...i, ...(usable && forJob ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label.charAt(0).toLowerCase() + label.slice(1)}` } : {}) })) });
+  const ideas = safeIdeas({ ideas: sorted.map(({ forJob, ...i }) => ({ ...i, ...(usable && forJob ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label}` } : {}) })) });
   return { ideas, note: !usable };
 }
 

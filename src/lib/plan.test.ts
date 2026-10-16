@@ -30,7 +30,7 @@ describe("My plan", () => {
 describe("safeAdvice job tags", () => {
   const idea = (forJob: boolean, title = "Idea") => ({ title, detail: "A small step.", monthlyAmount: 23, kind: "earn" as const, forJob });
   it("tags job ideas with the cleaned job and lists them first", () => {
-    const r = safeAdvice({ jobLabel: "Nurse", ideas: [idea(false, "g"), idea(true, "a"), idea(true, "b"), idea(true, "c")] });
+    const r = safeAdvice({ jobLabel: "nurse", ideas: [idea(false, "g"), idea(true, "a"), idea(true, "b"), idea(true, "c")] });
     expect(r.ideas.map(i => i.tag)).toEqual(["Because you're a nurse", "Because you're a nurse", "Because you're a nurse", undefined]);
     expect(r.note).toBe(false);
     expect(r.ideas[0]!.monthlyAmount).toBe(20);
