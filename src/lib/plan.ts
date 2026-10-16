@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { addMonths, simulate, type Loan, type PlanOptions } from "./debt";
 import type { Profile } from "./store";
+import { cleanText } from "./account-data";
 
 export const adviceInputSchema = z.object({
   currency: z.enum(["USD", "RWF", "KES", "ETB"]).default("USD"),
-  job: z.string().max(120), income: z.number().finite().min(0).max(1000000),
+  job: z.string().transform(cleanText).pipe(z.string().max(160)), income: z.number().finite().min(0).max(100000000),
   loans: z.array(z.object({ id: z.string().min(1).max(100), name: z.string().max(120), balance: z.number().finite().min(0).max(100000000), startBalance: z.number().finite().min(0).max(100000000), rate: z.number().finite().min(0).max(1000), payment: z.number().finite().min(0).max(1000000) })).min(1).max(30),
   plan: z.object({ extra: z.number().finite().min(0).max(1000000).optional(), strategy: z.enum(["avalanche", "snowball", "order"]).optional(), boost: z.object({ amount: z.number().finite().min(0).max(1000000), months: z.number().int().min(0).max(600) }).optional() }),
 });

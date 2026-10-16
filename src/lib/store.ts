@@ -95,6 +95,8 @@ export function loadProfile(): Profile | null {
 }
 
 export async function saveProfile(p: Profile) {
+  const cleaned = profileSchema.parse(p);
+  p = {...cleaned, ...(p.demo ? {demo: true} : {})};
   if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); notify(); return; }
   if (!p.startedAt) p = {...p, startedAt: today(), startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null};
   if (accountId) {
