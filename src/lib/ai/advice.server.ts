@@ -44,6 +44,9 @@ export async function handleAdvice(request: Request) {
   const { data: gate, error: gateError } = await supabaseAdmin.from("ai_advice_gate").select("status,message,kind").eq("id", "advice").maybeSingle();
   if (gateError) return Response.json({ message: "Suggestions are temporarily unavailable. Your timeline is still ready." }, { status: 503, headers });
   if (gate) return Response.json({ message: gate.message }, { status: gate.status, headers });
+  const { data: allowed, error: limitError } = await supabaseAdmin.rpc("claim_ai_advice", { _user: user.user.id, _limit: 5 });
+  if (limitError) return Response.json({ message: "Suggestions are temporarily unavailable. Your timeline is still ready." }, { status: 503, headers });
+  if (!allowed) return Response.json({ message: "You've got fresh ideas for today. Come back tomorrow for more.", limit: true }, { status: 429, headers });
   let resolveUpstream: (value: { status: number; message: string; headers: Headers } | null) => void = () => {};
   const upstreamReady = new Promise<{ status: number; message: string; headers: Headers } | null>(resolve => { resolveUpstream = resolve; });
   const { result } = createResponsesCall(request, {
