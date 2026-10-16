@@ -3,12 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
-import { simulate, formatMonth, daysOfWork } from "@/lib/debt";
+import { simulate, formatMonth, workDaysLabel } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
 import { isDebtFree, nextWin } from "@/lib/celebration";
 import { ideaImpact, extraFromIdea } from "@/lib/plan";
+import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_shell/home")({
@@ -66,6 +67,8 @@ function Home() {
         </div>
       </div>
 
+      {!profile.demo && <StartHere hasPayment={(profile.payments ?? []).length > 0} />}
+
       <QuietCard profile={profile} />
 
       {win && <div role="status" className="chip-yellow w-fit max-w-full"><Star aria-hidden className="size-4 shrink-0 fill-sun text-sun" /><span>{win.reached ? `You reached ${win.name}!` : `Next win: ${win.name}, ${usd(win.remaining)} to go`}</span></div>}
@@ -79,9 +82,9 @@ function Home() {
           {plan.monthsLeft && <p className="mt-3 text-sm text-muted-foreground">{plan.monthsLeft} months to go</p>}</div>
           <div className="mt-7"><div className="flex gap-1.5 sm:gap-2" role="progressbar" aria-label="Debt paid" aria-valuenow={Math.max(0, Math.min(100, pct))} aria-valuemin={0} aria-valuemax={100}>
             {Array.from({ length: 10 }, (_, i) => (
-              <span key={i} className={`h-3.5 min-w-0 flex-1 rounded-full ${i < filled ? "bg-green" : "bg-track"}`} />
+              <span key={i} className={`h-3.5 min-w-0 flex-1 rounded-full ${i < filled ? "bg-green" : pct === 0 && i === 0 ? "bg-green/40 animate-pulse" : "bg-track"}`} />
             ))}
-          </div><p className="mt-3 text-sm font-semibold">{pct}% of the way there</p></div>
+          </div><p className="mt-3 text-sm font-semibold">{pct === 0 ? "Day 1. Your first payment fills the first pill." : `${pct}% of the way there`}</p></div>
         </section>
         <div className="grid min-w-0 gap-5 xl:grid-cols-2">
           <div className={`${card} flex min-w-0 flex-col items-start justify-between gap-4`}>
@@ -94,7 +97,7 @@ function Home() {
             <span className="grid size-10 place-items-center rounded-full bg-chip-purple text-chip-purple-text"><BriefcaseBusiness className="size-5" /></span>
             <div>
             <p className="text-sm font-semibold text-muted-foreground">Days of work to pay interest</p>
-            <p className="mt-3 font-heading text-3xl font-bold">{daysOfWork(plan.totalInterest, profile.income)}</p></div>
+            <p className="mt-3 font-heading text-3xl font-bold">{workDaysLabel(plan.totalInterest, profile.income)}</p></div>
           </div>
         </div>
       </div>

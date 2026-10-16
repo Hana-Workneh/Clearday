@@ -5,6 +5,7 @@ import { Sprout } from "@/components/Sprout";
 import { Slider } from "@/components/ui/slider";
 import { simulate, formatMonth, type PlanResult, type Strategy } from "@/lib/debt";
 import { saveProfile, useProfile, planOptions } from "@/lib/store";
+import { markStartStep } from "@/lib/start-here";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
   validateSearch: (search: Record<string, unknown>): { extra?: number } => {
@@ -33,6 +34,7 @@ const options: { key: Strategy; title: string; text: string }[] = [
 
 function PayFaster() {
   const profile = useProfile();
+  useEffect(() => { markStartStep("payFaster"); }, []);
   const usd = (n: number) => money(n, profile?.currency);
   const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
