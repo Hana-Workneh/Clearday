@@ -12,7 +12,7 @@ const boost = z.object({amount, months: z.number().int().min(1).max(600)});
 const loan = z.object({ id, name: text(120).pipe(z.string().min(1)), balance: amount, startBalance: amount, rate: z.number().finite().min(0).max(1000), payment: amount.pipe(z.number().positive()) });
 export const profileSchema = z.object({
   savingsGoal: z.object({ name: text(100).pipe(z.string().min(1)), amount: amount.pipe(z.number().positive()) }).optional(),
-  name: text(100).pipe(z.string().min(1)), income: amount.pipe(z.number().positive()), job: text(160), currency: z.enum(currencies).default("USD"), theme: z.enum(["light", "dark"]).optional(),
+  name: text(100).pipe(z.string().min(1)), income: amount.pipe(z.number().positive()), job: text(160), skills: text(160).optional(), currency: z.enum(currencies).default("USD"), theme: z.enum(["light", "dark"]).optional(),
   loans: z.array(loan).max(100), payments: z.array(z.object({ id, loanId: id, amount: amount.pipe(z.number().positive()), date })).max(10000).optional(),
   plan: z.object({ extra: amount.optional(), strategy: z.enum(["avalanche", "snowball", "order"]).optional(), boost: boost.optional() }).optional(),
   startedAt: timestamp.optional(), startDebtFree: timestamp.nullable().optional(), catchUp: boost.extend({from: timestamp}).optional(), quietSeen: z.record(date).optional(),

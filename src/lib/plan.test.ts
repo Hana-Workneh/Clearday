@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea } from "./plan";
+import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea , safeAdvice } from "./plan";
 import type { Profile } from "./store";
 const now = new Date(2026, 9, 16);
 const profile: Profile = { name: "A", job: "Barista", income: 3000, startedAt: "2026-09-01", loans: [{ id: "a", name: "A", balance: 100, startBalance: 100, rate: 0, payment: 50 }, { id: "b", name: "B", balance: 300, startBalance: 300, rate: 0, payment: 50 }], payments: [{ id: "p", loanId: "a", amount: 50, date: "2026-09-05" }] };
@@ -25,5 +25,30 @@ describe("My plan", () => {
     const ideas = safeIdeas({ ideas: [1,2,3,4,5,6].map(() => ({ title: "Packed lunch", detail: "Use groceries you already buy.", monthlyAmount: 900, kind: "save" })) });
     expect(ideas).toHaveLength(5); expect(ideas[0]?.monthlyAmount).toBe(300);
     expect(() => safeIdeas({ ideas: ideas.slice(0,2) })).toThrow();
+  });
+});
+describe("safeAdvice job tags", () => {
+  const idea = (forJob: boolean, title = "Idea") => ({ title, detail: "A small step.", monthlyAmount: 23, kind: "earn" as const, forJob });
+  it("tags job ideas with the cleaned job and lists them first", () => {
+    const r = safeAdvice({ jobLabel: "nurse", ideas: [idea(false, "g"), idea(true, "a"), idea(true, "b"), idea(true, "c")] });
+    expect(r.ideas.map(i => i.tag)).toEqual(["Because you're a nurse", "Because you're a nurse", "Because you're a nurse", undefined]);
+    expect(r.note).toBe(false);
+    expect(r.ideas[0]!.monthlyAmount).toBe(20);
+  });
+  it("keeps names like Uber capitalised", () => {
+    expect(safeAdvice({ jobLabel: "Uber driver", ideas: [idea(true), idea(true), idea(true)] }).ideas[0]!.tag).toBe("Because you're an Uber driver");
+  });
+  it("uses 'an' before vowels", () => {
+    expect(safeAdvice({ jobLabel: "office manager", ideas: [idea(true), idea(true), idea(true)] }).ideas[0]!.tag).toBe("Because you're an office manager");
+  });
+  it("shows the Settings note and no tags for an empty job", () => {
+    const r = safeAdvice({ jobLabel: "", ideas: [idea(true), idea(false), idea(false)] });
+    expect(r.note).toBe(true);
+    expect(r.ideas.every(i => !i.tag)).toBe(true);
+  });
+  it("never repeats a rude job label", () => {
+    const r = safeAdvice({ jobLabel: "shithead", ideas: [idea(true), idea(true), idea(true)] });
+    expect(r.note).toBe(true);
+    expect(r.ideas.every(i => !i.tag)).toBe(true);
   });
 });
