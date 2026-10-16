@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { startDemo, useAccount } from "@/lib/store";
+import { startDemo } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { WelcomeSections } from "@/components/WelcomeSections";
-import { WelcomeDashboardPreview } from "@/components/WelcomeDashboardPreview";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { CleardayLogo } from "@/components/CleardayLogo";
+import { WelcomeNav } from "@/components/WelcomeNav";
+import { TryItCalculator } from "@/components/TryItCalculator";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,30 +19,41 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
+function FloatingLeaves() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      <span className="float-leaf leaf-lg absolute -left-10 top-24 size-40 bg-green opacity-[0.07]" />
+      <span className="float-leaf float-leaf-slow leaf-lg absolute right-[8%] top-16 size-24 bg-tip opacity-[0.08]" />
+      <span className="float-leaf float-leaf-fast leaf-lg absolute bottom-10 left-[12%] size-20 bg-sun opacity-[0.10]" />
+      <span className="float-leaf float-leaf-slow leaf-lg absolute -right-8 bottom-24 size-32 bg-green opacity-[0.06]" />
+    </div>
+  );
+}
+
 function Welcome() {
   const navigate = useNavigate();
-  const account = useAccount();
   return (
-    <div className="min-h-screen">
-      <header className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-5 py-5 sm:flex sm:justify-between">
-        <div className="flex min-w-0 items-center gap-2">
-          <CleardayLogo />
+    <div className="min-h-screen" id="top">
+      <WelcomeNav />
+      <section className="relative mx-auto max-w-5xl px-5 pb-10 pt-28 md:pt-32">
+        <FloatingLeaves />
+        <div className="relative grid items-center gap-10 md:grid-cols-[1.1fr_1fr] md:gap-8">
+          <div className="text-center md:text-left">
+            <p className="text-sm font-semibold text-green-text">See the day you'll be free.</p>
+            <h1 className="mt-3 text-[32px] font-semibold leading-tight sm:text-4xl md:text-6xl">
+              <span className="block">Debt feels endless.</span>
+              <span className="block">It doesn't have to.</span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-md text-lg text-muted-foreground md:mx-0">Add your loans and see the exact month you'll be debt free.</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
+              <Button asChild className="btn-main"><Link to="/setup">Find my debt free date</Link></Button>
+              <Button variant="outline" onClick={() => { startDemo(); navigate({ to: "/home" }); }} className="btn-secondary">Try the demo</Button>
+            </div>
+          </div>
+          <div className="flex justify-center md:justify-end">
+            <TryItCalculator />
+          </div>
         </div>
-        <div className="flex items-center gap-3"><Button asChild variant="ghost"><Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link></Button><ThemeToggle /></div>
-      </header>
-      <section className="mx-auto flex max-w-3xl flex-col items-center px-5 pt-8 text-center md:pt-14">
-        <p className="mt-4 text-sm font-semibold text-green-text">See the day you'll be free.</p>
-        <h1 className="mt-3 text-[32px] font-semibold leading-tight sm:text-4xl md:text-6xl"><span className="block">Debt feels endless.</span><span className="block">It doesn't have to.</span></h1>
-        <p className="mt-5 text-lg text-muted-foreground">Add your loans and see the exact month you'll be debt free.</p>
-        <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <Button asChild className="btn-main"><Link to="/setup">
-            Find my debt free date
-          </Link></Button>
-          <Button variant="outline" onClick={() => { startDemo(); navigate({ to: "/home" }); }} className="btn-secondary">
-            Try the demo
-          </Button>
-        </div>
-        <WelcomeDashboardPreview />
       </section>
       <WelcomeSections />
     </div>
