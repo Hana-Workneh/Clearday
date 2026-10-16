@@ -41,15 +41,16 @@ export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
     let pool = 0;
     let interestThisMonth = 0;
     for (const l of loans) {
-      if (bal[l.id] <= 0) {
+      let b = bal[l.id] ?? 0;
+      if (b <= 0) {
         pool += l.payment; // freed payment rolls over
         continue;
       }
-      const i = monthlyInterest(bal[l.id], l.rate);
+      const i = monthlyInterest(b, l.rate);
       interestThisMonth += i;
-      bal[l.id] += i;
-      const pay = Math.min(l.payment, bal[l.id]);
-      bal[l.id] -= pay;
+      b += i;
+      const pay = Math.min(l.payment, b);
+      bal[l.id] = b - pay;
       pool += l.payment - pay; // leftover on a loan finishing this month
     }
     for (const l of order) {
@@ -57,7 +58,7 @@ export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
       const b = bal[l.id] ?? 0;
       if (b <= 0) continue;
       const pay = Math.min(pool, b);
-      bal[l.id] -= pay;
+      bal[l.id] = b - pay;
       pool -= pay;
     }
     for (const id in bal) if ((bal[id] ?? 0) < 0.005) bal[id] = 0;
