@@ -2,7 +2,8 @@ import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Lock, Leaf } from "lucide-react";
+import { Lock, Leaf, Star, Plus } from "lucide-react";
+import { openPayment } from "@/components/PaymentFlow";
 import { Sprout } from "@/components/Sprout";
 import { Button } from "@/components/ui/button";
 import { simulate, formatMonth } from "@/lib/debt";
@@ -129,21 +130,25 @@ function Progress() {
       <div className={card}>
         <h2 className="text-xl font-semibold">Badges</h2>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {badges.map((b) => (
-            <div key={b.name} className={`leaf flex items-center gap-3 border p-4 ${b.got ? "badge-win border-sun bg-chip-yellow text-chip-yellow-text ring-1 ring-sun" : "bg-secondary opacity-60 grayscale"}`}>
-              <span className={`leaf flex h-10 w-10 shrink-0 items-center justify-center ${b.got ? "bg-sun text-ink" : "bg-muted-foreground/20 text-muted-foreground"}`}>
-                {b.got ? <Leaf className="h-5 w-5" /> : <Lock className="h-4 w-4" />}
+          {badges.map((b, i) => { const next = !b.got && i === badges.findIndex(x => !x.got); return (
+            <div key={b.name} className={`leaf flex items-center gap-3 border p-4 ${b.got ? "badge-win border-sun bg-chip-yellow text-chip-yellow-text ring-1 ring-sun" : next ? "border-2 border-sun bg-card" : "bg-secondary opacity-60 grayscale"}`}>
+              <span className={`leaf flex h-10 w-10 shrink-0 items-center justify-center ${b.got ? "bg-sun text-ink" : next ? "bg-chip-yellow text-chip-yellow-text" : "bg-muted-foreground/20 text-muted-foreground"}`}>
+                {b.got ? <Leaf className="h-5 w-5" /> : next ? <Star className="h-4 w-4 fill-sun text-sun" /> : <Lock className="h-4 w-4" />}
               </span>
-              <span className={`font-semibold ${b.got ? "" : "text-muted-foreground"}`}>{b.name}</span>
+              <span className="min-w-0">{next && <span className="block text-xs font-bold uppercase tracking-wide text-muted-foreground">Next up</span>}<span className={`font-semibold ${b.got || next ? "" : "text-muted-foreground"}`}>{b.name}</span></span>
             </div>
-          ))}
+          ); })}
         </div>
       </div>
 
       <div className={card}>
         <h2 className="text-xl font-semibold">Payments</h2>
         {payments.length === 0 ? (
-          <p className="mt-3 text-muted-foreground">No payments yet. Tap "I made a payment" when you pay one.</p>
+          <div className="mt-4 flex flex-col items-center gap-3 py-4 text-center">
+            <Sprout mood="waving" size={90} />
+            <p className="font-semibold">Your first payment will show up here</p>
+            {!profile.demo && <Button className="btn-main" onClick={() => openPayment()}><Plus />I made a payment</Button>}
+          </div>
         ) : (
           <ul className="mt-3 divide-y">
             {payments.map((p) => (

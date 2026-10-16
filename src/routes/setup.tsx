@@ -5,9 +5,11 @@ import { Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
 import { SetupCompanion } from "@/components/SetupCompanion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CleardayLogo } from "@/components/CleardayLogo";
-import { simulate, formatMonth, daysOfWork, type Loan } from "@/lib/debt";
+import { simulate, formatMonth, workDaysLabel, addMonths, type Loan } from "@/lib/debt";
 import { loadProfile, saveProfile, useProfile } from "@/lib/store";
 import { Button } from "@/components/ui/button";
+import { Sprout } from "@/components/Sprout";
+import { Confetti } from "@/components/Confetti";
 import { emptyLoan, loanErrors, loanNumber, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
 
 export const Route = createFileRoute("/setup")({
@@ -94,7 +96,7 @@ function Setup() {
       if (!next?.length || !await persistLoans(next)) return;
       resetDraft();
       setRevealed(false);
-      setTimeout(() => setRevealed(true), 1200);
+      setTimeout(() => setRevealed(true), 1500);
     }
     setStep(s);
   };
@@ -167,14 +169,15 @@ function Setup() {
         {step === 2 && (
           <section className="py-8 text-center lg:py-12">
             {!revealed ? (
-              <p className="mt-6 text-lg text-muted-foreground">Crunching your numbers…</p>
+              <div className="flex flex-col items-center animate-in fade-in duration-300"><Sprout mood="thinking" size={120} /><p className="mt-6 text-lg font-semibold text-muted-foreground" role="status">Working it out...</p></div>
             ) : plan.debtFreeDate ? (
-              <div className="animate-in fade-in zoom-in-95 duration-700">
+              <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-700">
+                <Confetti />
+                <Sprout mood="cheering" size={120} />
                 <p className="mt-6 text-lg font-semibold text-muted-foreground">You'll be debt free by</p>
-                <h1 className="big-date mt-3">{formatMonth(plan.debtFreeDate)}</h1>
-                <p className="mt-4 text-muted-foreground">
-                  That's {plan.monthsLeft} months away. Interest still to pay: {usd(plan.totalInterest)} ({daysOfWork(plan.totalInterest, +income)} {daysOfWork(plan.totalInterest, +income) === 1 ? "day" : "days"} of work).
-                </p>
+                <h1 className="big-date mt-3" aria-live="polite"><CountUpMonth target={plan.debtFreeDate} /></h1>
+                <p className="mt-3 text-sm text-muted-foreground">That's {plan.monthsLeft} months away.</p>
+                <p className="mx-auto mt-5 max-w-md font-heading text-xl font-semibold leading-snug">Right now you'd work {workDaysLabel(plan.totalInterest, +income)} just to pay interest. Let's win some of those days back.</p>
               </div>
             ) : (
               <div className="animate-in fade-in duration-700">
@@ -190,9 +193,9 @@ function Setup() {
               </div>
             )}
             {revealed && (
-              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <Button variant="outline" onClick={() => setStep(1)} className="btn-secondary">Edit loans</Button>
-                <Button className={mainBtn} onClick={() => navigate({ to: "/home" })}>Go to my home</Button>
+              <div className="mt-8 flex flex-col items-center gap-3">
+                {plan.debtFreeDate ? <Button className={`${mainBtn} w-full sm:w-auto sm:min-w-56`} onClick={() => navigate({ to: "/pay-faster" })}>Show me how</Button> : <Button className={mainBtn} onClick={() => setStep(1)}>Edit loans</Button>}
+                <div className="flex gap-2">{plan.debtFreeDate && <Button variant="ghost" onClick={() => setStep(1)}>Edit loans</Button>}<Button variant="ghost" onClick={() => navigate({ to: "/home" })}>Go to my home</Button></div>
               </div>
             )}
           </section>
@@ -210,4 +213,17 @@ function UnderwaterNote({ min, currency }: { min: number; currency: Currency }) 
       This payment doesn't cover the interest yet. Paying at least {money(min, currency)} a month will start shrinking it.
     </p>
   );
+}
+
+function CountUpMonth({ target }: { target: Date }) {
+  const total = Math.max(0, (target.getFullYear() - new Date().getFullYear()) * 12 + target.getMonth() - new Date().getMonth());
+  const [shown, setShown] = useState(() => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? total : 0);
+  useEffect(() => {
+    if (shown >= total) return;
+    const start = performance.now(); let raf = 0;
+    const tick = (t: number) => { const p = Math.min(1, (t - start) / 1200); setShown(Math.round(total * (1 - Math.pow(1 - p, 3)))); if (p < 1) raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [total]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <>{formatMonth(addMonths(new Date(), shown))}</>;
 }

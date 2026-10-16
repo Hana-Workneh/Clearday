@@ -1,5 +1,6 @@
 import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { markStartStep } from "@/lib/start-here";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, ChevronUp, Flag, LoaderCircle, Sparkles, Square } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/_shell/plan")({
 
 function MyPlan() {
   const profile = useProfile();
+  useEffect(() => { markStartStep("ideas"); }, []);
   const usd = (n: number) => money(n, profile?.currency);
   const navigate = useNavigate();
   const now = useMemo(() => new Date(), []);

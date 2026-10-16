@@ -89,3 +89,10 @@ describe("keep my current order", () => {
     expect(r.schedule[0]!.balances["a"]!).toBeLessThan(r.schedule[0]!.balances["b"]!);
   });
 });
+
+import { workDaysLabel } from "./debt";
+describe("workDaysLabel", () => {
+  it("shows one decimal under a day", () => expect(workDaysLabel(40, 2200)).toBe("0.4 days"));
+  it("never shows zero", () => expect(workDaysLabel(0, 2200)).toBe("less than a day"));
+  it("rounds whole days", () => expect(workDaysLabel(1800, 2200)).toBe("18 days"));
+});

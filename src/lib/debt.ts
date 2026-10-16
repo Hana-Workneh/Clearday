@@ -90,6 +90,17 @@ export function daysOfWork(totalInterest: number, monthlyIncome: number) {
   return Math.round(totalInterest / (monthlyIncome / 22));
 }
 
+/** Friendly label: one decimal under 1 day, "less than a day" when it rounds to 0. Never "0". */
+export function workDaysLabel(totalInterest: number, monthlyIncome: number) {
+  const exact = monthlyIncome > 0 ? totalInterest / (monthlyIncome / 22) : 0;
+  if (exact < 1) {
+    const one = Math.round(exact * 10) / 10;
+    return one >= 0.1 ? `${one} days` : "less than a day";
+  }
+  const d = Math.round(exact);
+  return `${d} ${d === 1 ? "day" : "days"}`;
+}
+
 export function addMonths(d: Date, n: number) {
   return new Date(d.getFullYear(), d.getMonth() + n, 1);
 }
