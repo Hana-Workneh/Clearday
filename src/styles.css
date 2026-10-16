@@ -172,19 +172,15 @@
 @media (max-width: 767px) { .big-date { font-size: 42px; overflow-wrap: anywhere; } }
 @media (prefers-reduced-motion: reduce) { .page-enter { animation: none; } .welcome-step { transition: none; } .welcome-step:hover { transform: none; } .animate-pulse, .animate-spin { animation: none; } }
 
-/* Welcome page: scroll reveals, floating leaves, closing band */
+/* Welcome page: scroll reveals, closing band */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
 .reveal-in { opacity: 1; transform: none; }
-@keyframes leaf-drift { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-16px) rotate(5deg); } }
-.float-leaf { animation: leaf-drift 9s ease-in-out infinite; }
-.float-leaf-slow { animation-duration: 13s; }
-.float-leaf-fast { animation-duration: 7s; }
 .band-green { background: var(--green); color: #0B1411; }
 .band-btn { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; background: #0B1411; color: #FFFFFF; font-family: var(--font-heading); font-weight: 600; transition: opacity .15s; }
 .band-btn:hover { opacity: .9; }
 .band-btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; border: 1.5px solid rgba(11,20,17,.35); color: #0B1411; font-family: var(--font-heading); font-weight: 600; transition: background .15s; }
 .band-btn-ghost:hover { background: rgba(11,20,17,.08); }
-@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .float-leaf { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
 .logo-animate .logo-ring { stroke-dasharray: 100; stroke-dashoffset: 100; animation: logo-draw 1.1s cubic-bezier(.6,0,.3,1) .15s forwards; }
 .logo-animate .logo-dot { transform-box: fill-box; transform-origin: center; transform: scale(0); animation: logo-pop .45s cubic-bezier(.34,1.8,.5,1) 1.2s forwards; }
