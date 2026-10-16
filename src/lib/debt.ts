@@ -22,15 +22,21 @@ export const MAX_MONTHS = 50 * 12;
 
 export const monthlyInterest = (balance: number, rate: number) => balance * (rate / 100 / 12);
 
-export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
+export type Strategy = "avalanche" | "snowball";
+export type PlanOptions = { extra?: number; strategy?: Strategy };
+
+export function simulate(loans: Loan[], start: Date = new Date(), opts: PlanOptions = {}): PlanResult {
+  const extra = Math.max(0, opts.extra ?? 0);
   const bal: Record<string, number> = {};
   loans.forEach((l) => (bal[l.id] = Math.max(0, l.balance)));
   const underwater = loans
     .filter((l) => (bal[l.id] ?? 0) > 0 && l.payment <= monthlyInterest(bal[l.id] ?? 0, l.rate))
     .map((l) => ({ id: l.id, name: l.name, minPayment: Math.ceil(monthlyInterest(bal[l.id] ?? 0, l.rate) + 1) }));
 
-  // highest interest first
-  const order = [...loans].sort((a, b) => b.rate - a.rate);
+  // avalanche: highest interest first; snowball: smallest balance first
+  const order = [...loans].sort((a, b) =>
+    opts.strategy === "snowball" ? a.balance - b.balance || b.rate - a.rate : b.rate - a.rate,
+  );
   const schedule: ScheduleMonth[] = [];
   let totalInterest = 0;
   let month = 0;
@@ -38,7 +44,7 @@ export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
 
   while (left() > 0.005 && month < MAX_MONTHS) {
     month++;
-    let pool = 0;
+    let pool = extra;
     let interestThisMonth = 0;
     for (const l of loans) {
       let b = bal[l.id] ?? 0;
