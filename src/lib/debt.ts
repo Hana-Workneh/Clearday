@@ -22,7 +22,8 @@ export const MAX_MONTHS = 50 * 12;
 
 export const monthlyInterest = (balance: number, rate: number) => balance * (rate / 100 / 12);
 
-export type Strategy = "avalanche" | "snowball";
+/** avalanche: highest rate first; snowball: smallest balance first; order: the order the loans were added. */
+export type Strategy = "avalanche" | "snowball" | "order";
 /** boost: a temporary extra amount for the first `months` months (used for "catch up slowly"). */
 export type PlanOptions = { extra?: number; strategy?: Strategy; boost?: { amount: number; months: number } };
 
@@ -35,9 +36,10 @@ export function simulate(loans: Loan[], start: Date = new Date(), opts: PlanOpti
     .map((l) => ({ id: l.id, name: l.name, minPayment: Math.ceil(monthlyInterest(bal[l.id] ?? 0, l.rate) + 1) }));
 
   // avalanche: highest interest first; snowball: smallest balance first
-  const order = [...loans].sort((a, b) =>
-    opts.strategy === "snowball" ? a.balance - b.balance || b.rate - a.rate : b.rate - a.rate,
-  );
+  const order =
+    opts.strategy === "order"
+      ? [...loans]
+      : [...loans].sort((a, b) => (opts.strategy === "snowball" ? a.balance - b.balance || b.rate - a.rate : b.rate - a.rate));
   const schedule: ScheduleMonth[] = [];
   let totalInterest = 0;
   let month = 0;

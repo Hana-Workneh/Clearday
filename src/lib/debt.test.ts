@@ -80,3 +80,12 @@ describe("payments and quiet months", () => {
     expect(simulate(grown, now, { boost: { amount: amt, months: 3 } }).debtFreeDate!.getTime()).toBeLessThanOrEqual(oldDate!.getTime());
   });
 });
+
+describe("keep my current order", () => {
+  it("puts extra money on loans in the order they were added", () => {
+    const a = { id: "a", name: "A", balance: 1000, startBalance: 1000, rate: 5, payment: 50 };
+    const b = { id: "b", name: "B", balance: 1000, startBalance: 1000, rate: 20, payment: 50 };
+    const r = simulate([a, b], new Date(2026, 0, 1), { extra: 100, strategy: "order" });
+    expect(r.schedule[0]!.balances.a!).toBeLessThan(r.schedule[0]!.balances.b!);
+  });
+});

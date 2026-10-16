@@ -42,7 +42,7 @@ function Shell() {
             <span className="font-heading text-lg font-semibold">Clearday</span>
           </Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => openPayment()} className="btn-main flex items-center gap-1.5 text-sm md:hidden">
+            <button onClick={() => openPayment()} className="btn-main !h-10 !px-4 text-sm md:hidden">
               <Plus className="h-4 w-4" /> Payment
             </button>
             <ThemeToggle />
