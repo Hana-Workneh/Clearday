@@ -46,12 +46,7 @@
   --color-setup-panel: var(--setup-panel);
   --color-chip-yellow: var(--chip-yellow);
   --color-chip-yellow-text: var(--chip-yellow-text);
-  --color-stat-green: var(--stat-green);
   --color-stat-purple: var(--stat-purple);
-  --color-stat-gold: var(--stat-gold);
-  --color-stat-bar-green: var(--stat-bar-green);
-  --color-stat-bar-purple: var(--stat-bar-purple);
-  --color-stat-bar-gold: var(--stat-bar-gold);
 }
 
 :root {
@@ -86,12 +81,7 @@
   --line-strong: #D5DAD7;
   --chip-yellow: #FFF4D6;
   --chip-yellow-text: #3D2E00;
-  --stat-green: #00A862;
   --stat-purple: #6B4EFF;
-  --stat-gold: #C48A00;
-  --stat-bar-green: #00A862;
-  --stat-bar-purple: #6B4EFF;
-  --stat-bar-gold: #FFC93C;
   --shadow-win: 0 0 14px color-mix(in srgb, var(--sun) 24%, transparent);
   --shadow-lift: 0 12px 28px -12px color-mix(in srgb, var(--ink) 18%, transparent);
   --shadow-product: 0 20px 48px -18px color-mix(in srgb, var(--ink) 22%, transparent);
@@ -121,12 +111,7 @@
   --line-strong: #2E3733;
   --chip-yellow: #2A2410;
   --chip-yellow-text: #F7D778;
-  --stat-green: #00DF81;
   --stat-purple: #A493FF;
-  --stat-gold: #FFC93C;
-  --stat-bar-green: #00DF81;
-  --stat-bar-purple: #A493FF;
-  --stat-bar-gold: #FFC93C;
   --shadow-lift: 0 12px 28px -12px color-mix(in srgb, var(--ink) 70%, transparent);
   --shadow-product: 0 20px 48px -12px color-mix(in srgb, var(--ink) 85%, transparent);
 }
