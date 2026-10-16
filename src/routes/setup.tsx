@@ -1,10 +1,11 @@
+import { money, type Currency } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { simulate, formatMonth, usd, daysOfWork, type Loan } from "@/lib/debt";
-import { loadProfile, saveProfile } from "@/lib/store";
+import { simulate, formatMonth, daysOfWork, type Loan } from "@/lib/debt";
+import { loadProfile, saveProfile, useProfile } from "@/lib/store";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -29,6 +30,9 @@ const emptyLoan = { name: "", balance: "", rate: "", payment: "" };
 
 function Setup() {
   const navigate = useNavigate();
+  const profile = useProfile();
+  const currency = profile?.currency ?? "USD";
+  const usd = (n: number) => money(n, currency);
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [income, setIncome] = useState("");
@@ -40,11 +44,11 @@ function Setup() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const p = loadProfile();
+    const p = profile;
     if (p) {
       setName(p.name); setIncome(String(p.income)); setJob(p.job); setLoans(p.loans);
     }
-  }, []);
+  }, [profile]);
 
   const draftValid = draft.name.trim() && +draft.balance > 0 && draft.rate !== "" && +draft.rate >= 0 && +draft.payment > 0;
   const addLoan = () => {
@@ -104,7 +108,7 @@ function Setup() {
             <div className="mt-6 grid gap-4">
               <div><label className={label} htmlFor="name">Your first name</label>
                 <input id="name" className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex" /></div>
-              <div><label className={label} htmlFor="income">Monthly take-home pay (USD)</label>
+              <div><label className={label} htmlFor="income">Monthly take-home pay ({currency})</label>
                 <input id="income" type="number" min="0" inputMode="decimal" className={field} value={income} onChange={(e) => setIncome(e.target.value)} placeholder="3000" /></div>
               <div><label className={label} htmlFor="job">Job title</label>
                 <input id="job" className={field} value={job} onChange={(e) => setJob(e.target.value)} placeholder="Barista" /></div>
@@ -123,11 +127,11 @@ function Setup() {
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2"><label className={label} htmlFor="ln">Loan name</label>
                   <input id="ln" className={field} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Phone loan" /></div>
-                <div><label className={label} htmlFor="lb">Amount left to pay ($)</label>
+                <div><label className={label} htmlFor="lb">Amount left to pay ({currency})</label>
                   <input id="lb" type="number" min="0" className={field} value={draft.balance} onChange={(e) => setDraft({ ...draft, balance: e.target.value })} placeholder="1200" /></div>
                 <div><label className={label} htmlFor="lr">Interest rate per year (%)</label>
                   <input id="lr" type="number" min="0" step="0.1" className={field} value={draft.rate} onChange={(e) => setDraft({ ...draft, rate: e.target.value })} placeholder="12" /></div>
-                <div className="sm:col-span-2"><label className={label} htmlFor="lp">Monthly payment ($)</label>
+                <div className="sm:col-span-2"><label className={label} htmlFor="lp">Monthly payment ({currency})</label>
                   <input id="lp" type="number" min="0" className={field} value={draft.payment} onChange={(e) => setDraft({ ...draft, payment: e.target.value })} placeholder="80" /></div>
               </div>
               <button onClick={addLoan} disabled={!draftValid} className="btn-secondary mt-5 flex items-center gap-2">
@@ -152,7 +156,7 @@ function Setup() {
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
-                        {uw && <UnderwaterNote min={uw.minPayment} />}
+                        {uw && <UnderwaterNote min={uw.minPayment} currency={currency} />}
                       </li>
                     );
                   })}
@@ -189,7 +193,7 @@ function Setup() {
             {revealed && plan.underwater.length > 0 && (
               <div className="mt-6 grid gap-2 text-left">
                 {plan.underwater.map((u) => (
-                  <div key={u.id} className="leaf bg-secondary p-4"><p className="font-semibold">{u.name}</p><UnderwaterNote min={u.minPayment} /></div>
+                  <div key={u.id} className="leaf bg-secondary p-4"><p className="font-semibold">{u.name}</p><UnderwaterNote min={u.minPayment} currency={currency} /></div>
                 ))}
               </div>
             )}
@@ -206,10 +210,10 @@ function Setup() {
   );
 }
 
-function UnderwaterNote({ min }: { min: number }) {
+function UnderwaterNote({ min, currency }: { min: number; currency: Currency }) {
   return (
     <p className="leaf mt-2 bg-tip/10 px-3 py-2 text-sm text-tip">
-      This payment doesn't cover the interest yet. Paying at least {usd(min)} a month will start shrinking it.
+      This payment doesn't cover the interest yet. Paying at least {money(min, currency)} a month will start shrinking it.
     </p>
   );
 }

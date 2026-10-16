@@ -1,9 +1,10 @@
+import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Lock, Leaf } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
-import { simulate, formatMonth, usd } from "@/lib/debt";
+import { simulate, formatMonth } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid, today } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/progress")({
@@ -26,6 +27,7 @@ const day = (s: string) => new Date(s + (s.length === 10 ? "T12:00:00" : "")).to
 
 function Progress() {
   const profile = useProfile();
+  const usd = (n: number) => money(n, profile?.currency);
   const data = useMemo(() => {
     if (!profile) return null;
     const now = new Date();
@@ -108,7 +110,7 @@ function Progress() {
             <AreaChart data={chart} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis dataKey="t" type="number" scale="time" domain={["dataMin", "dataMax"]} tickFormatter={(t) => short(new Date(t))} tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} stroke="var(--border)" />
-              <YAxis tickFormatter={(v) => `$${Math.round(v / 1000)}k`} tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} stroke="var(--border)" width={44} />
+              <YAxis tickFormatter={(v) => usd(v)} tick={{ fontSize: 12, fill: "var(--muted-foreground)" }} stroke="var(--border)" width={78} />
               <Tooltip
                 labelFormatter={(t) => short(new Date(t as number))}
                 formatter={(v: number, k) => [usd(v), k === "paid" ? "Debt left" : "Plan"]}

@@ -1,8 +1,9 @@
+import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
-import { simulate, formatMonth, usd, daysOfWork } from "@/lib/debt";
+import { simulate, formatMonth, daysOfWork } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 
@@ -24,6 +25,7 @@ const card = "leaf-lg border bg-card p-6";
 
 function Home() {
   const profile = useProfile();
+  const usd = (n: number) => money(n, profile?.currency);
   const plan = useMemo(() => (profile ? simulate(profile.loans, new Date(), planOptions(profile)) : null), [profile]);
 
   if (profile === undefined) return null;
@@ -109,7 +111,7 @@ function Home() {
             <Sprout mood="thinking" size={56} />
             <p className="font-heading text-lg font-semibold">Sprout's tip</p>
           </div>
-          <p>Even $25 extra a month on your highest-interest loan can bring your free day closer.</p>
+          <p>Even {usd(25)} extra a month on your highest-interest loan can bring your free day closer.</p>
           <span className="mt-auto flex items-center gap-1 font-semibold">See ways to pay faster <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></span>
         </Link>
       </div>

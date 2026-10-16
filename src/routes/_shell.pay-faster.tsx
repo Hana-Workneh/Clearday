@@ -1,8 +1,9 @@
+import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { Slider } from "@/components/ui/slider";
-import { simulate, formatMonth, usd, type PlanResult, type Strategy } from "@/lib/debt";
+import { simulate, formatMonth, type PlanResult, type Strategy } from "@/lib/debt";
 import { saveProfile, useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
@@ -32,6 +33,7 @@ const options: { key: Strategy; title: string; text: string }[] = [
 
 function PayFaster() {
   const profile = useProfile();
+  const usd = (n: number) => money(n, profile?.currency);
   const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
   const [extra, setExtra] = useState(0);
@@ -106,7 +108,7 @@ function PayFaster() {
             <p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p>
           </div>
           <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
-          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>$0</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
+          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{usd(0)}</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
 
           <div className="leaf mt-6 bg-background p-6">
             <p className="text-sm font-semibold text-muted-foreground">New debt free date</p>

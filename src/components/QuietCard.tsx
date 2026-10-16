@@ -1,13 +1,15 @@
+import { money } from "@/lib/account-data";
 import { useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { openPayment } from "@/components/PaymentFlow";
-import { quietLoans, skippedMonth, catchUpAmount, formatMonth, usd } from "@/lib/debt";
+import { quietLoans, skippedMonth, catchUpAmount, formatMonth } from "@/lib/debt";
 import { saveProfile, planOptions, today, type Profile } from "@/lib/store";
 
 const MONTHS = 3;
 
 /** Kind card shown when a loan has had no payment logged for over a month. */
 export function QuietCard({ profile }: { profile: Profile }) {
+  const usd = (n: number) => money(n, profile?.currency);
   const [error, setError] = useState("");
   const info = useMemo(() => {
     const now = new Date();
@@ -38,7 +40,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
         <div className="flex-1">
           <h2 className="text-xl font-semibold">No {loan.name} payment this month. That's okay, it happens.</h2>
           {same ? (
-            <p className="mt-2 text-muted-foreground">Good news: your date stays at {formatMonth(oldDate!)}.</p>
+            <p className="mt-2 text-muted-foreground">Good news: your date stays at {formatMonth(oldDate ?? new Date())}.</p>
           ) : (
             <div className="mt-3 flex flex-wrap gap-3 text-sm">
               <span className="leaf bg-secondary px-4 py-2">Was: <b>{oldDate ? formatMonth(oldDate) : "—"}</b></span>
@@ -51,7 +53,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
         {catchUp && !same && (
           <button onClick={() => choose(true)} className="leaf bg-primary px-5 py-3.5 text-left text-primary-foreground transition hover:opacity-90">
             <span className="block font-semibold">Catch up slowly</span>
-            <span className="text-sm opacity-80">Add {usd(catchUp)} a month for {MONTHS} months to get back to {formatMonth(oldDate!)}.</span>
+            <span className="text-sm opacity-80">Add {usd(catchUp)} a month for {MONTHS} months to get back to {formatMonth(oldDate ?? new Date())}.</span>
           </button>
         )}
         <button onClick={() => choose(false)} className="leaf border-[1.5px] border-line-strong bg-card px-5 py-3.5 text-left transition hover:bg-secondary">
