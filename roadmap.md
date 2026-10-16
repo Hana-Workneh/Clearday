@@ -1,5 +1,5 @@
 # My plan
-- [ ] Simplify Your loans: automatic save on continue, compact editable saved loans, field hints and kind validation.
+- [x] Simplify Your loans: automatic save on continue, compact editable saved loans, field hints and kind validation.
 - [x] Redesign welcome previews and add Why Clearday story, facts and quotes.
 - [x] Add completed-loan celebration, image sharing, new goal and safe demo preview.
 - [x] Polish loading/empty states and verify all pages on phone/desktop in both themes.
@@ -12,4 +12,5 @@
 - [x] Add Google sign-in, private account storage and browser-data transfer.
 - [x] Build Settings, currencies, loan editing, sign-out and account deletion.
 - [x] Verify demo, currency persistence and loan editing/deletion.
+- [x] Verify signed-in import, final payment, image download and saved goal read-back; restore original account data.
 - [ ] Verify account isolation across two users and account deletion — needs a second test account and permission for destructive deletion.
