@@ -11,6 +11,7 @@ export type Profile = {
   name: string;
   income: number;
   job: string;
+  skills?: string | undefined;
   currency?: Currency | undefined;
   theme?: "light" | "dark" | undefined;
   demo?: boolean;

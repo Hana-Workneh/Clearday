@@ -47,6 +47,7 @@ function Setup() {
   const [name, setName] = useState("");
   const [income, setIncome] = useState("");
   const [job, setJob] = useState("");
+  const [skills, setSkills] = useState("");
   const [loans, setLoans] = useState<Loan[]>([]);
   const [draft, setDraft] = useState(emptyLoan);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -58,7 +59,7 @@ function Setup() {
   useEffect(() => {
     const p = profile;
     if (p) {
-      setName(p.name); setIncome(String(p.income)); setJob(p.job); setLoans(p.loans);
+      setName(p.name); setIncome(String(p.income)); setJob(p.job); setSkills(p.skills ?? ""); setLoans(p.loans);
     }
   }, [profile]);
   const [editHandled, setEditHandled] = useState(false);
@@ -83,7 +84,7 @@ function Setup() {
   };
   const persistLoans = async (next: Loan[]) => {
     setSaving(true); setError("");
-    try { await saveProfile({...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans: next}); setLoans(next); return true; }
+    try { await saveProfile({...loadProfile(), name: name.trim(), income: +income, job: job.trim(), skills: skills.trim() || undefined, loans: next}); setLoans(next); return true; }
     catch { setError("Your details couldn't save. Please try again."); return false; }
     finally { setSaving(false); }
   };
@@ -156,6 +157,8 @@ function Setup() {
                 <input id="income" type="number" min="0" inputMode="decimal" className={field} value={income} onChange={(e) => setIncome(e.target.value)} placeholder="3000" /></div>
               <div><label className={label} htmlFor="job">Job title</label>
                 <input id="job" className={field} value={job} onChange={(e) => setJob(e.target.value)} placeholder="Barista" /></div>
+              <div><label className={label} htmlFor="skills">Skills or hobbies (optional)</label>
+                <input id="skills" className={field} value={skills} maxLength={160} onChange={(e) => setSkills(e.target.value)} placeholder="baking, Excel, French" /></div>
             </div>
             <div className="mt-8 flex flex-col items-end gap-2">
               <Button className={`${mainBtn} w-full sm:w-auto sm:min-w-40`} disabled={!name.trim() || !(+income > 0)} aria-describedby={!name.trim() || !(+income > 0) ? "income-hint" : undefined} onClick={() => goTo(1)}>Next</Button>

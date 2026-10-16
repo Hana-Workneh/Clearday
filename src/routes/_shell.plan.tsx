@@ -41,10 +41,10 @@ function MyPlan() {
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, skills: profile.skills || undefined, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
   useEffect(() => { setIdeas(profile?.demo ? [
-    {title: "A small weekend project", detail: "Offer a short social-media content session to a local business, with your employer’s permission. One small project could leave around 30 after costs.", monthlyAmount: 30, kind: "earn"},
+    {title: "A small weekend project", detail: "Offer a short social-media content session to a local business, with your employer’s permission. One small project could leave around 30 after costs.", monthlyAmount: 30, kind: "earn", tag: "Because you're a marketing officer"},
     {title: "Bring lunch twice a week", detail: "Use food you already buy to pack lunch on two workdays. Keeping essentials covered could save around 20 each month.", monthlyAmount: 20, kind: "save"},
     {title: "Pause an unused subscription", detail: "Check your subscriptions for one you no longer use. Pausing a small service could save around 10 each month.", monthlyAmount: 10, kind: "save"},
-  ] : []); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
+  ] : []); setNote(false); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
   const autoRun = useRef<(() => void) | null>(null);
   useEffect(() => {
     if (!profile || profile.demo) return;
