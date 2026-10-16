@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as ShellDebtFreeRouteImport } from './routes/_shell.debt-free'
 import { Route as ShellHomeRouteImport } from './routes/_shell.home'
 import { Route as ShellPayFasterRouteImport } from './routes/_shell.pay-faster'
 import { Route as ShellPlanRouteImport } from './routes/_shell.plan'
@@ -38,6 +39,11 @@ const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ShellDebtFreeRoute = ShellDebtFreeRouteImport.update({
+  id: '/debt-free',
+  path: '/debt-free',
+  getParentRoute: () => ShellRoute,
 } as any)
 const ShellHomeRoute = ShellHomeRouteImport.update({
   id: '/home',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/setup': typeof SetupRoute
+  '/debt-free': typeof ShellDebtFreeRoute
   '/home': typeof ShellHomeRoute
   '/pay-faster': typeof ShellPayFasterRoute
   '/plan': typeof ShellPlanRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/setup': typeof SetupRoute
+  '/debt-free': typeof ShellDebtFreeRoute
   '/home': typeof ShellHomeRoute
   '/pay-faster': typeof ShellPayFasterRoute
   '/plan': typeof ShellPlanRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/_shell': typeof ShellRouteWithChildren
   '/auth': typeof AuthRoute
   '/setup': typeof SetupRoute
+  '/_shell/debt-free': typeof ShellDebtFreeRoute
   '/_shell/home': typeof ShellHomeRoute
   '/_shell/pay-faster': typeof ShellPayFasterRoute
   '/_shell/plan': typeof ShellPlanRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/setup'
+    | '/debt-free'
     | '/home'
     | '/pay-faster'
     | '/plan'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/setup'
+    | '/debt-free'
     | '/home'
     | '/pay-faster'
     | '/plan'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/_shell'
     | '/auth'
     | '/setup'
+    | '/_shell/debt-free'
     | '/_shell/home'
     | '/_shell/pay-faster'
     | '/_shell/plan'
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_shell/debt-free': {
+      id: '/_shell/debt-free'
+      path: '/debt-free'
+      fullPath: '/debt-free'
+      preLoaderRoute: typeof ShellDebtFreeRouteImport
+      parentRoute: typeof ShellRoute
     }
     '/_shell/home': {
       id: '/_shell/home'
@@ -226,6 +245,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface ShellRouteChildren {
+  ShellDebtFreeRoute: typeof ShellDebtFreeRoute
   ShellHomeRoute: typeof ShellHomeRoute
   ShellPayFasterRoute: typeof ShellPayFasterRoute
   ShellPlanRoute: typeof ShellPlanRoute
@@ -234,6 +254,7 @@ interface ShellRouteChildren {
 }
 
 const ShellRouteChildren: ShellRouteChildren = {
+  ShellDebtFreeRoute: ShellDebtFreeRoute,
   ShellHomeRoute: ShellHomeRoute,
   ShellPayFasterRoute: ShellPayFasterRoute,
   ShellPlanRoute: ShellPlanRoute,

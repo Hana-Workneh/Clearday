@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { startDemo, useAccount } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, CalendarHeart, Rocket } from "lucide-react";
+import { WelcomeSections } from "@/components/WelcomeSections";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -19,19 +19,13 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
-const steps = [
-  { icon: PlusCircle, title: "Add your loans", text: "Just the basics: how much, the rate, and your monthly payment." },
-  { icon: CalendarHeart, title: "See your date", text: "We show you the exact month you'll be free." },
-  { icon: Rocket, title: "Pay it off faster", text: "Get friendly tips to bring that day closer." },
-];
-
 function Welcome() {
   const navigate = useNavigate();
   const account = useAccount();
   return (
     <div className="min-h-screen">
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
-        <div className="flex items-center gap-2">
+      <header className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-5 py-5 sm:flex sm:justify-between">
+        <div className="flex min-w-0 items-center gap-2">
           <Sprout size={34} />
           <span className="font-heading text-xl font-semibold">Clearday</span>
         </div>
@@ -43,29 +37,15 @@ function Welcome() {
         <h1 className="mt-3 text-4xl font-semibold leading-tight md:text-6xl">Debt feels endless. It doesn't have to.</h1>
         <p className="mt-5 text-lg text-muted-foreground">Add your loans and see the exact month you'll be debt free.</p>
         <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <Link to="/setup" className="btn-main">
+          <Button asChild className="btn-main"><Link to="/setup">
             Find my debt free date
-          </Link>
+          </Link></Button>
           <Button variant="outline" onClick={() => { startDemo(); navigate({ to: "/home" }); }} className="btn-secondary">
             Try the demo
           </Button>
         </div>
       </section>
-      <section className="mx-auto max-w-5xl px-5 py-16 md:py-24">
-        <h2 className="text-center text-2xl font-semibold md:text-3xl">How it works</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {steps.map((s, i) => (
-            <div key={s.title} className="leaf-lg border bg-card p-6">
-              <div className="flex items-center gap-3">
-                <span className="leaf grid h-10 w-10 place-items-center bg-green/15 text-green-text"><s.icon className="h-5 w-5" /></span>
-                <span className="text-sm font-semibold text-muted-foreground">Step {i + 1}</span>
-              </div>
-              <h3 className="mt-4 text-xl font-semibold">{s.title}</h3>
-              <p className="mt-2 text-muted-foreground">{s.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <WelcomeSections />
     </div>
   );
 }

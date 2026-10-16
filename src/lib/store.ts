@@ -14,6 +14,7 @@ export type Profile = {
   currency?: Currency | undefined;
   theme?: "light" | "dark" | undefined;
   demo?: boolean;
+  savingsGoal?: { name: string; amount: number } | undefined;
   loans: Loan[];
   plan?: PlanOptions | undefined;
   payments?: Payment[] | undefined;
@@ -33,9 +34,9 @@ let generation = 0;
 let writeQueue: Promise<void> = Promise.resolve();
 const notify = () => window.dispatchEvent(new Event(EVENT));
 export function useAccount() {
-  const [, render] = useState(0);
-  useEffect(() => { const update = () => render(n => n + 1); window.addEventListener(EVENT, update); return () => window.removeEventListener(EVENT, update); }, []);
-  return { id: accountId, ready, error: accountError };
+  const [state, setState] = useState<{id: string | null; ready: boolean; error: string}>({id: null, ready: false, error: ""});
+  useEffect(() => { const update = () => setState({id: accountId, ready, error: accountError}); update(); window.addEventListener(EVENT, update); return () => window.removeEventListener(EVENT, update); }, []);
+  return state;
 }
 export async function refreshAccount() {
   const version = ++generation;
