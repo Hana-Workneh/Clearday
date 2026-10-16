@@ -35,8 +35,11 @@ describe("safeAdvice job tags", () => {
     expect(r.note).toBe(false);
     expect(r.ideas[0]!.monthlyAmount).toBe(20);
   });
+  it("keeps names like Uber capitalised", () => {
+    expect(safeAdvice({ jobLabel: "Uber driver", ideas: [idea(true), idea(true), idea(true)] }).ideas[0]!.tag).toBe("Because you're an Uber driver");
+  });
   it("uses 'an' before vowels", () => {
-    expect(safeAdvice({ jobLabel: "Uber driver", ideas: [idea(true), idea(true), idea(true)] }).ideas[0]!.tag).toBe("Because you're an uber driver");
+    expect(safeAdvice({ jobLabel: "office manager", ideas: [idea(true), idea(true), idea(true)] }).ideas[0]!.tag).toBe("Because you're an office manager");
   });
   it("shows the Settings note and no tags for an empty job", () => {
     const r = safeAdvice({ jobLabel: "", ideas: [idea(true), idea(false), idea(false)] });
