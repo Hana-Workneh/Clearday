@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_shell/home")({
   component: Home,
 });
 
-const card = "leaf border bg-card p-6";
+const card = "leaf-lg border bg-card p-6";
 
 function Home() {
   const profile = useProfile();
@@ -31,7 +31,7 @@ function Home() {
         <div className="flex justify-center"><Sprout mood="waving" size={110} /></div>
         <h1 className="mt-4 text-2xl font-semibold">Hi there! Let's find your free day.</h1>
         <p className="mt-2 text-muted-foreground">It only takes a couple of minutes.</p>
-        <Link to="/setup" className="leaf mt-6 inline-block bg-primary px-7 py-3.5 font-semibold text-primary-foreground">Get started</Link>
+        <Link to="/setup" className="btn-main mt-6 inline-block">Get started</Link>
       </div>
     );
   }

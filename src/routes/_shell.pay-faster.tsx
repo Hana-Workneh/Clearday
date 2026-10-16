@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_shell/pay-faster")({
   component: PayFaster,
 });
 
-const card = "leaf flex flex-col border bg-card p-6";
+const card = "leaf-lg flex flex-col border bg-card p-6";
 const months = (n: number) => `${n} ${n === 1 ? "month" : "months"}`;
 
 function PayFaster() {
@@ -49,7 +49,7 @@ function PayFaster() {
         <Sprout mood="thinking" size={100} />
         <h1 className="mt-4 text-2xl font-semibold">Add your loans first</h1>
         <p className="mt-2 text-muted-foreground">Then we can find ways to reach your free day sooner.</p>
-        <Link to="/setup" className="leaf mt-6 bg-primary px-7 py-3.5 font-semibold text-primary-foreground">Get started</Link>
+        <Link to="/setup" className="btn-main mt-6">Get started</Link>
       </div>
     );
   }
@@ -129,14 +129,14 @@ function PayFaster() {
         )}
       </div>
 
-      <div className="leaf flex flex-col items-center justify-between gap-4 border bg-card p-6 sm:flex-row">
+      <div className="leaf-lg flex flex-col items-center justify-between gap-4 border bg-card p-6 sm:flex-row">
         <div className="flex items-center gap-3">
           {saved && <Sprout mood="cheering" size={56} />}
           <p className="font-semibold">
             {saved ? "Saved! Your new date is on Home 🎉" : `Your pick: ${usd(extra)} extra a month, ${strategy === "avalanche" ? "biggest interest first" : "smallest loan first"}.`}
           </p>
         </div>
-        <button onClick={use} disabled={saved} className="leaf bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60">
+        <button onClick={use} disabled={saved} className="btn-main">
           Use this plan
         </button>
       </div>

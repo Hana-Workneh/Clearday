@@ -85,7 +85,7 @@ export function PaymentFlow() {
               Date
               <input className={field} type="date" required max={today()} value={date} onChange={(e) => setDate(e.target.value)} />
             </label>
-            <button className="leaf mt-2 bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90">Save payment</button>
+            <button className="btn-main mt-2">Save payment</button>
           </form>
         </DialogContent>
       </Dialog>

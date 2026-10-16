@@ -31,7 +31,7 @@ function Shell() {
             </Link>
           ))}
         </nav>
-        <button onClick={() => openPayment()} className="leaf mt-auto flex items-center justify-center gap-2 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
+        <button onClick={() => openPayment()} className="btn-main mt-auto flex items-center justify-center gap-2 text-sm">
           <Plus className="h-4 w-4" /> I made a payment
         </button>
       </aside>
@@ -42,7 +42,7 @@ function Shell() {
             <span className="font-heading text-lg font-semibold">Clearday</span>
           </Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => openPayment()} className="leaf flex items-center gap-1.5 bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground md:hidden">
+            <button onClick={() => openPayment()} className="btn-main flex items-center gap-1.5 text-sm md:hidden">
               <Plus className="h-4 w-4" /> Payment
             </button>
             <ThemeToggle />

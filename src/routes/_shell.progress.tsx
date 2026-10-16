@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_shell/progress")({
   component: Progress,
 });
 
-const card = "leaf border bg-card p-6";
+const card = "leaf-lg border bg-card p-6";
 const short = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
 const day = (s: string) => new Date(s + (s.length === 10 ? "T12:00:00" : "")).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
@@ -67,7 +67,7 @@ function Progress() {
       <div className={`${card} mx-auto max-w-xl text-center`}>
         <div className="flex justify-center"><Sprout mood="waving" size={110} /></div>
         <h1 className="mt-4 text-2xl font-semibold">Your progress will show up here.</h1>
-        <Link to="/setup" className="leaf mt-6 inline-block bg-primary px-7 py-3.5 font-semibold text-primary-foreground">Get started</Link>
+        <Link to="/setup" className="btn-main mt-6 inline-block">Get started</Link>
       </div>
     );
   }

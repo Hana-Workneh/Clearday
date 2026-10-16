@@ -31,7 +31,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
     });
 
   return (
-    <div className="leaf border bg-card p-6">
+    <div className="leaf-lg border bg-card p-6">
       <div className="flex flex-col gap-5 md:flex-row md:items-center">
         <Sprout mood="calm" size={90} />
         <div className="flex-1">
@@ -53,7 +53,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
             <span className="text-sm opacity-80">Add {usd(catchUp)} a month for {MONTHS} months to get back to {formatMonth(oldDate!)}.</span>
           </button>
         )}
-        <button onClick={() => choose(false)} className="leaf border px-5 py-3.5 text-left transition hover:bg-secondary">
+        <button onClick={() => choose(false)} className="leaf border-[1.5px] border-line-strong bg-card px-5 py-3.5 text-left transition hover:bg-secondary">
           <span className="block font-semibold">Keep going as normal</span>
           <span className="text-sm text-muted-foreground">{same ? "Nothing changes." : `Your date moves to ${newDate ? formatMonth(newDate) : "later"}.`}</span>
         </button>
