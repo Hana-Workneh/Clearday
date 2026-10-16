@@ -11,12 +11,13 @@ const steps = [
   { icon: CalendarHeart, title: "See your date", text: "An end in sight. A day to look forward to.", accent: "bg-chip-purple text-chip-purple-text", preview: "bg-chip-purple" },
   { icon: Rocket, title: "Pay it off faster", text: "Little changes. A closer free day.", accent: "bg-chip-yellow text-chip-yellow-text", preview: "bg-chip-yellow" },
 ];
+type FactTone = "green" | "purple" | "gold";
 const facts = [
   { value: 32, suffix: "%", tone: "green", text: "Kenyan adults who borrowed through mobile money", source: "World Bank Global Findex 2025", href: "https://www.citizen.digital/business/bank-borrowing-in-kenya-shrinks-as-many-opt-for-mobile-money-loans-world-bank-n366707", note: "2024 borrowing data" },
   { value: 8, suffix: "M+", tone: "purple", text: "Digital borrowers every month in Kenya", source: "Digital Financial Services Association of Kenya", href: "https://www.citizen.digital/business/kenyans-borrowing-ksh-500m-daily-from-digital-lenders-report-n359881", note: "2025 industry estimate" },
   { value: 65, suffix: "%", tone: "gold", text: "US millennials with debt who don't know when they'll pay it off or think they never will", source: "CreditCards.com survey, 2017", href: "https://www.nasdaq.com/articles/poll-2-3-us-adults-debt-doubt-theyll-ever-live-debt-free-2018-01-10", note: "Survey fielded December 2017" },
-];
-const factTone: Record<string, { number: string; bar: string }> = {
+] as const;
+const factTone: Record<FactTone, { number: string; bar: string }> = {
   green: { number: "text-stat-green", bar: "bg-stat-bar-green" },
   purple: { number: "text-stat-purple", bar: "bg-stat-bar-purple" },
   gold: { number: "text-stat-gold", bar: "bg-stat-bar-gold" },
