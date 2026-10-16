@@ -178,8 +178,8 @@
 .band-green { background: var(--green); color: #0B1411; }
 .band-btn { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; background: #0B1411; color: #FFFFFF; font-family: var(--font-heading); font-weight: 600; transition: opacity .15s; }
 .band-btn:hover { opacity: .9; }
-.band-btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; border: 1.5px solid rgba(11,20,17,.35); color: #0B1411; font-family: var(--font-heading); font-weight: 600; transition: background .15s; }
-.band-btn-ghost:hover { background: rgba(11,20,17,.08); }
+.band-btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding: 0 1.75rem; border-radius: 9999px; background: #FFFFFF; color: #0B1411; font-family: var(--font-heading); font-weight: 600; transition: background .15s; }
+.band-btn-ghost:hover { background: #FFFFFF; opacity: .9; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
 .logo-animate .logo-ring { stroke-dasharray: 100; stroke-dashoffset: 100; animation: logo-draw 1.1s cubic-bezier(.6,0,.3,1) .15s forwards; }

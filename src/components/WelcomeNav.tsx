@@ -7,9 +7,10 @@ import { Button } from "./ui/button";
 import { startDemo, useAccount } from "@/lib/store";
 
 const links = [
+  { id: "the-numbers", label: "Why it matters" },
   { id: "how-it-works", label: "How it works" },
+  { id: "see-it", label: "See it" },
   { id: "why-clearday", label: "Why Clearday" },
-  { id: "the-numbers", label: "The numbers" },
 ];
 
 export function scrollToSection(id: string) {

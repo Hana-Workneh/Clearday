@@ -35,7 +35,7 @@ function useCountUp(target: number, duration = 450) {
 
 export function TryItCalculator() {
   const [owe, setOwe] = useState(4000);
-  const [pay, setPay] = useState(200);
+  const [pay, setPay] = useState(155);
   const [sliding, setSliding] = useState(false);
   const slideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -77,7 +77,7 @@ export function TryItCalculator() {
             <label htmlFor="try-pay" className="text-sm font-semibold">What you pay each month</label>
             <span className="font-heading text-sm font-bold">{usd(pay)}</span>
           </div>
-          <Slider id="try-pay" className="mt-3" min={50} max={1000} step={10} value={[pay]} onValueChange={onSlide(setPay)} aria-label="What you pay each month" />
+          <Slider id="try-pay" className="mt-3" min={50} max={1000} step={5} value={[pay]} onValueChange={onSlide(setPay)} aria-label="What you pay each month" />
         </div>
         <div className="leaf mt-6 bg-secondary p-5 text-center">
           <p className="text-xs font-semibold text-muted-foreground">Debt free by</p>
@@ -90,6 +90,7 @@ export function TryItCalculator() {
             <div>
               <p className="text-[11px] font-semibold text-muted-foreground">Days of work just for interest</p>
               <p className="mt-0.5 font-heading text-lg font-bold">{workDaysLabel(result.totalInterest, INCOME)}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">(on $1,000/month take-home pay)</p>
             </div>
           </div>
         </div>
