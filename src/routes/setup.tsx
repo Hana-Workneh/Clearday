@@ -36,6 +36,8 @@ function Setup() {
   const [loans, setLoans] = useState<Loan[]>([]);
   const [draft, setDraft] = useState(emptyLoan);
   const [revealed, setRevealed] = useState(false);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const p = loadProfile();
@@ -54,9 +56,12 @@ function Setup() {
 
   const plan = useMemo(() => simulate(loans), [loans]);
 
-  const goTo = (s: number) => {
+  const goTo = async (s: number) => {
     if (s === 2) {
-      saveProfile({ ...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans });
+      setSaving(true); setError("");
+      try { await saveProfile({ ...loadProfile(), name: name.trim(), income: +income, job: job.trim(), loans }); }
+      catch { setError("Your details couldn't save. Please try again."); setSaving(false); return; }
+      setSaving(false);
       setRevealed(false);
       setTimeout(() => setRevealed(true), 1200);
     }
@@ -74,6 +79,7 @@ function Setup() {
       </header>
 
       <main className="mx-auto max-w-2xl px-5 pb-16">
+        {error && <p role="alert" className="mb-4 text-sm text-tip">{error}</p>}
         <ol className="mb-8 flex items-center gap-2">
           {steps.map((s, i) => (
             <li key={s} className="flex flex-1 items-center gap-2">
@@ -156,7 +162,7 @@ function Setup() {
 
             <div className="flex justify-between">
               <button onClick={() => setStep(0)} className="leaf flex items-center gap-2 px-5 py-3 font-semibold text-muted-foreground hover:bg-secondary"><ArrowLeft className="h-4 w-4" /> Back</button>
-              <button className={mainBtn} disabled={!loans.length} onClick={() => goTo(2)}>See my date</button>
+              <button className={mainBtn} disabled={!loans.length || saving} onClick={() => goTo(2)}>{saving ? "Saving…" : "See my date"}</button>
             </div>
           </section>
         )}

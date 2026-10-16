@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { openPayment } from "@/components/PaymentFlow";
 import { quietLoans, skippedMonth, catchUpAmount, formatMonth, usd } from "@/lib/debt";
@@ -8,6 +8,7 @@ const MONTHS = 3;
 
 /** Kind card shown when a loan has had no payment logged for over a month. */
 export function QuietCard({ profile }: { profile: Profile }) {
+  const [error, setError] = useState("");
   const info = useMemo(() => {
     const now = new Date();
     const loan = quietLoans(profile.loans, profile.payments ?? [], profile.startedAt ?? today(), now, profile.quietSeen)[0];
@@ -28,7 +29,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
       loans: grown,
       quietSeen: { ...profile.quietSeen, [loan.id]: today() },
       ...(slow && catchUp ? { catchUp: { amount: catchUp, months: MONTHS, from: today() } } : {}),
-    });
+    }).catch(() => setError("Your choice couldn't save. Please try again."));
 
   return (
     <div className="leaf-lg border bg-card p-6">
@@ -61,6 +62,7 @@ export function QuietCard({ profile }: { profile: Profile }) {
       <button onClick={() => openPayment(loan.id)} className="mt-4 text-sm font-semibold text-green-text underline-offset-4 hover:underline">
         I did pay, let me add it
       </button>
+      {error && <p role="alert" className="mt-3 text-sm text-tip">{error}</p>}
     </div>
   );
 }

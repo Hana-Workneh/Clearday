@@ -37,6 +37,8 @@ function PayFaster() {
   const [extra, setExtra] = useState(0);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (profile) {
@@ -73,8 +75,11 @@ function PayFaster() {
   const newWidth = Math.max(4, Math.round(((next.monthsLeft ?? 600) / nowMonths) * 100));
   const label = next.debtFreeDate ? formatMonth(next.debtFreeDate) : "Not yet";
 
-  const use = () => {
-    saveProfile({ ...profile, plan: { extra, strategy } });
+  const use = async () => {
+    setSaving(true); setError("");
+    try { await saveProfile({ ...profile, plan: { extra, strategy } }); }
+    catch { setError("Your plan couldn't save. Please try again."); setSaving(false); return; }
+    setSaving(false);
     setSaved(true);
     setTimeout(() => navigate({ to: "/home" }), 1600);
   };
@@ -154,7 +159,8 @@ function PayFaster() {
             </p>
           </div>
 
-          <button onClick={use} disabled={saved} className="btn-main w-full">Make this my plan</button>
+          {error && <p role="alert" className="text-sm text-tip">{error}</p>}
+          <button onClick={use} disabled={saved || saving} className="btn-main w-full">{saving ? "Saving…" : "Make this my plan"}</button>
         </section>
       </div>
     </div>

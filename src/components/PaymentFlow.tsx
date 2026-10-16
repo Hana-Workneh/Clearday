@@ -18,6 +18,8 @@ export function PaymentFlow() {
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(today());
   const [party, setParty] = useState<{ days: number; pct: number } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const loans = useMemo(() => (open ? loadProfile()?.loans.filter((l) => l.balance > 0) ?? [] : []), [open]);
 
   useEffect(() => {
@@ -42,18 +44,20 @@ export function PaymentFlow() {
     if (l) setAmount(String(Math.min(l.payment, Math.ceil(l.balance))));
   };
 
-  const save = (e: React.FormEvent) => {
+  const save = async (e: React.FormEvent) => {
     e.preventDefault();
     const p = loadProfile();
     const amt = +amount;
     if (!p || !loanId || !(amt > 0)) return;
     const days = daysCloser(amt, p.loans, planOptions(p));
     const nextLoans = p.loans.map((l) => (l.id === loanId ? { ...l, balance: Math.max(0, Math.round((l.balance - amt) * 100) / 100) } : l));
-    saveProfile({
+    setSaving(true); setError("");
+    try { await saveProfile({
       ...p,
       loans: nextLoans,
       payments: [...(p.payments ?? []), { id: crypto.randomUUID(), loanId, amount: amt, date }],
-    });
+    }); } catch { setError("Your payment couldn't save. Please try again."); setSaving(false); return; }
+    setSaving(false);
     setOpen(false);
     setParty({ days, pct: percentPaid(nextLoans) });
     setTimeout(() => {
@@ -78,14 +82,15 @@ export function PaymentFlow() {
               </select>
             </label>
             <label className="grid gap-1.5 text-sm font-semibold">
-              Amount (USD)
+              Amount ({loadProfile()?.currency ?? "USD"})
               <input className={field} type="number" min="1" step="0.01" required value={amount} onChange={(e) => setAmount(e.target.value)} />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold">
               Date
               <input className={field} type="date" required max={today()} value={date} onChange={(e) => setDate(e.target.value)} />
             </label>
-            <button className="btn-main mt-2">Save payment</button>
+            {error && <p role="alert" className="text-sm text-tip">{error}</p>}
+            <button disabled={saving} className="btn-main mt-2">{saving ? "Saving…" : "Save payment"}</button>
           </form>
         </DialogContent>
       </Dialog>
