@@ -1,7 +1,8 @@
 import { money, type Currency } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, ArrowLeft, Pencil } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
+import { LoanMenu } from "@/components/LoanMenu";
 import { SetupCompanion } from "@/components/SetupCompanion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CleardayLogo } from "@/components/CleardayLogo";
@@ -23,6 +24,11 @@ export const Route = createFileRoute("/setup")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { step?: number | undefined; edit?: string | undefined; empty?: boolean | undefined } => ({
+    step: s["step"] === 1 || s["step"] === "1" ? 1 : undefined,
+    edit: typeof s["edit"] === "string" ? s["edit"] : undefined,
+    empty: s["empty"] === true || s["empty"] === "true" ? true : undefined,
+  }),
   component: Setup,
 });
 
@@ -36,7 +42,8 @@ function Setup() {
   const profile = useProfile();
   const currency = profile?.currency ?? "USD";
   const usd = (n: number) => money(n, currency);
-  const [step, setStep] = useState(0);
+  const search = Route.useSearch();
+  const [step, setStep] = useState(search.step ?? 0);
   const [name, setName] = useState("");
   const [income, setIncome] = useState("");
   const [job, setJob] = useState("");
@@ -54,6 +61,13 @@ function Setup() {
       setName(p.name); setIncome(String(p.income)); setJob(p.job); setLoans(p.loans);
     }
   }, [profile]);
+  const [editHandled, setEditHandled] = useState(false);
+  useEffect(() => {
+    if (editHandled || !search.edit || !profile) return;
+    const loan = profile.loans.find(l => l.id === search.edit);
+    setEditHandled(true);
+    if (loan) setTimeout(() => editLoan(loan), 0);
+  }, [profile, search.edit, editHandled]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const errors = loanErrors(draft);
   const markAll = () => setTouched({name: true, balance: true, rate: true, payment: true});
@@ -87,7 +101,7 @@ function Setup() {
   const plan = useMemo(() => simulate(loans), [loans]);
   const previewLoans = loans.filter(loan => loan.id !== editingId).map(loan => ({id: loan.id, name: loan.name, amount: usd(loan.balance)}));
   if (!draftIsEmpty(draft)) previewLoans.push({id: editingId ?? "draft", name: draft.name, amount: Number.isFinite(loanNumber(draft.balance)) && draft.balance.trim() ? usd(loanNumber(draft.balance)) : "—"});
-  const companionProps = {step, name, income: +income > 0 ? `${usd(+income)} / month` : "", loans: previewLoans, date: plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : null, ready: revealed};
+  const companionProps = {step, name, income: +income > 0 ? `${usd(+income)} / month` : "", loans: previewLoans, date: plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : null, ready: revealed, message: step === 1 && loans.length === 0 && search.empty ? "Add a loan to see your date." : undefined};
   const incomeHint = !(+income > 0) ? "Fill in your pay to continue" : "Add your first name to continue";
 
   const goTo = async (s: number) => {
@@ -152,7 +166,7 @@ function Setup() {
 
         {step === 1 && (
           <section className="grid gap-5">
-            {loans.length > 0 && <ul className="grid gap-3" aria-label="Saved loans">{loans.map(loan => <li key={loan.id} className={`leaf grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border bg-card p-4 ${editingId === loan.id ? "border-foreground" : ""}`}><div className="min-w-0"><p className="break-words font-semibold">{loan.name}</p><p className="mt-1 text-sm text-muted-foreground">{usd(loan.balance)} left{editingId === loan.id ? " · Editing" : ""}</p></div><div className="flex shrink-0"><Button variant="ghost" size="icon" disabled={saving} aria-label={`Edit ${loan.name}`} title={`Edit ${loan.name}`} onClick={() => editLoan(loan)}><Pencil /></Button><Button variant="ghost" size="icon" disabled={saving} aria-label={`Remove ${loan.name}`} title={`Remove ${loan.name}`} onClick={async () => {if (await persistLoans(loans.filter(l => l.id !== loan.id)) && editingId === loan.id) resetDraft();}}><Trash2 /></Button></div></li>)}</ul>}
+            {loans.length > 0 && <ul className="grid gap-3" aria-label="Saved loans">{loans.map(loan => <li key={loan.id} className={`leaf grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border bg-card p-4 ${editingId === loan.id ? "border-foreground" : ""}`}><div className="min-w-0"><p className="break-words font-semibold">{loan.name}</p><p className="mt-1 text-sm text-muted-foreground">{usd(loan.balance)} left{editingId === loan.id ? " · Editing" : ""}</p></div><LoanMenu loan={loan} disabled={saving} stayOnEmpty onEdit={() => editLoan(loan)} onDeleted={() => { if (editingId === loan.id) resetDraft(); }} /></li>)}</ul>}
             <div>
               <h1 className="text-3xl font-semibold">Your loans</h1>
               <p className="mt-3 text-sm text-muted-foreground">Add each one. Rough numbers are totally fine.</p>
