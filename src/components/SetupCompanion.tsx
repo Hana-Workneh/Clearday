@@ -3,7 +3,7 @@ import { Sprout } from "@/components/Sprout";
 const messages = ["Hi! Let's start with you.", "Now your loans. Rough numbers are fine.", "Here it comes..."];
 
 export function SetupCompanion({ step, name, income, loans, date, ready, message }: {
-  message?: string;
+  message?: string | undefined;
   step: number;
   name: string;
   income: string;
