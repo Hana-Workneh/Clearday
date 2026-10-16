@@ -24,10 +24,10 @@ export const Route = createFileRoute("/setup")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { step?: number; edit?: string; empty?: boolean } => ({
-    step: s.step === 1 || s.step === "1" ? 1 : undefined,
-    edit: typeof s.edit === "string" ? s.edit : undefined,
-    empty: s.empty === true || s.empty === "true" ? true : undefined,
+  validateSearch: (s: Record<string, unknown>): { step?: number | undefined; edit?: string | undefined; empty?: boolean | undefined } => ({
+    step: s["step"] === 1 || s["step"] === "1" ? 1 : undefined,
+    edit: typeof s["edit"] === "string" ? s["edit"] : undefined,
+    empty: s["empty"] === true || s["empty"] === "true" ? true : undefined,
   }),
   component: Setup,
 });
