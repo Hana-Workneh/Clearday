@@ -54,12 +54,13 @@ export function simulate(loans: Loan[], start: Date = new Date()): PlanResult {
     }
     for (const l of order) {
       if (pool <= 0) break;
-      if (bal[l.id] <= 0) continue;
-      const pay = Math.min(pool, bal[l.id]);
+      const b = bal[l.id] ?? 0;
+      if (b <= 0) continue;
+      const pay = Math.min(pool, b);
       bal[l.id] -= pay;
       pool -= pay;
     }
-    for (const id in bal) if (bal[id] < 0.005) bal[id] = 0;
+    for (const id in bal) if ((bal[id] ?? 0) < 0.005) bal[id] = 0;
     totalInterest += interestThisMonth;
     schedule.push({ month, date: addMonths(start, month), balances: { ...bal }, interest: interestThisMonth, totalLeft: left() });
   }

@@ -45,7 +45,7 @@ function Home() {
       <div className="flex items-center gap-4">
         <Sprout mood="happy" size={70} />
         <div>
-          <h1 className="text-3xl font-semibold">Hi {profile.name}! 👋</h1>
+          <h1 className="text-3xl font-semibold">Hi {profile.name}!</h1>
           <p className="text-muted-foreground">Every payment brings your free day closer.</p>
         </div>
       </div>
