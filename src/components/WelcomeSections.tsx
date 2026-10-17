@@ -15,6 +15,7 @@ import { Slider } from "./ui/slider";
 import { Button } from "./ui/button";
 import { scrollToSection } from "./WelcomeNav";
 import { SeeItInAction } from "./SeeItInAction";
+import { timeLabel } from "@/lib/time-label";
 
 const steps = [
   {
@@ -328,7 +329,7 @@ export function WelcomeSections() {
                         aria-label="Try a little extra"
                       />
                       <span className="chip-green mt-4 self-center">
-                        {Math.round((extra * 7) / 50)} months sooner
+                        {timeLabel(Math.round((extra * 7) / 50), "month")} sooner
                       </span>
                     </>
                   )}

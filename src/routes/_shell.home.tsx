@@ -12,6 +12,7 @@ import { isDebtFree, nextWin } from "@/lib/celebration";
 import { ideaImpact, extraFromIdea, displayJob } from "@/lib/plan";
 import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
+import { timeLabel } from "@/lib/time-label";
 
 export const Route = createFileRoute("/_shell/home")({
   head: () => ({
@@ -86,7 +87,7 @@ function Home() {
           <p className="big-date mt-4 break-words animate-in fade-in zoom-in-95 duration-700">
             {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "Not yet — let's tweak"}
           </p>
-          {plan.monthsLeft && <p className="mt-3 text-sm text-muted-foreground">{plan.monthsLeft} months to go</p>}</div>
+          {plan.monthsLeft && <p className="mt-3 text-sm text-muted-foreground">{timeLabel(plan.monthsLeft, "month")} to go</p>}</div>
           <div className="mt-7"><div className="flex gap-1.5 sm:gap-2" role="progressbar" aria-label="Debt paid" aria-valuenow={Math.max(0, Math.min(100, pct))} aria-valuemin={0} aria-valuemax={100}>
             {Array.from({ length: 10 }, (_, i) => (
               <span key={i} className={`h-3.5 min-w-0 flex-1 rounded-full ${i < filled ? "bg-green" : pct === 0 && i === 0 ? "bg-green/40 animate-pulse" : "bg-track"}`} />

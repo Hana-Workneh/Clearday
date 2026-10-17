@@ -2,6 +2,8 @@ import { Sprout } from "./Sprout";
 import { createDemoPersona } from "@/lib/demo-personas";
 import { daysCloser, formatMonth, simulate, usd } from "@/lib/debt";
 import { Star, Sparkles } from "lucide-react";
+import { CleardayMark } from "./CleardayLogo";
+import { timeLabel } from "@/lib/time-label";
 
 // A display-only snapshot: never reads browser/account data or saves payments.
 const snapshotDate = new Date(2026, 9, 17);
@@ -22,9 +24,8 @@ function Pills() {
 
 export function HanaMiniScreen({ screen }: { screen: "home" | "celebrate" | "pay" }) {
   return <div className="hana-mini-screen pointer-events-none select-none" role="img" aria-label={`Hana’s ${screen === "celebrate" ? "payment celebration" : screen === "pay" ? "Pay faster" : "Home"} demo preview`}>
-    <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b pb-3">
-      <span className="font-heading text-sm font-semibold">clearday</span>
-      <span className="text-[10px] font-bold text-muted-foreground">HANA · DEMO</span>
+    <div className="mb-5 flex items-center gap-2 border-b pb-3">
+      <CleardayMark size={22} /><span className="font-heading text-sm font-semibold">clearday</span>
     </div>
     {screen === "home" && <>
       <p className="text-xs text-muted-foreground">A little closer, Hana.</p>
@@ -44,8 +45,8 @@ export function HanaMiniScreen({ screen }: { screen: "home" | "celebrate" | "pay
     {screen === "celebrate" && <div className="relative text-center">
       <div className="mini-confetti" aria-hidden="true">{Array.from({length: 16}, (_, i) => <i key={i} className={`mini-confetti-${i % 3}`} />)}</div>
       <div className="relative mx-auto w-fit"><Sprout mood="cheering" size={130} /></div>
-      <span className="chip-yellow mt-2 inline-flex items-center gap-1"><Sparkles className="size-3" />{daysCloser(lastPayment?.amount ?? 0, hana.loans, hana.plan)} days closer</span>
-      <h3 className="mt-4 font-heading text-xl font-semibold">You did it, Hana!</h3>
+      <span className="chip-yellow mt-2 inline-flex items-center gap-1"><Sparkles className="size-3" />{timeLabel(daysCloser(lastPayment?.amount ?? 0, hana.loans, hana.plan), "day")} closer</span>
+      <h3 className="mt-4 font-heading text-xl font-semibold">Nice one, Hana!</h3>
       <p className="mt-2 text-xs text-muted-foreground">{usd(lastPayment?.amount ?? 0)} paid. A little more freedom.</p>
       <Pills />
       <p className="mt-2 text-xs font-semibold">{paid}% of the way there</p>
@@ -57,7 +58,7 @@ export function HanaMiniScreen({ screen }: { screen: "home" | "celebrate" | "pay
       <div className="relative my-5 h-2 rounded-full bg-track"><span className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-green" /><span className="absolute left-1/3 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-green bg-card" /></div>
       <p className="text-xs text-muted-foreground">With a little extra, debt free by</p>
       <p className="mt-2 font-heading text-[28px] font-bold leading-tight">{faster.debtFreeDate ? formatMonth(faster.debtFreeDate) : "Your free day"}</p>
-      <div className="mt-4 flex flex-wrap gap-2"><span className="chip-green text-[10px]">{sooner} months sooner</span><span className="chip-purple text-[10px]">Save {usd(current.totalInterest - faster.totalInterest)}</span></div>
+      <div className="mt-4 flex flex-wrap gap-2"><span className="chip-green text-[10px]">{timeLabel(sooner, "month")} sooner</span><span className="chip-purple text-[10px]">Save {usd(current.totalInterest - faster.totalInterest)}</span></div>
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-t pt-3"><p className="text-xs text-muted-foreground">Small steps. A closer date.</p><Sprout mood="waving" size={55} /></div>
     </>}
   </div>;
