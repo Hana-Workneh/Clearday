@@ -244,9 +244,9 @@ export const demoProfile: Profile = {
   currency: "USD",
   demo: true,
   loans: [
-    { id: "d1", name: "Phone loan", balance: 140, startBalance: 300, rate: 9, payment: 40 },
-    { id: "d2", name: "Personal loan", balance: 280, startBalance: 600, rate: 15, payment: 80 },
-    { id: "d3", name: "Salary advance", balance: 0, startBalance: 200, rate: 0, payment: 50 },
+    { id: "d1", name: "Phone loan", balance: 580, startBalance: 650, rate: 24, payment: 30 },
+    { id: "d2", name: "Personal loan", balance: 2563, startBalance: 2800, rate: 18, payment: 100 },
+    { id: "d3", name: "Salary advance", balance: 296, startBalance: 400, rate: 30, payment: 35 },
   ],
   startedAt: daysAgo(120),
   startDebtFree: simulate(

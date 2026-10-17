@@ -38,6 +38,15 @@ describe("Pay faster comparisons", () => {
     expect(result.saving).toBe(292.76);
     expect(result.nextWidth).toBeLessThan(70);
   });
+  it("Hana's $50 extra saves months and meaningful interest", () => {
+    const hana = createDemoPersona("hana", start);
+    expect(hana.loans.map(l => [l.name, l.startBalance, l.rate])).toEqual([
+      ["Phone loan", 650, 24], ["Personal loan", 2800, 18], ["Salary advance", 400, 30],
+    ]);
+    const result = compare(hana.loans, 50);
+    expect(result.difference).toBeGreaterThanOrEqual(6);
+    expect(result.saving).toBeGreaterThan(200);
+  });
   it("requires at least two active loans to compare order", () => {
     expect(canCompareOrder([loan(90, 100)])).toBe(false);
     expect(canCompareOrder([loan(90, 100), { ...loan(0, 100), id: "b" }])).toBe(false);
