@@ -347,3 +347,56 @@
   .debt-free-flag { transition: none; }
 }
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }
+
+/* Three chapters of the welcome character journey. */
+.how-journey-card { min-width: 0; height: 100%; padding: 16px; display: flex; flex-direction: column; }
+.how-scene { position: relative; height: 200px; flex-shrink: 0; border-radius: 20px 20px 20px 6px; background: linear-gradient(135deg, var(--hero-panel-start), var(--hero-panel-end)); container-type: inline-size; }
+.how-ground { position: absolute; inset: auto 12px 48px; border-top: 1px dashed var(--hero-scene-ground); }
+.how-sprout { position: absolute; left: 12px; bottom: 43px; width: 92px; height: 92px; }
+.how-sprout svg, .how-stone svg, .how-crumble svg { display: block; width: 100%; height: 100%; }
+.how-scene .anim-jump, .how-scene .anim-bob, .how-scene .wave-arm, .how-scene .flag-banner { animation: none; }
+.how-stone { position: absolute; right: 20px; bottom: 43px; width: 130px; height: 119px; transform-origin: center bottom; }
+.how-bubble { position: absolute; top: 12px; right: 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 20px 20px 20px 6px; font-size: 11px; font-weight: 600; background: var(--card); z-index: 2; }
+.how-bubble::after { content: ""; position: absolute; bottom: -5px; left: 50%; width: 8px; height: 8px; background: var(--card); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transform: rotate(45deg); }
+.how-scene-2 .how-sprout { left: 6px; width: 84px; height: 84px; }
+.how-scene-2 .how-stone { left: 34%; right: auto; width: 58px; height: 53px; }
+.how-flag { position: absolute; right: 12px; top: 24px; width: 110px; height: 128px; transform-origin: bottom left; }
+.how-flag .flag-banner { padding: 10px 8px; }
+.how-flag-label { font-size: 8px; font-weight: 700; white-space: nowrap; }
+.how-flag-date { font-size: 18px; line-height: 1.2; margin-top: 5px; }
+.how-scene-chip { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; justify-content: center; gap: 6px; max-width: calc(100% - 16px); padding: 6px 10px; border-radius: 999px; background: var(--card); color: var(--foreground); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.how-win-chip { background: var(--chip-yellow); color: var(--chip-yellow-text); }
+.how-card-copy { padding: 24px 12px 12px; flex: 1; }
+.how-step-gold { color: var(--chip-yellow-text); }
+.how-scene-3 .how-sprout { left: 21%; width: 104px; height: 104px; }
+.how-pebbles { position: absolute; left: 14px; bottom: 47px; display: flex; align-items: end; gap: 3px; }
+.how-crumble { position: absolute; left: 8px; bottom: 44px; width: 70px; height: 64px; opacity: 0; transform-origin: center bottom; }
+.how-sparkles { position: absolute; top: 39px; left: 22%; width: 27px; height: 27px; }
+.how-star { position: absolute; top: 76px; left: 52%; width: 13px; height: 13px; }
+.journey-played .how-scene-1 .how-stone { animation: journey-thump 500ms ease-out both; }
+.journey-played .how-scene-2 .how-flag { animation: journey-flag 500ms ease-out both; }
+.journey-played .how-crumble { animation: journey-crumble 500ms ease-in both; }
+.journey-played .how-pebbles { animation: journey-pebbles 500ms ease-out both; }
+.journey-played .how-scene-3 .how-sprout { animation: journey-jump 550ms ease-in-out both; }
+.journey-played .how-sparkles, .journey-played .how-star { animation: journey-sparkles 550ms ease-out both; }
+@keyframes journey-thump { 0% { transform: translateY(-28px); } 65% { transform: scale(1.07,.94); } 100% { transform: none; } }
+@keyframes journey-flag { from { opacity: 0; transform: scaleY(.2); } to { opacity: 1; transform: none; } }
+@keyframes journey-crumble { 0%,25% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.2) translateY(18px); } }
+@keyframes journey-pebbles { 0%,25% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: none; } }
+@keyframes journey-jump { 0%,100% { transform: none; } 50% { transform: translate(6px,-16px) rotate(-4deg); } }
+@keyframes journey-sparkles { 0% { opacity: 0; transform: scale(.4); } 65% { opacity: 1; transform: scale(1.15); } 100% { opacity: 1; transform: none; } }
+@container (max-width: 280px) {
+  .how-scene-2 .how-sprout { width: 72px; height: 72px; }
+  .how-scene-2 .how-stone { left: 32%; width: 48px; height: 44px; }
+  .how-flag { width: 100px; right: 8px; }
+  .how-flag-date { font-size: 17px; }
+  .how-scene-3 .how-sprout { left: 19%; width: 90px; height: 90px; }
+  .how-scene-chip { font-size: 9px; padding-inline: 8px; }
+}
+@media (max-width: 1023px) {
+  .how-journey-card { width: 100%; max-width: 520px; margin-inline: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .how-scene *, .how-scene *::after { animation: none !important; transition: none !important; }
+  .how-crumble { display: none; }
+}
