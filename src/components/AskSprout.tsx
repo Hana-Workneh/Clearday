@@ -50,7 +50,7 @@ export function AskSprout() {
             <Sprout mood="happy" size={48} />
             <div className="flex-1">
               <h2 className="font-heading text-xl font-semibold">Ask Sprout</h2>
-              <p className="text-xs text-muted-foreground">A little clarity for your next step</p>
+              <p className="text-xs text-muted-foreground">{profile.demo ? "Demo replies use Clearday's calculations, not AI" : "A little clarity for your next step"}</p>
             </div>
             <Button
               variant="ghost"
