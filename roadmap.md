@@ -1,4 +1,5 @@
 # My plan
+- [ ] Verify actual demo limits/UTC renewal and deliver calculated quick replies after demo caps, using isolated automated tests.
 - [x] Clean only landing hero copy/chips/interest placement and one-time slider hint; 1400/768/390px passed both themes, desktop hover/drag and no session replay, reduced-motion static ring; nine regression tests passed.
 - [x] Apply uploaded first-time usability wording and controls; welcome, session toast, exact extra save, Progress rings, job focus and idea preview checked at desktop/390px in both themes; signed-in controls/chat loaded without account writes. Custom demo answers pass server regression tests; live demo chat correctly shows its existing daily-limit message.
 - [x] Clean Home greeting and replace demo banners with a global floating persona/tour/sign-up bar; 1400/768/390px checked in both themes, persona switching, ideas, Tour replay, chat and sign-up exit passed; 27 regression tests pass.

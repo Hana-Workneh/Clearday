@@ -47,6 +47,8 @@ function request(question: string, demo = true, signedIn = false) {
 }
 beforeEach(() => {
   vi.clearAllMocks();
+  // Fail closed if a future edit accidentally makes a real network request.
+  vi.stubGlobal("fetch", vi.fn(() => { throw new Error("Real network calls are forbidden in automated Sprout tests"); }));
   vi.stubEnv("SUPABASE_URL", "https://example.test");
   vi.stubEnv("SUPABASE_PUBLISHABLE_KEY", "test-key");
   vi.stubEnv("LOVABLE_API_KEY", "");
@@ -113,11 +115,19 @@ describe("Ask Sprout anonymous spending protection", () => {
     expect(mocks.provider).not.toHaveBeenCalled();
     expect(mocks.generation).not.toHaveBeenCalled();
   });
-  it("preserves the server-enforced demo limit", async () => {
-    mocks.claim.mockResolvedValue({ data: false, error: null });
-    const response = await handleSprout(request("help"));
-    expect(response.status).toBe(429);
-    expect(await response.json()).toEqual({ message: SPROUT_LIMIT_MESSAGE });
+  it.each([
+    { data: false, error: null },
+    { data: null, error: { code: "unavailable" } },
+  ])("returns calculated quick answers when demo counters block or are unavailable: %s", async (claim) => {
+    mocks.claim.mockResolvedValue(claim);
+    const question = "What if I pay $50 more?";
+    const response = await handleSprout(request(question));
+    expect(response.status).toBe(200);
+    const body = await response.text();
+    const { facts, fallback } = chatFacts(profile, question);
+    expect(body).toContain(JSON.stringify(`Sprout is using quick answers for now.\n\n${checkedChatAnswer(fallback, facts, fallback)}`));
     expect(mocks.provider).not.toHaveBeenCalled();
+    expect(mocks.generation).not.toHaveBeenCalled();
+    expect(fetch).not.toHaveBeenCalled();
   });
 });
