@@ -11,7 +11,7 @@
 
 ## Architecture
 - Product tours use a client-loaded driver.js spotlight with React-rendered shared Sprout/buttons and browser completion keys isolated by demo/account; tours never write financial data.
-- Ask Sprout uses owner-scoped chat rows, a streaming server boundary and verified calculation placeholders; demo conversations remain session-local and atomic server counters enforce daily limits.
+- Ask Sprout uses owner-scoped chat rows, a streaming server boundary and verified calculation placeholders; demo requests return deterministic calculation replies before the paid provider, conversations remain session-local and atomic server counters enforce daily limits — prevents anonymous AI spending.
 - Setup loan-entry validation and automatic commits live in pure `src/lib/loan-entry.ts` with tests — both add-another and continue use the same field rules and stable IDs for edits.
 - Setup's companion preview is presentational and receives live form values; only existing setup actions save loans or calculate the final plan — visual feedback must not change financial or persistence rules.
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.

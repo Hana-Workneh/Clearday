@@ -1,6 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import { createOpenAI } from "@ai-sdk/openai";
-import { streamText, convertToModelMessages, type UIMessage, type TextStreamPart } from "ai";
+import {
+  streamText,
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  type UIMessage,
+  type TextStreamPart,
+} from "ai";
 import { z } from "zod";
 import { profileSchema } from "../account-data";
 import { chatFacts, checkedChatAnswer, SPROUT_LIMIT_MESSAGE } from "../sprout-chat";
@@ -87,15 +94,17 @@ export async function handleSprout(request: Request) {
   }
   if (!input.demo && !user) return errorResponse("Sign in or try Hana's demo to ask Sprout.", 401);
   const apiKey = process.env["LOVABLE_API_KEY"];
-  if (!apiKey) return errorResponse("Lovable AI isn't configured yet.", 401);
+  if (!input.demo && !apiKey) return errorResponse("Lovable AI isn't configured yet.", 401);
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data: gate, error: gateError } = await supabaseAdmin
-    .from("ai_advice_gate")
-    .select("status,message")
-    .eq("id", "advice")
-    .maybeSingle();
-  if (gateError) return errorResponse("Ask Sprout is temporarily unavailable.", 503);
-  if (gate) return errorResponse(gate.message, gate.status);
+  if (!input.demo) {
+    const { data: gate, error: gateError } = await supabaseAdmin
+      .from("ai_advice_gate")
+      .select("status,message")
+      .eq("id", "advice")
+      .maybeSingle();
+    if (gateError) return errorResponse("Ask Sprout is temporarily unavailable.", 503);
+    if (gate) return errorResponse(gate.message, gate.status);
+  }
   let profile = input.profile;
   let messages: UIMessage[] = [];
   if (!input.demo && user) {
@@ -145,7 +154,7 @@ export async function handleSprout(request: Request) {
     (request.headers.get("user-agent") || "browser");
   const digest = await crypto.subtle.digest(
     "SHA-256",
-    new TextEncoder().encode(apiKey + "|" + fingerprint),
+    new TextEncoder().encode((apiKey ?? key) + "|" + fingerprint),
   );
   const visitor = input.demo
     ? "demo:" + Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("")
@@ -168,6 +177,27 @@ export async function handleSprout(request: Request) {
   messages = [...messages.filter((m) => m.id !== latest.id), latest];
   const question = latest.parts.map((p) => p.text).join(" ");
   const { facts, fallback } = chatFacts(profile, question);
+  // Demo answers never reach a paid provider, even with a valid bearer token.
+  if (input.demo) {
+    return createUIMessageStreamResponse({
+      headers,
+      stream: createUIMessageStream({
+        execute: ({ writer }) => {
+          writer.write({ type: "start" });
+          writer.write({ type: "text-start", id: "demo-answer" });
+          writer.write({
+            type: "text-delta",
+            id: "demo-answer",
+            delta: checkedChatAnswer(fallback, facts, fallback),
+          });
+          writer.write({ type: "text-end", id: "demo-answer" });
+          writer.write({ type: "finish", finishReason: "stop" });
+        },
+      }),
+    });
+  }
+  // Defense in depth: only verified account requests may start metered generation.
+  if (!user || !apiKey) return errorResponse("Sign in to ask Sprout.", 401);
   let resolveUpstream: (response: Response | null) => void = () => {};
   const upstreamReady = new Promise<Response | null>((resolve) => {
     resolveUpstream = resolve;
