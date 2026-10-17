@@ -422,6 +422,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .welcome-hero-subtitle { margin-top: 16px; max-width: 480px; }
 .welcome-hero-buttons { margin-top: 32px; flex-wrap: wrap; }
 .welcome-hero-buttons > * { white-space: nowrap; padding-inline: 20px; }
+.welcome-hero-buttons > p { white-space: normal; padding-inline: 0; }
 .welcome-hero-trust { margin-top: 20px; }
 .welcome-hero-trust > span { white-space: nowrap; }
 .welcome-hero-fact { margin-top: 24px; }
