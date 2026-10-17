@@ -32,7 +32,7 @@ export function DemoBar() {
         </DropdownMenuContent>
       </DropdownMenu>
       <Button asChild variant="ghost" className="demo-tour"><Link to="/home" onClick={requestProductTour}>Tour</Link></Button>
-      <Button asChild variant="payment" className="demo-start"><Link to="/auth" onClick={leaveDemo}>Start my own <ArrowRight aria-hidden /></Link></Button>
+      <Button asChild variant="payment" className="demo-start"><Link to="/auth" onClick={(event) => { event.preventDefault(); leaveDemo(); window.location.assign("/auth"); }}>Start my own <ArrowRight aria-hidden /></Link></Button>
     </aside>
   );
 }
