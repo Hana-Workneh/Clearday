@@ -36,6 +36,32 @@ function useCountUp(target: number, duration = 450) {
 export function TryItCalculator() {
   const [owe, setOwe] = useState(4000);
   const [pay, setPay] = useState(155);
+  const userTouched = useRef(false);
+  const [selfDemo, setSelfDemo] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const timer = setTimeout(() => {
+      if (userTouched.current) return;
+      setSelfDemo(true);
+      const start = performance.now();
+      const glide = (time: number) => {
+        if (userTouched.current) {
+          setSelfDemo(false);
+          return;
+        }
+        const progress = Math.min(1, (time - start) / 500);
+        setPay(Math.round((155 + 65 * (1 - Math.pow(1 - progress, 3))) / 5) * 5);
+        if (progress < 1) frame = requestAnimationFrame(glide);
+        else setSelfDemo(false);
+      };
+      frame = requestAnimationFrame(glide);
+    }, 1300);
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   const result = useMemo(
     () =>
@@ -49,12 +75,13 @@ export function TryItCalculator() {
   const date = addMonths(new Date(), Math.max(1, Math.round(animatedMonths)));
 
   const onSlide = (setter: (n: number) => void) => (v: number[]) => {
+    userTouched.current = true;
+    setSelfDemo(false);
     setter(v[0] ?? 0);
   };
 
   return (
-    <div className="welcome-calculator-scene relative w-full">
-      <WelcomeCharacters owe={owe} pay={pay} months={months} />
+    <div className="welcome-calculator-scene relative w-full" data-self-demo={selfDemo}>
       <div className="relative w-full max-w-md">
         <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
           <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
@@ -121,6 +148,7 @@ export function TryItCalculator() {
             </div>
           </div>
         </div>
+        <WelcomeCharacters owe={owe} pay={pay} months={months} />
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Want your real date?{" "}
           <Link

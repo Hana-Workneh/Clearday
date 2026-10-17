@@ -223,12 +223,14 @@ export function WelcomeSections() {
         </Reveal>
         <div className="grid gap-5 md:grid-cols-2">
           <Reveal>
-            <article className="leaf-lg flex h-full flex-col border bg-card p-6 md:p-7">
+            <article className="leaf-lg relative mt-14 flex h-full flex-col border bg-card p-6 md:p-7">
+              <div className="feeling-heavy-stone">
+                <Stone size={150} />
+              </div>
               <div className="flex items-center justify-between">
                 <span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground">
                   <CloudRain className="size-5" />
                 </span>
-                <Stone size={100} />
               </div>
               <h3 className="mt-4 font-heading text-xl font-semibold">Without a plan</h3>
               <p className="mt-2 text-balance text-2xl font-heading font-semibold text-muted-foreground">
@@ -241,12 +243,15 @@ export function WelcomeSections() {
             </article>
           </Reveal>
           <Reveal delay={120}>
-            <article className="leaf-lg flex h-full flex-col border-2 border-green bg-card p-6 md:p-7">
+            <article className="leaf-lg mt-14 flex h-full flex-col border-2 border-green bg-card p-6 md:p-7">
               <div className="flex min-h-[100px] items-center justify-between">
                 <span className="grid size-11 place-items-center rounded-full bg-chip-green text-chip-green-text">
                   <Sunrise className="size-5" />
                 </span>
-                <Stone size={32} pebble />
+                <div className="flex items-end gap-1">
+                  <Sprout mood="happy" size={100} />
+                  <Stone size={24} pebble />
+                </div>
               </div>
               <h3 className="mt-4 font-heading text-xl font-semibold">With Clearday</h3>
               <p className="mt-2 text-balance text-2xl font-heading font-semibold">

@@ -54,9 +54,15 @@
 }
 
 :root {
-  --stone: oklch(0.602 0.024 73.6);
-  --stone-shade: oklch(0.5 0.021 68.2);
-  --stone-light: oklch(0.69 0.024 73.6);
+  --stone: #9A8F82;
+  --stone-shade: #6B6157;
+  --stone-light: #B3A99C;
+  --stone-upper: #A89E91;
+  --stone-left: #877C70;
+  --stone-right: #857A6E;
+  --stone-bottom: #776D62;
+  --stone-face: #2B2520;
+  --stone-shadow: #0B1411;
   --background: #F6F7F5;
   --foreground: #0B1411;
   --card: #FFFFFF;
@@ -213,35 +219,61 @@
 @media (prefers-reduced-motion: reduce) { .driver-overlay, .driver-popover { animation: none !important; transition: none !important; } }
 .sprout-think-bob { animation: bob 2.4s ease-in-out infinite; }
 .welcome-calculator-scene { max-width: 448px; }
-.welcome-duo { display: flex; align-items: end; justify-content: center; height: 126px; gap: 4px; pointer-events: none; }
-.presenting-sprout { position: relative; width: 126px; height: 126px; transform-origin: 50% 95%; }
+.welcome-duo { position: relative; display: flex; align-items: end; justify-content: center; height: 252px; gap: 0; pointer-events: none; margin-top: 12px; }
+.welcome-duo::after { content: ""; position: absolute; bottom: 31px; left: 8%; right: 8%; height: 2px; background: var(--border); z-index: 0; }
+.presenting-sprout { position: relative; z-index: 1; width: 170px; height: 170px; margin-bottom: 26px; flex-shrink: 0; transform-origin: 50% 95%; }
 .presenting-sprout > svg:first-child { width: 100%; height: 100%; }
-.presenting-sprout .anim-jump, .presenting-sprout .sprout-sway { animation: none; }
-.presenting-sprout .wave-arm { animation-iteration-count: 1; animation-duration: 1.2s; }
+.presenting-sprout .anim-jump, .presenting-sprout .anim-bob, .presenting-sprout .sprout-sway { animation: none; }
+.presenting-sprout .wave-arm { animation-iteration-count: 1; animation-duration: .5s; }
 .presenting-sprout:not(.reaction-hello) .wave-arm { animation: none; }
-.presenting-stone { position: relative; display: flex; align-items: end; justify-content: center; width: 110px; height: 110px; }
-.presenting-stone > svg:first-child { max-width: 100%; height: auto; transition: width .5s ease; }
-.duo-sparkles { position: absolute; inset: 0; width: 100%; height: 100%; animation: duo-sparkle .85s ease-out both; }
-.stone-chips { position: absolute; inset: 0; width: 100%; height: 100%; animation: stone-chip .8s ease-out both; }
-.stone-pebbles { width: 105px; animation: stone-crumble .65s ease-out; }
-.reaction-closer { animation: duo-jump-spin 1s ease-in-out; }
-.duo-close .presenting-sprout { scale: 1.08; }
+.presenting-stone { position: relative; z-index: 1; width: 190px; height: 252px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: end; }
+.stone-stage { position: relative; display: flex; align-items: end; justify-content: center; width: 190px; height: 170px; }
+.stone-size { flex-shrink: 0; transition: width .5s cubic-bezier(.2,1.5,.5,1), height .5s cubic-bezier(.2,1.5,.5,1); }
+.stone-size svg { width: 100%; height: 100%; display: block; }
+.stone-impact, .stone-breathe, .stone-grumble { width: 100%; height: 100%; transform-origin: center bottom; }
+.stone-breathe { animation: stone-breathe 4s ease-in-out infinite; }
+.stone-grumble { animation: stone-grumble .45s ease-in-out infinite; animation-duration: 5s; }
+.stone-bubble { position: absolute; bottom: 203px; width: 190px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 20px 20px 20px 6px; background: var(--card); color: var(--foreground); font-size: 12px; font-weight: 600; line-height: 1.5; text-align: center; }
+.stone-bubble::after { content: ""; position: absolute; bottom: -6px; left: 50%; width: 10px; height: 10px; background: var(--card); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transform: rotate(45deg); }
+.stone-label { height: 26px; margin-top: 5px; display: inline-flex; align-items: center; padding: 3px 12px; border-radius: 999px; background: var(--secondary); color: var(--muted-foreground); font-size: 11px; font-weight: 700; }
+.stone-reaction-closer .stone-impact { animation: stone-pushed .55s ease-out both; }
+.stone-reaction-further .stone-impact { animation: stone-smug-grow .5s ease-out both; }
+.stone-face-surprised .stone-brow-left, .stone-face-surprised .stone-brow-right { transform: translateY(-6px); }
+.stone-face-surprised .stone-mouth { transform-box: fill-box; transform-origin: center; transform: rotate(180deg) scale(.6,1.7); }
+.stone-face-smug .stone-mouth { transform-box: fill-box; transform-origin: center; transform: rotate(180deg); }
+.duo-sparkles { position: absolute; inset: 0; width: 100%; height: 100%; animation: duo-sparkle .55s ease-out both; }
+.stone-chips { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.stone-chips path { transform-box: fill-box; transform-origin: center; animation: stone-chip-left .55s ease-out both; }
+.stone-chips .chip-right { animation-name: stone-chip-right; }
+.stone-chips .chip-bottom { animation-name: stone-chip-bottom; }
+.stone-pebbles { width: 120px; height: 90px; }
+.stone-pebbles path { transform-box: fill-box; transform-origin: center; animation: pebble-middle .55s ease-out both; }
+.stone-pebbles .pebble-roll-left { animation-name: pebble-left; }
+.stone-pebbles .pebble-roll-right { animation-name: pebble-right; }
+.reaction-closer { animation: sprout-push-jump .55s ease-in-out; }
+.duo-close .presenting-sprout { scale: 1.06; }
 .sprout-blink { transform-origin: 60px 70px; animation: sprout-blink 5.1s infinite; }
 .sprout-peek { position: absolute; right: 20px; top: -45px; height: 45px; overflow: hidden; }
+.feeling-heavy-stone { position: absolute; right: 16px; top: -110px; }
 @keyframes sprout-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46% { transform: scaleY(.07); } }
-@keyframes duo-jump-spin { 0%,100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-24px) rotate(-12deg); } 70% { transform: translateY(-12px) rotate(360deg); } 99% { transform: translateY(0) rotate(360deg); } }
+@keyframes sprout-push-jump { 0%,100% { transform: none; } 25% { transform: translateX(10px) rotate(12deg); } 55% { transform: translateY(-22px) rotate(-8deg); } 80% { transform: translateY(-8px) rotate(8deg); } }
+@keyframes stone-pushed { 0% { transform: none; } 40%,100% { transform: translateX(8px) scale(.92); } }
+@keyframes stone-smug-grow { 0% { transform: scale(1); } 60%,100% { transform: scale(1.05); } }
+@keyframes stone-breathe { 0%,14%,100% { transform: scale(1); } 7% { transform: scale(1.025,.975); } }
+@keyframes stone-grumble { 0%,10%,100% { transform: none; } 2%,6% { transform: translateX(-2px) rotate(-1deg); } 4%,8% { transform: translateX(2px) rotate(1deg); } }
 @keyframes duo-sparkle { 0% { opacity: 0; transform: scale(.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.2) translateY(-18px); } }
-@keyframes stone-chip { from { opacity: 1; transform: translateY(-8px) scale(.6); } to { opacity: 0; transform: translateY(38px) scale(1.3) rotate(15deg); } }
-@keyframes stone-crumble { from { transform: translateY(-24px) scale(.65); opacity: .3; } to { transform: none; opacity: 1; } }
-@media (min-width: 1024px) {
-  .welcome-calculator-scene { max-width: 630px; padding-left: 172px; }
-  .welcome-duo { position: absolute; left: -17px; top: 85px; width: 200px; height: 300px; display: block; }
-  .presenting-sprout { width: 200px; height: 200px; }
-  .presenting-stone { margin-left: 68px; width: 130px; height: 120px; margin-top: -14px; }
-}
+@keyframes stone-chip-left { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(-28px,24px) rotate(-70deg); } }
+@keyframes stone-chip-right { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(26px,-20px) rotate(100deg); } }
+@keyframes stone-chip-bottom { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(22px,34px) rotate(60deg); } }
+@keyframes pebble-left { from { transform: translate(22px,-25px); } to { transform: translateX(-13px) rotate(-55deg); } }
+@keyframes pebble-right { from { transform: translate(-22px,-25px); } to { transform: translateX(13px) rotate(60deg); } }
+@keyframes pebble-middle { from { transform: translateY(-30px); } to { transform: rotate(15deg); } }
+@media (min-width: 1024px) { .presenting-sprout { width: 200px; height: 200px; } }
+@media (max-width: 380px) { .presenting-sprout { width: 140px; height: 140px; } .presenting-stone, .stone-stage { width: 175px; } .stone-bubble { width: 175px; } }
 @media (prefers-reduced-motion: reduce) {
-  .reaction-closer, .sprout-blink, .stone-pebbles { animation: none; }
+  .welcome-duo *, .welcome-duo *::after { animation: none !important; transition: none !important; }
   .duo-sparkles, .stone-chips { display: none; }
-  .presenting-stone > svg:first-child { transition: none; }
+  .stone-reaction-closer .stone-impact { transform: scale(.92); }
+  .stone-reaction-further .stone-impact { transform: scale(1.05); }
 }
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }
