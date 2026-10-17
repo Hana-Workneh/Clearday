@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea, planFromIdea, safeAdvice } from "./plan";
+import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea, planFromIdea, safeAdvice, displayJob } from "./plan";
 import type { Profile } from "./store";
 const now = new Date(2026, 9, 16);
 const profile: Profile = { name: "A", job: "Barista", income: 3000, startedAt: "2026-09-01", loans: [{ id: "a", name: "A", balance: 100, startBalance: 100, rate: 0, payment: 50 }, { id: "b", name: "B", balance: 300, startBalance: 300, rate: 0, payment: 50 }], payments: [{ id: "p", loanId: "a", amount: 50, date: "2026-09-05" }] };
@@ -32,6 +32,7 @@ describe("My plan", () => {
   });
 });
 describe("safeAdvice job tags", () => {
+  it("does not repeat rude job titles in the Home invitation", () => { expect(displayJob("shithead")).toBe(""); expect(displayJob("teacher")).toBe("teacher"); });
   const idea = (forJob: boolean, title = "Idea") => ({ title, detail: "A small step.", monthlyAmount: 23, kind: "earn" as const, forJob });
   it("tags job ideas with the cleaned job and lists them first", () => {
     const r = safeAdvice({ jobLabel: "nurse", ideas: [idea(false, "g"), idea(true, "a"), idea(true, "b"), idea(true, "c")] });

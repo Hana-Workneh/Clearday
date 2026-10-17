@@ -9,7 +9,7 @@ import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
 import { isDebtFree, nextWin } from "@/lib/celebration";
-import { ideaImpact, extraFromIdea } from "@/lib/plan";
+import { ideaImpact, extraFromIdea, displayJob } from "@/lib/plan";
 import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
 
@@ -74,7 +74,7 @@ function Home() {
       <QuietCard profile={profile} />
 
       <aside className="leaf flex flex-wrap items-center justify-between gap-4 bg-chip-purple px-6 py-5 text-chip-purple-text">
-        <div className="flex min-w-0 items-center gap-3"><Sparkles className="size-5 shrink-0" /><p className="font-heading font-semibold">{profile.job.trim() ? `Sprout has ideas for you as a ${profile.job.trim()}` : "Sprout has ideas for you"}</p></div>
+        <div className="flex min-w-0 items-center gap-3"><Sparkles className="size-5 shrink-0" /><p className="font-heading font-semibold">{displayJob(profile.job) ? `Sprout has ideas for you as a ${displayJob(profile.job)}` : "Sprout has ideas for you"}</p></div>
         <Button asChild variant="outline" className="btn-secondary shrink-0"><Link to="/plan">See ideas <ArrowRight /></Link></Button>
       </aside>
 

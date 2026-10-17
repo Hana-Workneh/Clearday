@@ -18,6 +18,10 @@ export type Idea = z.infer<typeof ideaSchema>;
 
 const unsafe = /\b(gambl\w*|betting|lotter\w*|casino\w*|crypto\w*|bitcoin|forex|day trad\w*|new loans?|payday loans?|borrow\w*|refinanc\w*|leverage\w*|stock trad\w*|options trad\w*|multilevel|mlm)\b/i;
 const rude = /\b(fuck\w*|shit\w*|bitch\w*|cunt\w*|dick\w*|porn\w*|whore\w*|slut\w*|nazi\w*|asshole\w*|bastard\w*|wank\w*|retard\w*)\b/i;
+export function displayJob(value: string): string {
+  const label = cleanText(value).trim();
+  return rude.test(label) ? "" : label;
+}
 /** Keeps only safe ideas with rounded, capped monthly amounts (cached or fresh). */
 export function safeIdeas(value: unknown): Idea[] {
   const parsed = z.object({ ideas: z.array(ideaSchema) }).parse(value);
