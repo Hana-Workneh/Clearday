@@ -1,5 +1,5 @@
 # My plan
-- [ ] Repair Hana showcase previews, align hero and bottom-edge characters, safe top-edge hover, mirrored equal-height feeling cards; check desktop/phone both themes.
+- [x] Repair showcase with noninteractive Hana mini screens; aligned hero, bottom-edge characters, safe top-edge hover and mirrored equal-height feeling cards checked on desktop/phone in both themes; slider dragging, cooldown and reduced motion verified; 17 tests pass.
 - [x] Add calculator hover/scroll card-holding Sprout; desktop/phone replays, exactly two 500ms bounces, three-second cooldown, draggable sliders and reduced motion verified; nine presentation tests pass.
 - [x] Apply exact supplied Stone SVG, debt label/bubble, coordinated slider reactions and opening story; desktop/phone interactions, 70/170px sizes, twelve-month pebbles, no overflow and motion-free alternative verified; 20 tests and changed-file lint pass.
 - [x] Improve tech ideas and calculated raise/freelance replies; five tech roles returned specific safe ideas through live AI calls; calculation and server regression tests pass.
