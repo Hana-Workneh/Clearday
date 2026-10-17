@@ -25,11 +25,11 @@ export function useCalculatorMoment() {
     let pointer: { x: number; y: number } | undefined;
     const position = () => {
       // The untransformed parent is stable during lifting and bouncing.
-      const c = card.parentElement?.getBoundingClientRect();
+      const c = card.getBoundingClientRect();
       const h = home.getBoundingClientRect();
       if (!c) return;
-      mover.style.setProperty("--hop-x", `${c.left + c.width * .25 - h.left - h.width / 2}px`);
-      mover.style.setProperty("--hop-y", `${c.top - h.top - h.height * .88 - 8}px`);
+      mover.style.setProperty("--hop-x", `${c.left + c.width * .24 - h.left - h.width / 2}px`);
+      mover.style.setProperty("--hop-y", `${c.top - h.top - h.height * .93}px`);
     };
     const settle = () => {
       setHolding(false);
@@ -61,7 +61,7 @@ export function useCalculatorMoment() {
     };
     const checkPointer = () => {
       if (!fine.matches || reduced.matches || !pointer) return;
-      const rect = card.parentElement?.getBoundingClientRect();
+      const rect = card.getBoundingClientRect();
       if (!rect) return;
       const inside = pointer.x >= rect.left - HOVER_MARGIN && pointer.x <= rect.right + HOVER_MARGIN && pointer.y >= rect.top - HOVER_MARGIN && pointer.y <= rect.bottom + HOVER_MARGIN;
       if (inside !== hovered) {
@@ -88,7 +88,7 @@ export function useCalculatorMoment() {
       if (!visible) away = true;
       else if (away) { away = false; checkPointer(); play(); }
     }, { threshold: [0, VIEW_THRESHOLD, 1] });
-    observer.observe(card.parentElement ?? card);
+    observer.observe(card);
     const resize = new ResizeObserver(position);
     resize.observe(home);
     resize.observe(card);

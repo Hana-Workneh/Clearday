@@ -87,7 +87,7 @@ export function WelcomeCharacters({
       </div>
       </div>
       </div>
-      <div className={`presenting-stone stone-reaction-${reaction}`}>
+      <div className={`presenting-stone stone-reaction-${reaction}`} style={{ "--stone-height": `${size * 110 / 120}px` } as React.CSSProperties}>
         {!close && (
           <p className="stone-bubble" aria-live="polite">
             {reaction === "closer"

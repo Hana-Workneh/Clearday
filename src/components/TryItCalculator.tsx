@@ -151,9 +151,9 @@ export function TryItCalculator() {
             </div>
           </div>
         </div>
-        </div>
         <WelcomeCharacters owe={owe} pay={pay} months={months} moment={moment} />
-        <p className="mt-4 text-center text-sm text-muted-foreground">
+        </div>
+        <p className="calculator-real-date text-center text-sm text-muted-foreground">
           Want your real date?{" "}
           <Link
             to="/setup"

@@ -31,10 +31,10 @@ function Welcome() {
     <div className="min-h-screen" id="top">
       <WelcomeNav />
       <section className="relative mx-auto max-w-6xl px-5 pb-10 pt-24 md:pt-28">
-        <div className="relative grid items-center gap-6 lg:grid-cols-[0.85fr_1.25fr] lg:gap-8">
-          <div className="text-center md:text-left">
-            <p className="text-sm font-semibold text-green-text">See the day you'll be free.</p>
-            <h1 className="mt-3 text-[30px] font-semibold leading-tight sm:text-[34px] md:text-5xl">
+        <div className="relative grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="relative min-w-0 text-center md:text-left">
+            <p className="text-sm font-semibold text-green-text lg:absolute lg:-top-7">See the day you'll be free.</p>
+            <h1 className="mt-3 text-[30px] font-semibold leading-tight sm:text-[34px] md:text-5xl lg:mt-0">
               <span className="block">Debt feels endless.</span>
               <span className="block">It doesn't have to.</span>
             </h1>
