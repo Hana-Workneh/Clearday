@@ -3,12 +3,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Sprout } from "@/components/Sprout";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { simulate, formatMonth, type PlanResult, type Strategy } from "@/lib/debt";
 import { saveProfile, useProfile, planOptions } from "@/lib/store";
 import { markStartStep } from "@/lib/start-here";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { canCompareOrder, comparePayoff, equivalentOrders } from "@/lib/pay-faster";
+import { exactExtra } from "@/lib/extra-input";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
   validateSearch: (search: Record<string, unknown>): { extra?: number } => {
@@ -41,6 +43,7 @@ function PayFaster() {
   const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
   const [extra, setExtra] = useState(0);
+  const [extraDraft, setExtraDraft] = useState<string | null>(null);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
   const [isSaving, setSaving] = useState(false);
@@ -133,9 +136,9 @@ function PayFaster() {
         <section className="leaf-lg border bg-card p-6 md:p-8 lg:col-span-3">
           <div className="flex items-end justify-between">
             <p className="font-semibold text-muted-foreground">Extra each month</p>
-            <p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p>
+            <div className="flex flex-wrap items-center justify-end gap-3"><p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p><Input aria-label="Exact extra each month" type="number" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step="0.01" value={extraDraft ?? extra} onChange={(event) => { setExtraDraft(event.target.value); const value = exactExtra(event.target.value, Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)); if (value !== null) setExtra(value); }} onBlur={() => setExtraDraft(null)} className="w-24 bg-background" /></div>
           </div>
-          <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
+          <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => { setExtraDraft(null); setExtra(v[0] ?? 0); }} aria-label="Extra money each month" />
           <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{usd(0)}</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
 
           <div className="leaf mt-6 bg-background p-6">
@@ -165,6 +168,7 @@ function PayFaster() {
         <section className="flex flex-col gap-4 lg:col-span-2">
           {canCompareOrder(loans) ? <div className="leaf-lg border bg-card p-6">
             <h2 className="font-heading text-lg font-semibold">Which loan should you pay first?</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Your extra money goes to one loan at a time. When that loan is paid off, its payment moves to the next one.</p>
             {equivalentOrders(Object.values(byStrategy)) && <p className="mt-2 text-sm text-muted-foreground">With your loans, the order doesn't change much.</p>}
             <div className="mt-4 grid gap-3">
               {options.map((o) => {
@@ -192,7 +196,8 @@ function PayFaster() {
           </div>
 
           {error && <p role="alert" className="text-sm text-tip">{error}</p>}
-          <Button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Make this my plan"}</Button>
+          <Button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Save to my plan"}</Button>
+          <p className="text-center text-xs text-muted-foreground">This only updates your plan in Clearday. No money moves.</p>
         </section>
       </div>
     </div>

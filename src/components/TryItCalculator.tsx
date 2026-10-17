@@ -121,6 +121,7 @@ export function TryItCalculator({
             <span>$1,000</span>
           </div>
         </div>
+        <p className="mt-3 text-[10px] leading-relaxed text-muted-foreground">Have more than one loan? Add each one after you start. Clearday uses every loan's own interest rate.</p>
       </div>
       <WelcomeCharacters
         owe={owe}

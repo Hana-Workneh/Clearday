@@ -336,8 +336,9 @@ function MyPlan() {
                   <Sparkles className="size-4" />
                 </div>
                 {idea.tag && (
-                  <span className="mt-3 inline-flex rounded-full bg-card px-3 py-1 text-xs font-bold text-chip-purple-text">
+                  <span className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full bg-card px-3 py-1 text-xs font-bold text-chip-purple-text">
                     {idea.tag}
+                    {idea.tag.startsWith("Because you're") && <Button asChild variant="link" className="h-auto p-0 text-xs text-tip"><Link to="/settings" search={{ edit: "job" }}>Change</Link></Button>}
                   </span>
                 )}
                 <h3 className="font-heading mt-3 text-lg font-semibold">{idea.title}</h3>
