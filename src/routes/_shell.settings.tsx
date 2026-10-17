@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Sprout } from "@/components/Sprout";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { Loan } from "@/lib/debt";
+import { requestProductTour } from "@/lib/product-tour";
 
 export const Route = createFileRoute("/_shell/settings")({
   head: () => ({ meta: [
@@ -36,7 +37,7 @@ function Settings() {
   const signOut = async () => { await router.options.context.queryClient.cancelQueries(); router.options.context.queryClient.clear(); const {error} = await supabase.auth.signOut(); if (error) throw error; clearAccount(); await navigate({to: "/auth", replace: true}); };
   const saveDetails = async (e: React.FormEvent) => { e.preventDefault(); if (await persist({...profile, name: name.trim(), income: Number(income), job: job.trim(), skills: skills.trim() || undefined, currency, theme})) { localStorage.setItem("clearday-theme", theme); document.documentElement.classList.toggle("dark", theme === "dark"); } };
   return <div className="mx-auto max-w-4xl space-y-8">
-    <header><h1 className="page-title">Settings</h1><p className="page-sub mt-1">A little more you.</p></header>
+    <header><h1 className="page-title">Settings</h1><p className="page-sub mt-1">A little more you.</p><Button asChild variant="link" className="mt-2 px-0 text-tip"><Link to="/home" onClick={requestProductTour}>Take the tour</Link></Button></header>
     <section className="border-y py-6"><h2 className="font-heading text-xl font-semibold">Your details</h2><form onSubmit={saveDetails} className="mt-5 grid gap-4 sm:grid-cols-2">
       <label className="grid gap-2 text-sm font-semibold">Name<input className={field} value={name} onChange={e => setName(e.target.value)} required maxLength={100} /></label>
       <label className="grid gap-2 text-sm font-semibold">Monthly income ({currency})<input className={field} type="number" min="0.01" step="0.01" value={income} onChange={e => setIncome(e.target.value)} required /></label>

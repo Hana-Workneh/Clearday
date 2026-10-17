@@ -29,6 +29,7 @@ export function AskSprout() {
     <>
       {!open && (
         <Button
+          data-tour="ask"
           onClick={() => setOpen(true)}
           aria-label="Ask Sprout"
           title="Ask Sprout"

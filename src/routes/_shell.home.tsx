@@ -73,7 +73,7 @@ function Home() {
 
       <QuietCard profile={profile} />
 
-      <aside className="leaf flex flex-wrap items-center justify-between gap-4 bg-chip-purple px-6 py-5 text-chip-purple-text">
+      <aside data-tour="ideas" className="leaf flex flex-wrap items-center justify-between gap-4 bg-chip-purple px-6 py-5 text-chip-purple-text">
         <div className="flex min-w-0 items-center gap-3"><Sparkles className="size-5 shrink-0" /><p className="font-heading font-semibold">{displayJob(profile.job) ? `Sprout has ideas for you as a ${displayJob(profile.job)}` : "Sprout has ideas for you"}</p></div>
         <Button asChild variant="outline" className="btn-secondary shrink-0"><Link to="/plan">See ideas <ArrowRight /></Link></Button>
       </aside>
@@ -81,7 +81,7 @@ function Home() {
       {win && <div role="status" className="chip-yellow w-fit max-w-full"><Star aria-hidden className="size-4 shrink-0 fill-sun text-sun" /><span>{win.reached ? `You reached ${win.name}!` : `Next win: ${win.name}, ${usd(win.remaining)} to go`}</span></div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <section className={`${card} flex min-h-64 min-w-0 flex-col justify-between md:p-8`} aria-label="Your debt free date">
+        <section data-tour="date" className={`${card} flex min-h-64 min-w-0 flex-col justify-between md:p-8`} aria-label="Your debt free date">
           <div><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-muted-foreground">Debt free by</p><Sparkles className="size-5 text-sun" /></div>
           <p className="big-date mt-4 break-words animate-in fade-in zoom-in-95 duration-700">
             {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "Not yet — let's tweak"}
@@ -94,7 +94,7 @@ function Home() {
           </div><p className="mt-3 text-sm font-semibold">{pct === 0 ? "Day 1. Your first payment fills the first pill." : `${pct}% of the way there`}</p></div>
         </section>
         <div className="grid min-w-0 gap-5">
-          <div className={`${card} flex min-w-0 flex-col justify-between gap-4 md:p-7`}>
+          <div data-tour="work" className={`${card} flex min-w-0 flex-col justify-between gap-4 md:p-7`}>
             <div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-muted-foreground">Days of work to pay interest</p><span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip-purple text-chip-purple-text"><BriefcaseBusiness className="size-5" /></span></div>
             <p className="big-date break-words">{workDaysLabel(plan.totalInterest, profile.income)}</p>
             <p className="font-heading text-lg font-semibold leading-snug">You'll work {workDaysLabel(plan.totalInterest, profile.income)} just to pay interest.</p>
