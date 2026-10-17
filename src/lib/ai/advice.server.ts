@@ -32,52 +32,131 @@ function safeMessage(body: unknown): string {
 
 export async function handleAdvice(request: Request) {
   const headers = { "Cache-Control": "no-store" };
-  if (request.headers.get("sec-fetch-site") === "cross-site") return Response.json({ message: "Please request ideas from Clearday." }, { status: 403, headers });
+  if (request.headers.get("sec-fetch-site") === "cross-site")
+    return Response.json(
+      { message: "Please request ideas from Clearday." },
+      { status: 403, headers },
+    );
   const token = request.headers.get("authorization")?.match(/^Bearer (\S+)$/)?.[1];
-  if (!token) return Response.json({message: "Sign in to find your personal ideas."}, {status: 401, headers});
-  const url = process.env['SUPABASE_URL'];
-  const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
-  if (!url || !key) return Response.json({message: "Suggestions are temporarily unavailable."}, {status: 503, headers});
-  const auth = createClient(url, key, {auth: {persistSession: false, autoRefreshToken: false}, global: {fetch: (input, init) => {
-    const h = new Headers(init?.headers);
-    if (key.startsWith("sb_") && h.get("authorization") === `Bearer ${key}`) h.delete("authorization");
-    h.set("apikey", key);
-    return fetch(input, {...init, headers: h});
-  }}});
-  const {data: user, error: authError} = await auth.auth.getUser(token);
-  if (authError || !user.user) return Response.json({message: "Sign in to find your personal ideas."}, {status: 401, headers});
-  if (!request.headers.get("content-type")?.includes("application/json")) return Response.json({ message: "Please send your plan details." }, { status: 400, headers });
+  if (!token)
+    return Response.json(
+      { message: "Sign in to find your personal ideas." },
+      { status: 401, headers },
+    );
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  if (!url || !key)
+    return Response.json(
+      { message: "Suggestions are temporarily unavailable." },
+      { status: 503, headers },
+    );
+  const auth = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: (input, init) => {
+        const h = new Headers(init?.headers);
+        if (key.startsWith("sb_") && h.get("authorization") === `Bearer ${key}`)
+          h.delete("authorization");
+        h.set("apikey", key);
+        return fetch(input, { ...init, headers: h });
+      },
+    },
+  });
+  const { data: user, error: authError } = await auth.auth.getUser(token);
+  if (authError || !user.user)
+    return Response.json(
+      { message: "Sign in to find your personal ideas." },
+      { status: 401, headers },
+    );
+  if (!request.headers.get("content-type")?.includes("application/json"))
+    return Response.json({ message: "Please send your plan details." }, { status: 400, headers });
   const text = await request.text();
-  if (text.length > 25000) return Response.json({ message: "These plan details are too large." }, { status: 400, headers });
+  if (text.length > 25000)
+    return Response.json(
+      { message: "These plan details are too large." },
+      { status: 400, headers },
+    );
   let input;
-  try { input = adviceInputSchema.parse(JSON.parse(text)); }
-  catch { return Response.json({ message: "Please check your income and loan details." }, { status: 400, headers }); }
-  const apiKey = process.env['LOVABLE_API_KEY'];
-  if (!apiKey) return Response.json({ message: "Lovable AI isn't configured yet." }, { status: 401, headers });
+  try {
+    input = adviceInputSchema.parse(JSON.parse(text));
+  } catch {
+    return Response.json(
+      { message: "Please check your income and loan details." },
+      { status: 400, headers },
+    );
+  }
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  if (!apiKey)
+    return Response.json({ message: "Lovable AI isn't configured yet." }, { status: 401, headers });
   // Only upstream-authoritative operational state is written with privileged access; no user data is stored.
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data: gate, error: gateError } = await supabaseAdmin.from("ai_advice_gate").select("status,message,kind").eq("id", "advice").maybeSingle();
-  if (gateError) return Response.json({ message: "Suggestions are temporarily unavailable. Your timeline is still ready." }, { status: 503, headers });
+  const { data: gate, error: gateError } = await supabaseAdmin
+    .from("ai_advice_gate")
+    .select("status,message,kind")
+    .eq("id", "advice")
+    .maybeSingle();
+  if (gateError)
+    return Response.json(
+      { message: "Suggestions are temporarily unavailable. Your timeline is still ready." },
+      { status: 503, headers },
+    );
   if (gate) return Response.json({ message: gate.message }, { status: gate.status, headers });
-  const { data: allowed, error: limitError } = await supabaseAdmin.rpc("claim_ai_advice", { _user: user.user.id, _limit: 5 });
-  if (limitError) return Response.json({ message: "Suggestions are temporarily unavailable. Your timeline is still ready." }, { status: 503, headers });
-  if (!allowed) return Response.json({ message: "You've got fresh ideas for today. Come back tomorrow for more.", limit: true }, { status: 429, headers });
-  let resolveUpstream: (value: { status: number; message: string; headers: Headers } | null) => void = () => {};
-  const upstreamReady = new Promise<{ status: number; message: string; headers: Headers } | null>(resolve => { resolveUpstream = resolve; });
-  const { result } = createResponsesCall(request, {
-    baseURL: "https://ai.gateway.lovable.dev/v1", apiKey, model: "openai/gpt-6-astra",
-    onResponse: async response => {
-      let message = "";
-      if (!response.ok) {
-        message = safeMessage(await response.clone().json().catch(() => null));
-        if (response.status === 402 || response.status === 403) {
-          const { error } = await supabaseAdmin.from("ai_advice_gate").upsert({ id: "advice", status: response.status, message, kind: response.status === 402 ? "credits" : "denied", updated_at: new Date().toISOString() });
-          if (error) console.error("Could not persist AI pause state", error.code);
-        }
-      }
-      resolveUpstream({ status: response.status, message, headers: response.headers });
+  const { data: allowed, error: limitError } = await supabaseAdmin.rpc("claim_ai_advice", {
+    _user: user.user.id,
+    _limit: 5,
+  });
+  if (limitError)
+    return Response.json(
+      { message: "Suggestions are temporarily unavailable. Your timeline is still ready." },
+      { status: 503, headers },
+    );
+  if (!allowed)
+    return Response.json(
+      { message: "You've got fresh ideas for today. Come back tomorrow for more.", limit: true },
+      { status: 429, headers },
+    );
+  let resolveUpstream: (
+    value: { status: number; message: string; headers: Headers } | null,
+  ) => void = () => {};
+  const upstreamReady = new Promise<{ status: number; message: string; headers: Headers } | null>(
+    (resolve) => {
+      resolveUpstream = resolve;
     },
-  }, [{ role: "user", content: JSON.stringify(input) }], instructions);
+  );
+  const { result } = createResponsesCall(
+    request,
+    {
+      baseURL: "https://ai.gateway.lovable.dev/v1",
+      apiKey,
+      model: "openai/gpt-6-astra",
+      onResponse: async (response) => {
+        let message = "";
+        if (!response.ok) {
+          message = safeMessage(
+            await response
+              .clone()
+              .json()
+              .catch(() => null),
+          );
+          if (response.status === 402 || response.status === 403) {
+            const { error } = await supabaseAdmin
+              .from("ai_advice_gate")
+              .upsert({
+                id: "advice",
+                status: response.status,
+                message,
+                kind: response.status === 402 ? "credits" : "denied",
+                updated_at: new Date().toISOString(),
+              });
+            if (error) console.error("Could not persist AI pause state", error.code);
+          }
+        }
+        resolveUpstream({ status: response.status, message, headers: response.headers });
+      },
+    },
+    [{ role: "user", content: JSON.stringify(input) }],
+    instructions,
+  );
   const iterator = result.fullStream[Symbol.asyncIterator]();
   const firstPart = iterator.next();
   // Network failures settle this too, without an artificial timeout or billed retry.
@@ -85,29 +164,62 @@ export async function handleAdvice(request: Request) {
   const upstream = await upstreamReady;
   if (!upstream || upstream.status >= 400) {
     void firstPart.catch(() => {});
-    return Response.json({ message: upstream?.message || (request.signal.aborted ? "Suggestions stopped." : "Unable to connect to Lovable AI.") }, { status: request.signal.aborted ? 499 : upstream?.status ?? 503, headers: getLovableAiGatewayResponseHeaders(upstream?.headers, headers) });
+    return Response.json(
+      {
+        message:
+          upstream?.message ||
+          (request.signal.aborted ? "Suggestions stopped." : "Unable to connect to Lovable AI."),
+      },
+      {
+        status: request.signal.aborted ? 499 : (upstream?.status ?? 503),
+        headers: getLovableAiGatewayResponseHeaders(upstream?.headers, headers),
+      },
+    );
   }
   const encoder = new TextEncoder();
   let cancelled = false;
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const send = (event: object) => { if (!cancelled) controller.enqueue(encoder.encode(JSON.stringify(event) + "\n")); };
+      const send = (event: object) => {
+        if (!cancelled) controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
+      };
       try {
         send({ type: "progress" });
         let part = await firstPart;
         while (!part.done) {
-          if (part.value.type === "error") throw new Error("Lovable AI couldn't complete these suggestions. Start a fresh request when you're ready.");
+          if (part.value.type === "error")
+            throw new Error(
+              "Lovable AI couldn't complete these suggestions. Start a fresh request when you're ready.",
+            );
           if (part.value.type === "text-delta") send({ type: "progress" });
-          if (part.value.type === "finish-step" && part.value.finishReason === "content-filter") throw new Error("Lovable AI couldn't provide suggestions for this request.");
+          if (part.value.type === "finish-step" && part.value.finishReason === "content-filter")
+            throw new Error("Lovable AI couldn't provide suggestions for this request.");
           part = await iterator.next();
         }
         const { ideas, note } = safeAdvice(await result.output, input.income);
         send({ type: "result", ideas, note });
       } catch (error) {
-        send({ type: "error", message: request.signal.aborted ? "Suggestions stopped." : error instanceof Error ? error.message : "No suggestions were returned." });
-      } finally { if (!cancelled) controller.close(); }
+        send({
+          type: "error",
+          message: request.signal.aborted
+            ? "Suggestions stopped."
+            : error instanceof Error
+              ? error.message
+              : "No suggestions were returned.",
+        });
+      } finally {
+        if (!cancelled) controller.close();
+      }
     },
-    cancel() { cancelled = true; void iterator.return?.(); },
+    cancel() {
+      cancelled = true;
+      void iterator.return?.();
+    },
   });
-  return new Response(body, { headers: getLovableAiGatewayResponseHeaders(upstream.headers, { ...headers, "Content-Type": "application/x-ndjson" }) });
+  return new Response(body, {
+    headers: getLovableAiGatewayResponseHeaders(upstream.headers, {
+      ...headers,
+      "Content-Type": "application/x-ndjson",
+    }),
+  });
 }

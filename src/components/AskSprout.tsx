@@ -167,7 +167,12 @@ function ChatWindow({ profile, owner }: { profile: Profile; owner: string | null
   useEffect(() => {
     if (loaded && profile.demo) sessionStorage.setItem(historyKey, JSON.stringify(messages));
   }, [loaded, profile.demo, messages, historyKey]);
-  useEffect(() => () => { void stop(); }, [stop]);
+  useEffect(
+    () => () => {
+      void stop();
+    },
+    [stop],
+  );
   const busy = status === "submitted" || status === "streaming";
   useEffect(() => {
     if (!busy && loaded) textarea.current?.focus();

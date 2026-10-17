@@ -37,49 +37,93 @@ let generation = 0;
 let writeQueue: Promise<void> = Promise.resolve();
 const notify = () => window.dispatchEvent(new Event(EVENT));
 export function useAccount() {
-  const [state, setState] = useState<{id: string | null; ready: boolean; error: string}>({id: null, ready: false, error: ""});
-  useEffect(() => { const update = () => setState({id: accountId, ready, error: accountError}); update(); window.addEventListener(EVENT, update); return () => window.removeEventListener(EVENT, update); }, []);
+  const [state, setState] = useState<{ id: string | null; ready: boolean; error: string }>({
+    id: null,
+    ready: false,
+    error: "",
+  });
+  useEffect(() => {
+    const update = () => setState({ id: accountId, ready, error: accountError });
+    update();
+    window.addEventListener(EVENT, update);
+    return () => window.removeEventListener(EVENT, update);
+  }, []);
   return state;
 }
 export async function refreshAccount() {
   const version = ++generation;
-  ready = false; accountProfile = null; accountError = ""; notify();
-  const { data: { user } } = await supabase.auth.getUser();
+  ready = false;
+  accountProfile = null;
+  accountError = "";
+  notify();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (version !== generation) return;
   accountId = user?.id ?? null;
   if (user) {
     try {
-      const { data, error } = await supabase.from("profiles").select("data").eq("id", user.id).maybeSingle();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("data")
+        .eq("id", user.id)
+        .maybeSingle();
       if (error) throw error;
       let profile = data?.data ? profileSchema.parse(data.data) : null;
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const candidate = JSON.parse(raw);
-        const oldDemo = candidate.demo || candidate.name === "Alex" && candidate.loans?.some((l: Loan) => l.id === "d1");
+        const oldDemo =
+          candidate.demo ||
+          (candidate.name === "Alex" && candidate.loans?.some((l: Loan) => l.id === "d1"));
         if (!oldDemo) {
           if (version !== generation) return;
-          profile = await saveAccountProfile({data: mergeLocalData(profile, profileSchema.parse(candidate))});
+          profile = await saveAccountProfile({
+            data: mergeLocalData(profile, profileSchema.parse(candidate)),
+          });
           localStorage.removeItem(KEY);
         } else localStorage.removeItem(KEY);
       }
       if (version !== generation) return;
       accountProfile = profile;
       sessionStorage.removeItem(DEMO_KEY);
-      if (profile?.theme) { localStorage.setItem("clearday-theme", profile.theme); document.documentElement.classList.toggle("dark", profile.theme === "dark"); }
-    } catch { accountError = "Your saved account could not load. Please try again."; }
+      if (profile?.theme) {
+        localStorage.setItem("clearday-theme", profile.theme);
+        document.documentElement.classList.toggle("dark", profile.theme === "dark");
+      }
+    } catch {
+      accountError = "Your saved account could not load. Please try again.";
+    }
   }
-  if (version === generation) { ready = true; notify(); }
+  if (version === generation) {
+    ready = true;
+    notify();
+  }
 }
-export function clearAccount() { ++generation; accountId = null; accountProfile = null; ready = true; accountError = ""; sessionStorage.removeItem(DEMO_KEY); notify(); }
-export function startDemo() { switchDemoPersona("hana"); }
+export function clearAccount() {
+  ++generation;
+  accountId = null;
+  accountProfile = null;
+  ready = true;
+  accountError = "";
+  sessionStorage.removeItem(DEMO_KEY);
+  notify();
+}
+export function startDemo() {
+  switchDemoPersona("hana");
+}
 export function switchDemoPersona(id: DemoPersonaId) {
   const current = loadProfile();
-  if (current?.demo) sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(current)}`, JSON.stringify(current));
+  if (current?.demo)
+    sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(current)}`, JSON.stringify(current));
   const saved = sessionStorage.getItem(`${DEMO_KEY}:${id}`);
   sessionStorage.setItem(DEMO_KEY, saved ?? JSON.stringify(createDemoPersona(id)));
   notify();
 }
-export function leaveDemo() { sessionStorage.removeItem(DEMO_KEY); notify(); }
+export function leaveDemo() {
+  sessionStorage.removeItem(DEMO_KEY);
+  notify();
+}
 
 export const today = () => new Date().toISOString().slice(0, 10);
 
@@ -104,18 +148,33 @@ export function loadProfile(): Profile | null {
 
 export async function saveProfile(p: Profile) {
   const cleaned = profileSchema.parse(p);
-  p = {...cleaned, ...(p.demo ? {demo: true, demoPersona: demoIdentity(p)} : {})};
-  if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(p)}`, JSON.stringify(p)); notify(); return; }
-  if (!p.startedAt) p = {...p, startedAt: today(), startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null};
+  p = { ...cleaned, ...(p.demo ? { demo: true, demoPersona: demoIdentity(p) } : {}) };
+  if (p.demo) {
+    sessionStorage.setItem(DEMO_KEY, JSON.stringify(p));
+    sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(p)}`, JSON.stringify(p));
+    notify();
+    return;
+  }
+  if (!p.startedAt)
+    p = {
+      ...p,
+      startedAt: today(),
+      startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null,
+    };
   if (accountId) {
     if (accountError || !ready) throw new Error("Please reload your account before saving.");
     const owner = accountId;
     const valid = profileSchema.parse(p);
-    const write = writeQueue.catch(() => {}).then(async () => {
-      if (owner !== accountId) throw new Error("Please sign in again before saving.");
-      const saved = await saveAccountProfile({data: valid});
-      if (owner === accountId) { accountProfile = saved; notify(); }
-    });
+    const write = writeQueue
+      .catch(() => {})
+      .then(async () => {
+        if (owner !== accountId) throw new Error("Please sign in again before saving.");
+        const saved = await saveAccountProfile({ data: valid });
+        if (owner === accountId) {
+          accountProfile = saved;
+          notify();
+        }
+      });
     writeQueue = write;
     await write;
     return;
@@ -136,7 +195,8 @@ export function useProfile() {
   return p;
 }
 
-const monthsBetween = (a: Date, b: Date) => (b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth();
+const monthsBetween = (a: Date, b: Date) =>
+  (b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth();
 
 /** Plan options including an active "catch up slowly" boost. */
 export function planOptions(p: Profile, now = new Date()): PlanOptions {
@@ -157,14 +217,30 @@ export function percentPaid(loans: Loan[]) {
 const daysAgo = (n: number) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
 
 export const demoProfile: Profile = {
-  name: "Hana", income: 500, job: "Marketing officer", currency: "USD", demo: true,
+  name: "Hana",
+  income: 500,
+  job: "Marketing officer",
+  currency: "USD",
+  demo: true,
   loans: [
     { id: "d1", name: "Phone loan", balance: 140, startBalance: 300, rate: 9, payment: 40 },
     { id: "d2", name: "Personal loan", balance: 280, startBalance: 600, rate: 15, payment: 80 },
     { id: "d3", name: "Salary advance", balance: 0, startBalance: 200, rate: 0, payment: 50 },
   ],
   startedAt: daysAgo(120),
-  startDebtFree: simulate([{ id: "start", name: "Starting loans", balance: 1100, startBalance: 1100, rate: 12, payment: 170 }], new Date(Date.now() - 120 * 86400000)).debtFreeDate?.toISOString(),
+  startDebtFree: simulate(
+    [
+      {
+        id: "start",
+        name: "Starting loans",
+        balance: 1100,
+        startBalance: 1100,
+        rate: 12,
+        payment: 170,
+      },
+    ],
+    new Date(Date.now() - 120 * 86400000),
+  ).debtFreeDate?.toISOString(),
   payments: [98, 68, 38, 8].flatMap((days, i) => [
     { id: `hana-${i}-phone`, loanId: "d1", amount: 40, date: daysAgo(days) },
     { id: `hana-${i}-personal`, loanId: "d2", amount: 80, date: daysAgo(days) },

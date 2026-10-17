@@ -28,7 +28,7 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
   const raise = /raise|salary increase|pay rise|promotion/i.test(question);
   const net = /net|take.home|after.tax/i.test(question);
   const isMonthly = /monthly|per month|a month|each month/i.test(question);
-  const extraAmount = raise ? checked / (isMonthly ? 1 : 12) * (net ? 1 : 0.7) : checked;
+  const extraAmount = raise ? (checked / (isMonthly ? 1 : 12)) * (net ? 1 : 0.7) : checked;
   const freelance = /freelanc|contract project|side work|side gig/i.test(question);
   const hasAmount = !!raw;
   const monthly = profile.loans.some((l) => l.balance > 0)
@@ -75,21 +75,26 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     priorityLoan: cleanLoan,
     priorityRate: `${priority?.rate ?? 0}%`,
   };
-  const fallback = raise && !hasAmount
-    ? "What is the raise amount, is it annual or monthly, and is it before tax or take-home? I can compare your actual extra monthly take-home pay with your current estimated free date of {{date}}."
-    : raise
-    ? (net ? "If that raise is take-home pay" : "Assuming that raise is before tax, this illustration sets aside {{taxAssumption}} for taxes; your actual tax may differ") + (isMonthly ? ", and arrives monthly" : ", and is an annual raise") + ", it adds about {{extraMonthly}} a month. If you put all of that extra toward debt after essentials, your estimated free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. A raise is not guaranteed; use your actual take-home increase before changing your plan."
-    : freelance
-      ? hasAmount && !/one.off|one.time|single project/i.test(question)
-        ? "A small, clearly scoped freelance project could help if the work fits your schedule. If {{amount}} is your reliable monthly take-home gain after costs and tax, adding it to debt gives an estimated free date of {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Check your contract before side work, keep employer code and data private, and protect essentials. One-off income needs a different calculation."
-        : "A small, clearly scoped freelance project can help, but check your contract before side work. Protect your rest and never use employer code or confidential data. What would you keep each month after costs and tax, and is the project recurring or one-off? I can compare that with your current free date of {{date}}."
-    : /afford|buy|phone|purchase/i.test(question)
-    ? "I can't say it's affordable without knowing your living costs and savings. Your income is {{income}} and planned debt payments are {{monthly}} a month, leaving {{leftAfterDebt}} before essentials. Keep essentials and a cash buffer safe; avoid borrowing for the {{amount}} purchase."
-    : /first|order|priority/i.test(question)
-      ? "Your chosen plan puts {{priorityLoan}} first. Keep the required payments on every loan; send any comfortable extra to that one. Your estimated debt free date is {{date}}."
-      : /extra|more|what if/i.test(question)
-        ? "With {{amount}} more each month, your estimated debt free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Only add what feels comfortable after essentials."
-        : "Your current estimated debt free date is {{date}}, with {{interest}} of interest still to pay. Keep essentials safe and make your planned payments. You can explore a comfortable extra without changing your saved plan.";
+  const fallback =
+    raise && !hasAmount
+      ? "What is the raise amount, is it annual or monthly, and is it before tax or take-home? I can compare your actual extra monthly take-home pay with your current estimated free date of {{date}}."
+      : raise
+        ? (net
+            ? "If that raise is take-home pay"
+            : "Assuming that raise is before tax, this illustration sets aside {{taxAssumption}} for taxes; your actual tax may differ") +
+          (isMonthly ? ", and arrives monthly" : ", and is an annual raise") +
+          ", it adds about {{extraMonthly}} a month. If you put all of that extra toward debt after essentials, your estimated free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. A raise is not guaranteed; use your actual take-home increase before changing your plan."
+        : freelance
+          ? hasAmount && !/one.off|one.time|single project/i.test(question)
+            ? "A small, clearly scoped freelance project could help if the work fits your schedule. If {{amount}} is your reliable monthly take-home gain after costs and tax, adding it to debt gives an estimated free date of {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Check your contract before side work, keep employer code and data private, and protect essentials. One-off income needs a different calculation."
+            : "A small, clearly scoped freelance project can help, but check your contract before side work. Protect your rest and never use employer code or confidential data. What would you keep each month after costs and tax, and is the project recurring or one-off? I can compare that with your current free date of {{date}}."
+          : /afford|buy|phone|purchase/i.test(question)
+            ? "I can't say it's affordable without knowing your living costs and savings. Your income is {{income}} and planned debt payments are {{monthly}} a month, leaving {{leftAfterDebt}} before essentials. Keep essentials and a cash buffer safe; avoid borrowing for the {{amount}} purchase."
+            : /first|order|priority/i.test(question)
+              ? "Your chosen plan puts {{priorityLoan}} first. Keep the required payments on every loan; send any comfortable extra to that one. Your estimated debt free date is {{date}}."
+              : /extra|more|what if/i.test(question)
+                ? "With {{amount}} more each month, your estimated debt free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Only add what feels comfortable after essentials."
+                : "Your current estimated debt free date is {{date}}, with {{interest}} of interest still to pay. Keep essentials safe and make your planned payments. You can explore a comfortable extra without changing your saved plan.";
   return { facts, fallback, options, current, extraPlan, monthly, extraAmount };
 }
 
