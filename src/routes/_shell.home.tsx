@@ -2,14 +2,15 @@ import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { LoanMenu } from "@/components/LoanMenu";
 import { useMemo } from "react";
-import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star, Plus } from "lucide-react";
+import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, workDaysLabel } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
-import { isDebtFree, nextWin } from "@/lib/celebration";
-import { ideaImpact, extraFromIdea, displayJob } from "@/lib/plan";
+import { isDebtFree } from "@/lib/celebration";
+import { ideaImpact, extraFromIdea } from "@/lib/plan";
+import { homeGreeting } from "@/lib/home-greeting";
 import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
 import { timeLabel } from "@/lib/time-label";
@@ -51,35 +52,26 @@ function Home() {
   const pct = percentPaid(profile.loans);
   if (isDebtFree(profile)) return <DebtFreeMoment profile={profile} />;
   const filled = Math.round(pct / 10);
-  const win = nextWin(profile);
   const options = planOptions(profile);
   const tipAmount = 20;
   const impact = ideaImpact(profile.loans, options, tipAmount, new Date());
   const closest = profile.loans.filter(l => l.balance > 0 && l.startBalance > 0).reduce<typeof profile.loans[number] | undefined>((best, loan) => !best || loan.balance / loan.startBalance < best.balance / best.startBalance ? loan : best, undefined);
-  const lastPayment = [...(profile.payments ?? [])].sort((a, b) => b.date.localeCompare(a.date))[0];
-  const elapsed = lastPayment ? Math.max(0, Math.round((new Date().setHours(0, 0, 0, 0) - new Date(`${lastPayment.date}T00:00:00`).getTime()) / 86400000)) : null;
-  const greeting = elapsed === null ? "Every payment brings your free day closer." : elapsed === 0 ? "You logged a payment today. Nice work." : elapsed === 1 ? "You logged a payment yesterday. Nice work." : `You logged a payment ${elapsed} days ago. Nice work.`;
+  const greeting = homeGreeting(profile);
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-6">
-      <div className="flex items-center gap-4">
-        <Sprout mood="happy" size={70} />
-        <div>
-          <h1 className="page-title">Hi {profile.name}!</h1>
-          <p className="page-sub mt-2">{greeting}</p>
+    <div className="mx-auto grid max-w-6xl gap-[22px]">
+      <section className="home-greeting leaf-lg" aria-label="Your progress greeting">
+        <Sprout mood={greeting.cheering ? "cheering" : "happy"} size={96} className="home-greeting-sprout" />
+        <div className="home-greeting-copy">
+          <h1>Hi {profile.name}!{greeting.showPercent && ` You're ${greeting.percent}% there 🎉`}</h1>
+          <p className="page-sub mt-2">{greeting.recency}</p>
         </div>
-      </div>
+        <Button asChild variant="outline" className="home-ideas" data-tour="ideas"><Link to="/plan"><Sparkles aria-hidden /><span><strong>3 earning ideas</strong> for you</span><ArrowRight aria-hidden /></Link></Button>
+      </section>
 
       {!profile.demo && <StartHere hasPayment={(profile.payments ?? []).length > 0} />}
 
       <QuietCard profile={profile} />
-
-      <aside data-tour="ideas" className="leaf flex flex-wrap items-center justify-between gap-4 bg-chip-purple px-6 py-5 text-chip-purple-text">
-        <div className="flex min-w-0 items-center gap-3"><Sparkles className="size-5 shrink-0" /><p className="font-heading font-semibold">{displayJob(profile.job) ? `Sprout has ideas for you as a ${displayJob(profile.job)}` : "Sprout has ideas for you"}</p></div>
-        <Button asChild variant="outline" className="btn-secondary shrink-0"><Link to="/plan">See ideas <ArrowRight /></Link></Button>
-      </aside>
-
-      {win && <div role="status" className="chip-yellow w-fit max-w-full"><Star aria-hidden className="size-4 shrink-0 fill-sun text-sun" /><span>{win.reached ? `You reached ${win.name}!` : `Next win: ${win.name}, ${usd(win.remaining)} to go`}</span></div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
         <section data-tour="date" className={`${card} flex min-h-64 min-w-0 flex-col justify-between md:p-8`} aria-label="Your debt free date">
