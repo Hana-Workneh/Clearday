@@ -163,8 +163,10 @@ export async function handleSprout(request: Request) {
     _visitor: visitor,
     _demo: input.demo,
   });
-  if (limitError) return errorResponse("Ask Sprout is temporarily unavailable.", 503);
-  if (!allowed) return errorResponse(SPROUT_LIMIT_MESSAGE, 429);
+  // Demo limits only select the friendly quick-answer note; they never block
+  // free verified calculations. Real-account metered requests remain capped.
+  if (!input.demo && limitError) return errorResponse("Ask Sprout is temporarily unavailable.", 503);
+  if (!input.demo && !allowed) return errorResponse(SPROUT_LIMIT_MESSAGE, 429);
   if (!input.demo && user) {
     const { error } = await client
       .from("sprout_messages")
@@ -188,7 +190,7 @@ export async function handleSprout(request: Request) {
           writer.write({
             type: "text-delta",
             id: "demo-answer",
-            delta: checkedChatAnswer(fallback, facts, fallback),
+            delta: `${!allowed || limitError ? "Sprout is using quick answers for now.\n\n" : ""}${checkedChatAnswer(fallback, facts, fallback)}`,
           });
           writer.write({ type: "text-end", id: "demo-answer" });
           writer.write({ type: "finish", finishReason: "stop" });
