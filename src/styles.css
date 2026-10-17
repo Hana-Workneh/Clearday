@@ -325,7 +325,7 @@
 @media (max-width: 380px) {
   .welcome-duo { --duo-sprout-size: 80px; --stone-scale: .5; }
   .presenting-stone { left: 82px; }
-  .stone-bubble { width: 80px; font-size: 9px; padding: 7px 6px; bottom: calc(100% + 8px); }
+  .stone-bubble { width: 72px; margin-left: -8px; font-size: 9px; padding: 7px 6px; bottom: calc(100% + 8px); }
   .debt-free-flag { left: calc(100% - 110px - var(--flag-closeness) * 8px); width: 110px; }
   .flag-date { font-size: 17px; }
   .hero-slider-label { font-size: 10px; }
