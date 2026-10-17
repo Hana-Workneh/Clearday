@@ -38,7 +38,10 @@ export function TryItCalculator() {
   const [pay, setPay] = useState(155);
 
   const result = useMemo(
-    () => simulate([{ id: "try", name: "Loan", balance: owe, startBalance: owe, rate: RATE, payment: pay }]),
+    () =>
+      simulate([
+        { id: "try", name: "Loan", balance: owe, startBalance: owe, rate: RATE, payment: pay },
+      ]),
     [owe, pay],
   );
   const months = result.monthsLeft ?? 600;
@@ -53,45 +56,80 @@ export function TryItCalculator() {
     <div className="welcome-calculator-scene relative w-full">
       <WelcomeCharacters owe={owe} pay={pay} months={months} />
       <div className="relative w-full max-w-md">
-      <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
-        <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
-        <p className="mt-1 text-xs text-muted-foreground">Move the sliders to see your date.</p>
-        <div className="mt-5">
-          <div className="flex items-baseline justify-between">
-            <label htmlFor="try-owe" className="text-sm font-semibold">1. How much you owe</label>
-            <span className="font-heading text-sm font-bold">{usd(owe)}</span>
-          </div>
-          <Slider id="try-owe" className="mt-3" min={500} max={20000} step={100} value={[owe]} onValueChange={onSlide(setOwe)} aria-label="How much you owe" />
-        </div>
-        <div className="mt-5">
-          <div className="flex items-baseline justify-between">
-            <label htmlFor="try-pay" className="text-sm font-semibold">2. What you pay each month</label>
-            <span className="font-heading text-sm font-bold">{usd(pay)}</span>
-          </div>
-          <Slider id="try-pay" className="mt-3" min={50} max={1000} step={5} value={[pay]} onValueChange={onSlide(setPay)} aria-label="What you pay each month" />
-        </div>
-        <div className="leaf mt-6 bg-secondary p-5 text-center">
-          <p className="text-xs font-semibold text-muted-foreground">3. Your debt free date</p>
-          <p className="mt-1 font-heading text-3xl font-bold leading-tight" aria-live="polite">{formatMonth(date)}</p>
-          <div className="mt-4 grid grid-cols-2 gap-3 text-left">
-            <div>
-              <p className="text-[11px] font-semibold text-muted-foreground">Interest you'd pay</p>
-              <p className="mt-0.5 font-heading text-lg font-bold">{usd(result.totalInterest)}</p>
+        <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
+          <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
+          <p className="mt-1 text-xs text-muted-foreground">Move the sliders to see your date.</p>
+          <div className="mt-5">
+            <div className="flex items-baseline justify-between">
+              <label htmlFor="try-owe" className="text-sm font-semibold">
+                1. How much you owe
+              </label>
+              <span className="font-heading text-sm font-bold">{usd(owe)}</span>
             </div>
-            <div>
-              <p className="text-[11px] font-semibold text-muted-foreground">Days of work just for interest</p>
-              <p className="mt-0.5 font-heading text-lg font-bold">{workDaysLabel(result.totalInterest, INCOME)}</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">(on $1,000/month take-home pay)</p>
+            <Slider
+              id="try-owe"
+              className="mt-3"
+              min={500}
+              max={20000}
+              step={100}
+              value={[owe]}
+              onValueChange={onSlide(setOwe)}
+              aria-label="How much you owe"
+            />
+          </div>
+          <div className="mt-5">
+            <div className="flex items-baseline justify-between">
+              <label htmlFor="try-pay" className="text-sm font-semibold">
+                2. What you pay each month
+              </label>
+              <span className="font-heading text-sm font-bold">{usd(pay)}</span>
+            </div>
+            <Slider
+              id="try-pay"
+              className="mt-3"
+              min={50}
+              max={1000}
+              step={5}
+              value={[pay]}
+              onValueChange={onSlide(setPay)}
+              aria-label="What you pay each month"
+            />
+          </div>
+          <div className="leaf mt-6 bg-secondary p-5 text-center">
+            <p className="text-xs font-semibold text-muted-foreground">3. Your debt free date</p>
+            <p className="mt-1 font-heading text-3xl font-bold leading-tight" aria-live="polite">
+              {formatMonth(date)}
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-3 text-left">
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground">
+                  Interest you'd pay
+                </p>
+                <p className="mt-0.5 font-heading text-lg font-bold">{usd(result.totalInterest)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground">
+                  Days of work just for interest
+                </p>
+                <p className="mt-0.5 font-heading text-lg font-bold">
+                  {workDaysLabel(result.totalInterest, INCOME)}
+                </p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  (on $1,000/month take-home pay)
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
-        Want your real date?{" "}
-        <Link to="/setup" className="font-semibold text-green-text underline-offset-4 hover:underline">
-          Find my debt free date
-        </Link>
-      </p>
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Want your real date?{" "}
+          <Link
+            to="/setup"
+            className="font-semibold text-green-text underline-offset-4 hover:underline"
+          >
+            Find my debt free date
+          </Link>
+        </p>
       </div>
     </div>
   );
