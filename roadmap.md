@@ -1,5 +1,5 @@
 # My plan
-- [ ] Redesign How it works as three matching character scenes; verify equal heights, scroll sequence, phone layout and both themes with reduced motion.
+- [x] Redesign How it works as three matching character scenes; equal heights, contained bubbles/flags, once-only ordered animations and no horizontal overflow verified at 1440/1280/1024/768/390/320px in both themes; reduced motion has no scene animations and changed-file lint passes.
 - [x] Add safe visitor redirects, intentional setup entry, demo/account restoration and calm Sprout fallback. All six pages passed fresh-window visitor/demo/signed-in refresh checks; damaged demo recovery and fallback demo action passed; 25 regression tests pass.
 - [ ] Repeat the six-page fresh-window checks on the published URL — blocked: this project has no published URL.
 - [x] Clarify Pay faster results, proportional bars, loan-order guidance and Sprout explanation; 32 tests pass. Live Hana $75 extra shows about nine months sooner and $293 less interest; same-month weeks, single-loan hiding, tiny-benefit message and phone themes verified without account changes.
