@@ -11,6 +11,8 @@ import { CleardayLogo } from "@/components/CleardayLogo";
 import { AskSprout } from "@/components/AskSprout";
 import { ProductTour } from "@/components/ProductTour";
 import { requestProductTour } from "@/lib/product-tour";
+import { switchDemoPersona } from "@/lib/store";
+import { demoPersonas, demoIdentity } from "@/lib/demo-personas";
 
 export const Route = createFileRoute("/_shell")({ component: Shell });
 
@@ -58,7 +60,8 @@ function Shell() {
         </header>
         <main className={`flex-1 px-5 md:px-10 md:pb-10 ${location.pathname === "/home" ? "pb-44" : "pb-28"}`}>
           {profile?.demo && <div className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-y bg-chip-purple px-3 py-3 text-chip-purple-text"><p className="min-w-0 text-sm font-semibold">You're viewing a demo</p><div className="flex items-center gap-2"><Button asChild variant="link" className="px-1 text-xs text-chip-purple-text"><Link to="/home" onClick={requestProductTour}>Take the tour</Link></Button><Button asChild variant="outline" className="btn-secondary !h-10 shrink-0 !px-3 text-sm"><Link to="/auth" onClick={leaveDemo}>Start my own</Link></Button></div></div>}
-          {account.error ? <div role="alert" className="mx-auto max-w-xl py-12 text-center"><Sprout mood="calm" size={90} /><p>{account.error}</p><Button onClick={() => refreshAccount()} className="btn-main mt-5">Reload my account</Button></div> : !account.ready ? <PageLoading /> : <div key={location.pathname} className="page-enter"><Outlet /></div>}
+          {profile?.demo && <div className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center gap-2" role="group" aria-label="Demo persona"><span className="text-sm font-semibold">Try as:</span>{demoPersonas.map(persona => <Button key={persona.id} variant={demoIdentity(profile) === persona.id ? "default" : "outline"} aria-pressed={demoIdentity(profile) === persona.id} className="h-auto rounded-full px-3 py-2 text-left text-xs" onClick={() => switchDemoPersona(persona.id)}>{persona.name} · {persona.job.toLowerCase()}</Button>)}</div>}
+          {account.error ? <div role="alert" className="mx-auto max-w-xl py-12 text-center"><Sprout mood="calm" size={90} /><p>{account.error}</p><Button onClick={() => refreshAccount()} className="btn-main mt-5">Reload my account</Button></div> : !account.ready ? <PageLoading /> : <div key={`${location.pathname}:${profile?.demo ? demoIdentity(profile) : account.id}`} className="page-enter"><Outlet /></div>}
         </main>
       </div>
       {location.pathname === "/home" && profile && !isDebtFree(profile) && <div className="fixed inset-x-0 bottom-[68px] z-10 bg-background px-5 pb-3 pt-2 md:hidden"><Button data-tour="payment" variant="payment" onClick={() => openPayment()} className="h-[54px] w-full text-base"><Plus className="size-5" />I made a payment</Button></div>}
@@ -70,7 +73,7 @@ function Shell() {
           </Link>
         ))}
       </nav>
-      <PaymentFlow />
+      <PaymentFlow key={profile?.demo ? demoIdentity(profile) : account.id} />
       <AskSprout />
       <ProductTour />
     </div>

@@ -3,6 +3,7 @@ import { simulate, type Loan, type PlanOptions } from "./debt";
 import { supabase } from "@/integrations/supabase/client";
 import { profileSchema, mergeLocalData, type Currency } from "./account-data";
 import { saveAccountProfile } from "./account.functions";
+import { createDemoPersona, demoIdentity, type DemoPersonaId } from "./demo-personas";
 
 export type Payment = { id: string; loanId: string; amount: number; date: string }; // date: yyyy-mm-dd
 export type CatchUp = { amount: number; months: number; from: string };
@@ -15,6 +16,7 @@ export type Profile = {
   currency?: Currency | undefined;
   theme?: "light" | "dark" | undefined;
   demo?: boolean;
+  demoPersona?: DemoPersonaId;
   savingsGoal?: { name: string; amount: number } | undefined;
   loans: Loan[];
   plan?: PlanOptions | undefined;
@@ -69,7 +71,14 @@ export async function refreshAccount() {
   if (version === generation) { ready = true; notify(); }
 }
 export function clearAccount() { ++generation; accountId = null; accountProfile = null; ready = true; accountError = ""; sessionStorage.removeItem(DEMO_KEY); notify(); }
-export function startDemo() { sessionStorage.setItem(DEMO_KEY, JSON.stringify(demoProfile)); notify(); }
+export function startDemo() { switchDemoPersona("hana"); }
+export function switchDemoPersona(id: DemoPersonaId) {
+  const current = loadProfile();
+  if (current?.demo) sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(current)}`, JSON.stringify(current));
+  const saved = sessionStorage.getItem(`${DEMO_KEY}:${id}`);
+  sessionStorage.setItem(DEMO_KEY, saved ?? JSON.stringify(createDemoPersona(id)));
+  notify();
+}
 export function leaveDemo() { sessionStorage.removeItem(DEMO_KEY); notify(); }
 
 export const today = () => new Date().toISOString().slice(0, 10);
@@ -95,8 +104,8 @@ export function loadProfile(): Profile | null {
 
 export async function saveProfile(p: Profile) {
   const cleaned = profileSchema.parse(p);
-  p = {...cleaned, ...(p.demo ? {demo: true} : {})};
-  if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); notify(); return; }
+  p = {...cleaned, ...(p.demo ? {demo: true, demoPersona: demoIdentity(p)} : {})};
+  if (p.demo) { sessionStorage.setItem(DEMO_KEY, JSON.stringify(p)); sessionStorage.setItem(`${DEMO_KEY}:${demoIdentity(p)}`, JSON.stringify(p)); notify(); return; }
   if (!p.startedAt) p = {...p, startedAt: today(), startDebtFree: simulate(p.loans, new Date(), p.plan).debtFreeDate?.toISOString() ?? null};
   if (accountId) {
     if (accountError || !ready) throw new Error("Please reload your account before saving.");

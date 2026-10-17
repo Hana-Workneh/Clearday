@@ -10,6 +10,7 @@ import { formatMonth, simulate } from "@/lib/debt";
 import { buildTimeline, ideaImpact, safeIdeas, displayJob, type Idea } from "@/lib/plan";
 import { IdeaPreview } from "@/components/IdeaPreview";
 import { supabase } from "@/integrations/supabase/client";
+import { demoIdeas } from "@/lib/demo-personas";
 
 export const Route = createFileRoute("/_shell/plan")({
   head: () => ({ meta: [
@@ -41,11 +42,7 @@ function MyPlan() {
   const jobLabel = displayJob(profile?.job ?? "");
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, skills: profile.skills || undefined, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
-  useEffect(() => { setIdeas(profile?.demo ? [
-    {title: "A small weekend project", detail: "Offer a short social-media content session to a local business, with your employer’s permission. One small project could leave around 30 after costs.", monthlyAmount: 30, kind: "earn", tag: "Because you're a marketing officer"},
-    {title: "Bring lunch twice a week", detail: "Use food you already buy to pack lunch on two workdays. Keeping essentials covered could save around 20 each month.", monthlyAmount: 20, kind: "save"},
-    {title: "Pause an unused subscription", detail: "Check your subscriptions for one you no longer use. Pausing a small service could save around 10 each month.", monthlyAmount: 10, kind: "save"},
-  ] : []); setNote(false); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
+  useEffect(() => { setIdeas(profile?.demo ? demoIdeas(profile) : []); setSelectedIdea(null); setLimited(false); setNote(false); setError(""); setTerminal(false); abort.current?.abort(); setLoading(false); return () => abort.current?.abort(); }, [fingerprint, profile?.demo]);
   const autoRun = useRef<(() => void) | null>(null);
   useEffect(() => {
     if (!profile || profile.demo) return;
@@ -133,7 +130,7 @@ function MyPlan() {
         })}</div>
         {ideas.length > 0 && <p className="mt-3 text-xs text-muted-foreground">Amounts are estimates, not guaranteed. Each idea is compared separately with your chosen plan.</p>}
         {ideas.length > 0 && !loading && !profile.demo && <Button variant="link" onClick={generate} className="mt-3 h-auto p-0 text-green-text">Get new ideas</Button>}
-        <p className="mt-6 text-xs text-muted-foreground">Powered by Lovable AI</p>
+        <p className="mt-6 text-xs text-muted-foreground">{profile.demo ? "Demo ideas are examples; payoff dates use Clearday's calculations." : "Powered by Lovable AI"}</p>
       </section>
     <div className="flex flex-wrap items-center justify-between gap-5 border-y py-6">
       <div><p className="text-sm text-muted-foreground">Your debt free day</p><p className="font-heading mt-1 text-4xl font-bold">{result.debtFreeDate ? formatMonth(result.debtFreeDate) : "Let's adjust your payments"}</p></div>

@@ -1,4 +1,6 @@
 # My plan
+- [ ] Improve tech ideas and calculated raise/freelance replies; verify five tech roles live.
+- [ ] Add four isolated demo personas and verify all pages, ideas and chat switching.
 - [x] Make welcome Sprout and Stone react to the live calculator; section appearances, pointer gaze, closer/further reactions, pebbles, phone themes and reduced motion verified; debt tests and changed-file lint pass.
 - [x] Add Sprout's six-step Home tour with isolated remembered completion/skip and replay; all steps, Back, Skip, reload, demo/Settings replay and bounds verified on desktop/phone in both themes, reduced motion and signed-in animated flow. Four dismissal tests pass; no financial data changed.
 - [x] Create temporary User A/B, test cross-user and anonymous read/edit/delete on all database tables; all blocked, owner rows unchanged, cleanup verified. AI ideas are browser-only and have no database row to test.
