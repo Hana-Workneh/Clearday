@@ -42,7 +42,7 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
           options.strategy === "snowball" ? a.balance - b.balance : b.rate - a.rate,
         )[0];
   const cleanLoan =
-    priority?.name.replace(/[^\p{L}\p{N} '\-]/gu, "").slice(0, 120) || "your next loan";
+    priority?.name.replace(/[^\p{L}\p{N} '-]/gu, "").slice(0, 120) || "your next loan";
   const facts: Record<string, string> = {
     date: current.debtFreeDate
       ? formatMonth(current.debtFreeDate)
