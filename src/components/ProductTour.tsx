@@ -42,7 +42,7 @@ export function ProductTour() {
         animate: !reduced, smoothScroll: false, overlayOpacity: .4,
         overlayColor: getComputedStyle(document.documentElement).getPropertyValue("--ink").trim(),
         stagePadding: 8, stageRadius: 20, popoverOffset: 14,
-        disableActiveInteraction: true, overlayClickBehavior: "none", showButtons: [],
+        disableActiveInteraction: true, overlayClickBehavior: "none", showButtons: [], showProgress: false,
         popoverClass: "sprout-tour", allowKeyboardControl: true,
         steps: tourSteps.map((_step, index) => ({ ...(targets[index] ? { element: targets[index] } : {}), popover: { description: " ", side: "bottom", align: "center" } })),
         onPopoverRender: (popover, options) => {
