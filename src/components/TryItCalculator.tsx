@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Slider } from "./ui/slider";
+import { HeroSlider } from "./HeroSlider";
+import { claimHeroHint, HERO_HINT_KEY, HERO_HINT_DELAY, HERO_HINT_DURATION, hintPayment } from "@/lib/hero-slider-hint";
 import { WelcomeCharacters } from "./WelcomeCharacters";
 import { simulate, addMonths, formatMonth } from "@/lib/debt";
 
@@ -17,37 +18,54 @@ export function TryItCalculator({
   onPayChange: (value: number) => void;
 }) {
   const touched = useRef(false);
-  const [paymentTouched, setPaymentTouched] = useState(false);
   const [selfDemo, setSelfDemo] = useState(false);
+  const [hint, setHint] = useState(false);
+  const [hand, setHand] = useState(false);
   const setPayment = useRef(onPayChange);
   setPayment.current = onPayChange;
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0;
+    let finishTimer: ReturnType<typeof setTimeout> | undefined;
     const timer = setTimeout(() => {
-      if (touched.current) return;
+      if (touched.current || !claimHeroHint(sessionStorage)) return;
+      setHint(true);
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) {
+        finishTimer = setTimeout(() => setHint(false), HERO_HINT_DURATION);
+        return;
+      }
+      setHand(true);
       setSelfDemo(true);
       const start = performance.now();
+      const initial = pay;
       const glide = (now: number) => {
         if (touched.current) {
           setSelfDemo(false);
           return;
         }
-        const progress = Math.min(1, (now - start) / 500);
-        setPayment.current(Math.round((155 + 65 * (1 - Math.pow(1 - progress, 3))) / 5) * 5);
+        const progress = Math.min(1, (now - start) / HERO_HINT_DURATION);
+        setPayment.current(hintPayment(initial, progress));
         if (progress < 1) frame = requestAnimationFrame(glide);
-        else setSelfDemo(false);
+        else {
+          setSelfDemo(false);
+          setHint(false);
+          setHand(false);
+        }
       };
       frame = requestAnimationFrame(glide);
-    }, 1600);
+    }, HERO_HINT_DELAY);
     return () => {
       clearTimeout(timer);
+      clearTimeout(finishTimer);
       cancelAnimationFrame(frame);
     };
   }, []);
   const touch = () => {
     touched.current = true;
+    sessionStorage.setItem(HERO_HINT_KEY, "dismissed");
     setSelfDemo(false);
+    setHint(false);
+    setHand(false);
   };
   const months = result.monthsLeft ?? 600;
   const date = result.debtFreeDate ?? addMonths(new Date(), months);
@@ -69,9 +87,8 @@ export function TryItCalculator({
             <label htmlFor="try-owe">How much you owe</label>
             <span className="hero-slider-value">${owe.toLocaleString("en-US")}</span>
           </div>
-          <Slider
+          <HeroSlider
             id="try-owe"
-            className="mt-3"
             min={500}
             max={20000}
             step={100}
@@ -93,31 +110,22 @@ export function TryItCalculator({
             <label htmlFor="try-pay">What you pay each month</label>
             <span className="hero-slider-value">${pay.toLocaleString("en-US")}</span>
           </div>
-          <div
-            className={paymentTouched ? "" : "hero-payment-pulse"}
-            onPointerDown={() => setPaymentTouched(true)}
-            onKeyDown={() => setPaymentTouched(true)}
-          >
-            <Slider
+            <HeroSlider
+              hint={hint}
+              hand={hand}
               id="try-pay"
-              className="mt-3"
               min={50}
               max={1000}
               step={5}
               value={[pay]}
               onValueChange={(v) => {
                 touch();
-                setPaymentTouched(true);
                 onPayChange(v[0] ?? 50);
               }}
               aria-label="What you pay each month"
             />
-          </div>
           <div className="mt-2 flex items-start justify-between gap-2 text-[10px] text-muted-foreground">
             <span>$50</span>
-            <span className="text-center font-semibold text-green-text">
-              ← drag me, watch the flag move
-            </span>
             <span>$1,000</span>
           </div>
         </div>

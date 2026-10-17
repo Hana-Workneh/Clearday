@@ -148,8 +148,7 @@ export function WelcomeCharacters({
         </div>
       </div>
       <div className="flag-facts">
-        <span className="flag-interest"><Coins className="size-3" />{interest === null ? "Interest grows" : `${usd(interest)} interest`}</span>
-        <span className="text-[9px] text-muted-foreground">at 18% average interest</span>
+        <span className="flag-interest"><Coins className="size-3 shrink-0" />{interest === null ? "Interest grows · at 18%" : `${usd(interest)} interest · at 18%`}</span>
         <span className="flag-work"><Clock3 className="size-3" />{interest === null ? "No payoff yet" : `${workDaysLabel(interest, 1000)} of work`}</span>
         <p className="text-[9px] text-muted-foreground">Interest on $1,000/month take-home pay</p>
       </div>
