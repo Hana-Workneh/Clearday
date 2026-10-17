@@ -62,20 +62,31 @@ export function WelcomeNav() {
             href="#top"
             onClick={(e) => {
               e.preventDefault();
-              window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+              window.scrollTo({
+                top: 0,
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                  ? "auto"
+                  : "smooth",
+              });
             }}
             aria-label="Back to top"
             className="welcome-nav-logo min-w-0"
           >
             <CleardayLogo animate />
           </a>
-          <nav className="hidden shrink-0 items-center gap-1 min-[1100px]:flex" aria-label="Page sections">
+          <nav
+            className="hidden shrink-0 items-center gap-1 min-[1100px]:flex"
+            aria-label="Page sections"
+          >
             {links.map((link) => (
-              <Button variant="ghost"
+              <Button
+                variant="ghost"
                 key={link.id}
                 onClick={() => go(link.id)}
                 className={`h-auto whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
-                  active === link.id ? "bg-chip-green text-chip-green-text" : "text-muted-foreground hover:text-foreground"
+                  active === link.id
+                    ? "bg-chip-green text-chip-green-text"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.label}
@@ -84,8 +95,14 @@ export function WelcomeNav() {
           </nav>
           <div className="welcome-nav-actions flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <Button asChild variant="ghost" className="hidden whitespace-nowrap min-[1100px]:inline-flex">
-              <Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link>
+            <Button
+              asChild
+              variant="ghost"
+              className="hidden whitespace-nowrap min-[1100px]:inline-flex"
+            >
+              <Link to={account.id ? "/home" : "/auth"}>
+                {account.id ? "My account" : "Sign in"}
+              </Link>
             </Button>
             <Button
               onClick={() => {
@@ -109,13 +126,19 @@ export function WelcomeNav() {
           </div>
         </div>
         {open && (
-          <nav className="border-t bg-background/95 px-5 py-3 backdrop-blur-md min-[1100px]:hidden" aria-label="Page sections">
+          <nav
+            className="border-t bg-background/95 px-5 py-3 backdrop-blur-md min-[1100px]:hidden"
+            aria-label="Page sections"
+          >
             {links.map((link) => (
-              <Button variant="ghost"
+              <Button
+                variant="ghost"
                 key={link.id}
                 onClick={() => go(link.id)}
                 className={`block h-auto w-full whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                  active === link.id ? "bg-chip-green text-chip-green-text" : "text-muted-foreground"
+                  active === link.id
+                    ? "bg-chip-green text-chip-green-text"
+                    : "text-muted-foreground"
                 }`}
               >
                 {link.label}
@@ -123,7 +146,9 @@ export function WelcomeNav() {
             ))}
             <div className="mt-2 flex gap-2 border-t pt-3">
               <Button asChild variant="outline" className="h-11 flex-1 rounded-full">
-                <Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link>
+                <Link to={account.id ? "/home" : "/auth"}>
+                  {account.id ? "My account" : "Sign in"}
+                </Link>
               </Button>
               <Button
                 onClick={() => {
@@ -140,7 +165,14 @@ export function WelcomeNav() {
       </header>
       {showTop && (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })}
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ? "auto"
+                : "smooth",
+            })
+          }
           aria-label="Back to top"
           className="fixed bottom-6 right-5 z-40 grid size-11 place-items-center rounded-full border bg-card text-foreground shadow-lg transition-opacity hover:bg-secondary"
         >
