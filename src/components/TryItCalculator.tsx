@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { WelcomeCharacters } from "./WelcomeCharacters";
+import { useCalculatorMoment } from "./useCalculatorMoment";
 import { Slider } from "./ui/slider";
 import { simulate, addMonths, formatMonth, usd, workDaysLabel } from "@/lib/debt";
 
@@ -34,6 +35,7 @@ function useCountUp(target: number, duration = 450) {
 }
 
 export function TryItCalculator() {
+  const moment = useCalculatorMoment();
   const [owe, setOwe] = useState(4000);
   const [pay, setPay] = useState(155);
   const userTouched = useRef(false);
@@ -83,7 +85,8 @@ export function TryItCalculator() {
   return (
     <div className="welcome-calculator-scene relative w-full" data-self-demo={selfDemo}>
       <div className="relative w-full max-w-md">
-        <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
+        <div className="calculator-card-anchor">
+        <div ref={moment.cardRef} className="calculator-moment-card leaf-lg relative border bg-card p-6 sm:p-7">
           <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
           <p className="mt-1 text-xs text-muted-foreground">Move the sliders to see your date.</p>
           <div className="mt-5">
@@ -148,7 +151,8 @@ export function TryItCalculator() {
             </div>
           </div>
         </div>
-        <WelcomeCharacters owe={owe} pay={pay} months={months} />
+        </div>
+        <WelcomeCharacters owe={owe} pay={pay} months={months} moment={moment} />
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Want your real date?{" "}
           <Link
