@@ -55,7 +55,16 @@ describe("Demo personas", () => {
     expect(r.ideas.map((i) => i.monthlyAmount)).toEqual([75, 75, 75, 75, 75]);
   });
   it("requires a contract reminder for freelance side-work suggestions", () => {
-    const r=safeAdvice({jobLabel:"software developer",ideas:[1,2,3].map(i=>({title:`Project ${i}`,detail:"Offer a freelance project.",monthlyAmount:100,kind:"earn",forJob:true}))});
-    expect(r.ideas.every(i=>/check your contract before side work/i.test(i.detail))).toBe(true);
+    const r = safeAdvice({
+      jobLabel: "software developer",
+      ideas: [1, 2, 3].map((i) => ({
+        title: `Project ${i}`,
+        detail: "Offer a freelance project.",
+        monthlyAmount: 100,
+        kind: "earn",
+        forJob: true,
+      })),
+    });
+    expect(r.ideas.every((i) => /check your contract before side work/i.test(i.detail))).toBe(true);
   });
 });
