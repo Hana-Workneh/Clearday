@@ -101,7 +101,7 @@ export function safeAdvice(value: unknown, income?: number): { ideas: Idea[]; no
     ideas: sorted.map(({ forJob, ...i }) => ({
       ...i,
       ...(usable && forJob
-        ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label}` }
+        ? { tag: `Because you're ${/^(ux|ui|user)\b/i.test(label) ? "a" : /^[aeiou]/i.test(label) ? "an" : "a"} ${label}` }
         : {}),
     })),
   }).map((idea) => ({

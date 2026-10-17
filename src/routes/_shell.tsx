@@ -99,11 +99,8 @@ function Shell() {
                   </Link>
                 </Button>
               </div>
-            </div>
-          )}
-          {profile?.demo && (
             <div
-              className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center gap-2"
+              className="flex w-full flex-wrap items-center gap-2 border-t pt-3"
               role="group"
               aria-label="Demo persona"
             >
@@ -119,6 +116,7 @@ function Shell() {
                   {persona.name} · {persona.job.toLowerCase()}
                 </Button>
               ))}
+            </div>
             </div>
           )}
           {account.error ? (

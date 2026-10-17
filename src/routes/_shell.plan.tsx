@@ -57,8 +57,11 @@ function MyPlan() {
         }
       : null,
   );
+  const latestProfile = useRef(profile);
+  latestProfile.current = profile;
   useEffect(() => {
-    setIdeas(profile?.demo ? demoIdeas(profile) : []);
+    const current = latestProfile.current;
+    setIdeas(current?.demo ? demoIdeas(current) : []);
     setSelectedIdea(null);
     setLimited(false);
     setNote(false);
