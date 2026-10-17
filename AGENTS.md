@@ -20,6 +20,7 @@
 - Account profile documents use shared client/server validation in `src/lib/account-data.ts`, authenticated server-function writes and database validation for direct writes; stable loan/payment IDs keep imports idempotent and prevent bypassing input checks.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
+- Welcome character reactions live in an isolated presentational duo receiving calculator values; Stone uses a shared faceted SVG and pointer gaze updates are frame-throttled — preserves debt math and keeps phone rendering lightweight.
 - Header branding uses the shared `CleardayLogo` with light/dark assets derived from the same logo; Home estimates reuse the existing debt engine — keeps branding consistent without changing financial rules.
 - The welcome dashboard preview is an isolated presentational component with sample values, shared Sprout and theme tokens — shows the product without reading or changing user finances.
 - My plan timeline, suggestion impact and job-tag rules (`safeAdvice`) live in pure `src/lib/plan.ts` with tests; AI returns a cleaned job label and ideas, never payoff calculations or tag text — keeps estimates consistent and stops offensive titles being echoed.
