@@ -39,9 +39,9 @@ export function TryItCalculator({ owe, pay, result, onOweChange, onPayChange }: 
   return (
     <div className="hero-scene-panel w-full" data-self-demo={selfDemo}>
       <div className="hero-slider-card" onPointerDown={touch} onKeyDown={touch}>
-        <div className="flex items-center justify-between gap-2">
-          <p className="font-heading text-base font-semibold sm:text-lg">Try it in 10 seconds</p>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-chip-green px-2 py-1 text-[10px] font-bold text-chip-green-text"><span className="size-1.5 rounded-full bg-green" />Live</span>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+          <p className="min-w-0 font-heading text-base font-semibold sm:text-lg">Try it in 10 seconds</p>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-chip-green px-2 py-1 text-[10px] font-bold text-chip-green-text"><span className="size-1.5 rounded-full bg-green" />Live</span>
         </div>
         <div className="mt-4">
           <div className="hero-slider-label">
