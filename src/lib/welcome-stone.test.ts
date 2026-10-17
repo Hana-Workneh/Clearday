@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { stoneSize, stoneReaction, stoneIsPebbles } from "./welcome-stone";
+import { stoneSize, stoneReaction, stoneIsPebbles, flagCloseness } from "./welcome-stone";
 describe("Welcome Stone presentation rules", () => {
+  it("brings the flag to Sprout within twelve months and further away for longer plans", () => {
+    expect(flagCloseness(12)).toBe(1);
+    expect(flagCloseness(6)).toBe(1);
+    expect(flagCloseness(36)).toBe(.5);
+    expect(flagCloseness(60)).toBe(0);
+    expect(flagCloseness(600)).toBe(0);
+  });
   it("scales from 70px at $500 to 170px at $20,000", () => {
     expect(stoneSize(500)).toBe(70);
     expect(stoneSize(20000)).toBe(170);

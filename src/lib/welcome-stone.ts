@@ -12,3 +12,7 @@ export function stoneReaction(
 export function stoneIsPebbles(months: number) {
   return months <= 12;
 }
+/** Display-only travel: reaches Sprout at twelve months, moves away as time grows. */
+export function flagCloseness(months: number) {
+  return 1 - Math.max(0, Math.min(1, (months - 12) / 48));
+}

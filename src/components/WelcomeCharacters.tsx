@@ -1,24 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { Sprout } from "./Sprout";
 import { Stone } from "./Stone";
-import { usd } from "@/lib/debt";
-import { stoneSize, stoneReaction, stoneIsPebbles } from "@/lib/welcome-stone";
+import { usd, workDaysLabel } from "@/lib/debt";
+import { stoneSize, stoneReaction, stoneIsPebbles, flagCloseness } from "@/lib/welcome-stone";
+import { Clock3, Coins } from "lucide-react";
 
 export function WelcomeCharacters({
   owe,
   pay,
   months,
+  date,
+  interest,
 }: {
   owe: number;
   pay: number;
   months: number;
+  date: string;
+  interest: number | null;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const previous = useRef({ pay, months });
   const [reaction, setReaction] = useState<"hello" | "closer" | "further" | "calm">("hello");
   const [beat, setBeat] = useState(0);
   const close = stoneIsPebbles(months);
-  const size = stoneSize(owe);
+  const size = Math.min(110, stoneSize(owe)) * (reaction === "closer" ? .92 : reaction === "further" ? 1.05 : 1);
   useEffect(() => {
     const next = stoneReaction(previous.current, { pay, months });
     if (next !== "calm") {
@@ -59,6 +64,7 @@ export function WelcomeCharacters({
       data-reaction={reaction}
       data-months={months}
       data-stone-size={size}
+      style={{ "--flag-closeness": flagCloseness(months) } as React.CSSProperties}
     >
       <div className="duo-ground" aria-hidden="true" />
       <div className="sprout-home-slot">
@@ -66,7 +72,7 @@ export function WelcomeCharacters({
       <div className="sprout-idle">
         <Sprout
           mood={reaction === "closer" || close ? "cheering" : "waving"}
-          size={180}
+          size={150}
           interactive
           worried={reaction === "further"}
         />
@@ -133,6 +139,18 @@ export function WelcomeCharacters({
           )}
         </div>
         <span className="stone-label">Your debt</span>
+      </div>
+      <div className="debt-free-flag" aria-live="polite">
+        <div className="flag-pole" aria-hidden="true" />
+        <div className="flag-banner">
+          <p className="text-[9px] font-bold">3. DEBT FREE BY</p>
+          <p className="flag-date font-heading font-bold">{date}</p>
+        </div>
+      </div>
+      <div className="flag-facts">
+        <span className="flag-interest"><Coins className="size-3" />{interest === null ? "Interest grows" : `${usd(interest)} interest`}</span>
+        <span className="flag-work"><Clock3 className="size-3" />{interest === null ? "No payoff yet" : `${workDaysLabel(interest, 1000)} of work`}</span>
+        <p className="text-[9px] text-muted-foreground">Interest on $1,000/month take-home pay</p>
       </div>
     </div>
   );
