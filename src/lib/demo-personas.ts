@@ -34,9 +34,9 @@ export function createDemoPersona(id: DemoPersonaId, now = new Date()): Profile 
               ["Phone loan", 400, 0, 100],
             ]
           : [
-              ["Phone loan", 300, 9, 40],
-              ["Personal loan", 600, 15, 80],
-              ["Salary advance", 200, 0, 50],
+              ["Phone loan", 650, 24, 30],
+              ["Personal loan", 2800, 18, 100],
+              ["Salary advance", 400, 30, 35],
             ];
   const loans = definitions.map(([name, balance, rate, payment], i) => ({
     id: `${id}-loan-${i}`,

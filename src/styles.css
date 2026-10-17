@@ -219,34 +219,30 @@
 @media (prefers-reduced-motion: reduce) { .driver-overlay, .driver-popover { animation: none !important; transition: none !important; } }
 .sprout-think-bob { animation: bob 2.4s ease-in-out infinite; }
 .welcome-calculator-scene { max-width: 448px; }
-.welcome-duo { position: absolute; inset: 0; pointer-events: none; transform: translateY(var(--hover-clearance, 0px)); transition: transform .45s cubic-bezier(.22,.8,.3,1); }
-.sprout-home-slot { position: absolute; bottom: -65px; left: 4px; width: 130px; height: 130px; z-index: 3; pointer-events: none; }
-.calculator-real-date { margin-top: 100px; }
-.sprout-mover { width: 100%; height: 100%; transition: transform .45s cubic-bezier(.22,.8,.3,1); pointer-events: none; }
-.sprout-holding { transform: translate(var(--hop-x, 0px), var(--hop-y, 0px)); }
+.welcome-duo { --duo-sprout-size: 130px; --duo-gap: 30px; --stone-scale: .76; position: relative; width: 300px; max-width: 100%; height: 220px; margin: 24px auto 0; pointer-events: none; text-align: center; }
+.duo-ground { position: absolute; left: 0; right: 0; bottom: 41px; height: 1px; background: var(--border); }
+.sprout-home-slot { position: absolute; bottom: 32px; left: 0; width: var(--duo-sprout-size); height: var(--duo-sprout-size); z-index: 3; pointer-events: none; }
+.calculator-real-date { margin-top: 18px; }
 .presenting-sprout { position: relative; width: 100%; height: 100%; transform-origin: 50% 95%; }
 .presenting-sprout > div, .presenting-sprout > div > svg { width: 100%; height: 100%; }
 .sprout-idle { animation: sprout-idle 3.4s ease-in-out infinite; }
-.sprout-edge-bounce { animation: sprout-edge-bounce .5s cubic-bezier(.4,0,.4,1) .45s 2; }
-.sprout-holding .presenting-sprout { animation: none; scale: 1; }
-.calculator-card-anchor { position: relative; perspective: 1000px; }
-.calculator-moment-card { --shadow-calculator-lift: 0 24px 64px color-mix(in srgb, var(--foreground) 12%, transparent); padding-bottom: 150px; box-shadow: var(--shadow-product); transition: transform .45s cubic-bezier(.22,.8,.3,1), box-shadow .45s ease; transform-origin: center; }
-.calculator-moment-card[data-lifted="true"] { transform: translateY(calc(var(--hover-clearance, 0px) - 6px)) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); box-shadow: var(--shadow-calculator-lift); }
+.calculator-card-anchor { position: relative; }
+.calculator-moment-card { --shadow-calculator-lift: 0 20px 56px color-mix(in srgb, var(--foreground) 10%, transparent); box-shadow: var(--shadow-product); transition: transform .3s ease, box-shadow .3s ease; }
+@media (hover: hover) { .calculator-moment-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-calculator-lift); } }
 @keyframes sprout-idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes sprout-edge-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 .presenting-sprout .anim-jump, .presenting-sprout .anim-bob, .presenting-sprout .sprout-sway { animation: none; }
 .presenting-sprout .wave-arm { animation-iteration-count: 1; animation-duration: .5s; }
 .presenting-sprout:not(.reaction-hello) .wave-arm { animation: none; }
-.presenting-stone { position: absolute; right: 4px; bottom: calc(var(--stone-height) / -2); z-index: 2; width: 170px; height: var(--stone-height); display: flex; align-items: end; justify-content: center; }
-.stone-stage { position: relative; display: flex; align-items: end; justify-content: center; width: 170px; height: var(--stone-height); }
-.stone-size { flex-shrink: 0; transition: width .5s cubic-bezier(.2,1.5,.5,1), height .5s cubic-bezier(.2,1.5,.5,1); }
+.presenting-stone { position: absolute; left: calc(var(--duo-sprout-size) + var(--duo-gap)); bottom: 32px; z-index: 2; width: 140px; height: calc(var(--stone-height) * var(--stone-scale)); display: flex; align-items: end; justify-content: start; }
+.stone-stage { position: relative; display: flex; align-items: end; justify-content: center; width: calc(var(--stone-size) * var(--stone-scale)); height: 100%; }
+.stone-size { width: calc(var(--stone-size) * var(--stone-scale)); height: calc(var(--stone-height) * var(--stone-scale)); flex-shrink: 0; transition: width .5s ease, height .5s ease; }
 .stone-size svg { width: 100%; height: 100%; display: block; }
 .stone-impact, .stone-breathe, .stone-grumble { width: 100%; height: 100%; transform-origin: center bottom; }
 .stone-breathe { animation: stone-breathe 4s ease-in-out infinite; }
 .stone-grumble { animation: stone-grumble .45s ease-in-out infinite; animation-duration: 5s; }
-.stone-bubble { position: absolute; bottom: calc(var(--stone-height) + 14px); width: 170px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 20px 20px 20px 6px; background: var(--card); color: var(--foreground); font-size: 12px; font-weight: 600; line-height: 1.5; text-align: center; }
+.stone-bubble { position: absolute; bottom: calc(100% + 14px); left: calc(var(--stone-size) * var(--stone-scale) / 2); transform: translateX(-50%); width: 140px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 20px 20px 20px 6px; background: var(--card); color: var(--foreground); font-size: 12px; font-weight: 600; line-height: 1.5; text-align: center; }
 .stone-bubble::after { content: ""; position: absolute; bottom: -6px; left: 50%; width: 10px; height: 10px; background: var(--card); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transform: rotate(45deg); }
-.stone-label { position: absolute; top: calc(100% + 7px); height: 26px; display: inline-flex; align-items: center; padding: 3px 12px; border-radius: 999px; background: var(--secondary); color: var(--muted-foreground); font-size: 13px; font-weight: 700; }
+.stone-label { position: absolute; top: calc(100% + 7px); left: calc(var(--stone-size) * var(--stone-scale) / 2); transform: translateX(-50%); white-space: nowrap; color: var(--muted-foreground); font-size: 13px; font-weight: 700; }
 .stone-reaction-closer .stone-impact { animation: stone-pushed .55s ease-out both; }
 .stone-reaction-further .stone-impact { animation: stone-smug-grow .5s ease-out both; }
 .stone-face-surprised .stone-brow-left, .stone-face-surprised .stone-brow-right { transform: translateY(-6px); }
@@ -276,8 +272,8 @@
 .mini-confetti i:nth-child(4n) { transform: rotate(-35deg); }
 .mini-confetti i:nth-child(1) { left: 7%; top: 12%; } .mini-confetti i:nth-child(2) { left: 17%; top: 42%; } .mini-confetti i:nth-child(3) { left: 26%; top: 8%; } .mini-confetti i:nth-child(4) { left: 35%; top: 65%; } .mini-confetti i:nth-child(5) { left: 42%; top: 3%; } .mini-confetti i:nth-child(6) { left: 53%; top: 20%; } .mini-confetti i:nth-child(7) { left: 68%; top: 7%; } .mini-confetti i:nth-child(8) { left: 78%; top: 35%; } .mini-confetti i:nth-child(9) { left: 90%; top: 13%; } .mini-confetti i:nth-child(10) { left: 5%; top: 80%; } .mini-confetti i:nth-child(11) { left: 20%; top: 92%; } .mini-confetti i:nth-child(12) { left: 85%; top: 85%; } .mini-confetti i:nth-child(13) { left: 74%; top: 65%; } .mini-confetti i:nth-child(14) { left: 94%; top: 54%; } .mini-confetti i:nth-child(15) { left: 32%; top: 30%; } .mini-confetti i:nth-child(16) { left: 63%; top: 95%; }
 @keyframes sprout-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46% { transform: scaleY(.07); } }
-@keyframes sprout-push-jump { 0%,100% { transform: none; } 25% { transform: translateX(10px) rotate(12deg); } 55% { transform: translateY(-22px) rotate(-8deg); } 80% { transform: translateY(-8px) rotate(8deg); } }
-@keyframes stone-pushed { 0% { transform: none; } 40%,100% { transform: translateX(8px) scale(.92); } }
+@keyframes sprout-push-jump { 0%,100% { transform: none; } 50% { transform: translateY(-12px); } }
+@keyframes stone-pushed { 0% { transform: none; } 40%,100% { transform: scale(.92); } }
 @keyframes stone-smug-grow { 0% { transform: scale(1); } 60%,100% { transform: scale(1.05); } }
 @keyframes stone-breathe { 0%,14%,100% { transform: scale(1); } 7% { transform: scale(1.025,.975); } }
 @keyframes stone-grumble { 0%,10%,100% { transform: none; } 2%,6% { transform: translateX(-2px) rotate(-1deg); } 4%,8% { transform: translateX(2px) rotate(1deg); } }
@@ -288,13 +284,13 @@
 @keyframes pebble-left { from { transform: translate(22px,-25px); } to { transform: translateX(-13px) rotate(-55deg); } }
 @keyframes pebble-right { from { transform: translate(-22px,-25px); } to { transform: translateX(13px) rotate(60deg); } }
 @keyframes pebble-middle { from { transform: translateY(-30px); } to { transform: rotate(15deg); } }
-@media (min-width: 768px) { .sprout-home-slot { bottom: -100px; width: 200px; height: 200px; } .calculator-real-date { margin-top: 125px; } }
-@media (max-width: 380px) { .presenting-stone, .stone-stage { width: 155px; } .stone-bubble { width: 155px; } }
+@media (min-width: 768px) { .welcome-duo { --duo-sprout-size: 180px; --duo-gap: 60px; --stone-scale: 1; width: 410px; height: 255px; margin-left: 0; } .presenting-stone, .stone-bubble { width: 170px; } }
+@media (max-width: 350px) { .welcome-duo { --duo-gap: 20px; width: 280px; } .stone-bubble { width: 125px; } }
 @media (prefers-reduced-motion: reduce) {
   .welcome-duo *, .welcome-duo *::after { animation: none !important; transition: none !important; }
   .duo-sparkles, .stone-chips { display: none; }
   .stone-reaction-closer .stone-impact { transform: scale(.92); }
   .stone-reaction-further .stone-impact { transform: scale(1.05); }
-  .welcome-duo, .sprout-mover, .calculator-moment-card, .calculator-moment-card[data-lifted="true"] { transform: none !important; transition: none !important; }
+  .welcome-duo, .calculator-moment-card, .calculator-moment-card:hover { transform: none !important; transition: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }
