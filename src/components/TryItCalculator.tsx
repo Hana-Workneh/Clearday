@@ -60,7 +60,7 @@ export function TryItCalculator({ owe, pay, result, onOweChange, onPayChange }: 
           <div className="mt-2 flex items-start justify-between gap-2 text-[10px] text-muted-foreground"><span>$50</span><span className="text-center font-semibold text-green-text">← drag me, watch the flag move</span><span>$1,000</span></div>
         </div>
       </div>
-      <WelcomeCharacters owe={owe} pay={pay} months={months} date={result.monthsLeft === null ? "A little more each month" : formatMonth(date)} interest={result.totalInterest} />
+      <WelcomeCharacters owe={owe} pay={pay} months={months} date={result.monthsLeft === null ? "Raise payment" : formatMonth(date)} interest={result.monthsLeft === null ? null : result.totalInterest} />
     </div>
   );
 }

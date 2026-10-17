@@ -237,9 +237,9 @@
 .hero-payment-pulse [role=slider] { animation: hero-handle-pulse 1.8s ease-out infinite; }
 @keyframes hero-handle-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 25%, transparent); } 65% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--green) 0%, transparent); } }
 .welcome-duo { --duo-sprout-size: 150px; --stone-scale: .85; position: relative; width: 100%; height: 232px; margin-top: 14px; pointer-events: none; text-align: center; }
-.duo-ground { position: absolute; left: 0; right: 0; bottom: 58px; border-top: 1px dashed var(--hero-scene-ground); }
-.sprout-home-slot { position: absolute; bottom: 49px; left: 0; width: var(--duo-sprout-size); height: var(--duo-sprout-size); z-index: 3; pointer-events: none; }
-.debt-free-flag { position: absolute; left: calc(100% - 150px - var(--flag-closeness) * 45px); top: 3px; width: 150px; height: 174px; transition: left .65s cubic-bezier(.22,.8,.3,1); z-index: 4; }
+.duo-ground { position: absolute; left: 0; right: 0; bottom: 84px; border-top: 1px dashed var(--hero-scene-ground); }
+.sprout-home-slot { position: absolute; bottom: 75px; left: 0; width: var(--duo-sprout-size); height: var(--duo-sprout-size); z-index: 3; pointer-events: none; }
+.debt-free-flag { position: absolute; left: calc(100% - 150px - var(--flag-closeness) * 45px); top: 3px; width: 150px; height: 148px; transition: left .65s cubic-bezier(.22,.8,.3,1); z-index: 4; }
 .flag-pole { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 2px; background: var(--foreground); }
 .flag-banner { position: relative; margin-left: 3px; padding: 12px 10px 14px; background: var(--sun); color: var(--hero-flag-ink); border-radius: 0 9px 9px 0; clip-path: polygon(0 0,100% 0,94% 50%,100% 100%,0 100%); transform-origin: left center; animation: flag-wave 4s ease-in-out infinite; }
 .flag-date { font-size: 21px; line-height: 1.15; margin-top: 5px; }
@@ -257,7 +257,7 @@
 .presenting-sprout .anim-jump, .presenting-sprout .anim-bob, .presenting-sprout .sprout-sway { animation: none; }
 .presenting-sprout .wave-arm { animation-iteration-count: 1; animation-duration: .5s; }
 .presenting-sprout:not(.reaction-hello) .wave-arm { animation: none; }
-.presenting-stone { position: absolute; left: 160px; bottom: 49px; z-index: 2; width: 110px; height: calc(var(--stone-height) * var(--stone-scale)); display: flex; align-items: end; justify-content: start; }
+.presenting-stone { position: absolute; left: 160px; bottom: 75px; z-index: 2; width: 110px; height: calc(var(--stone-height) * var(--stone-scale)); display: flex; align-items: end; justify-content: start; }
 .stone-stage { position: relative; display: flex; align-items: end; justify-content: center; width: calc(var(--stone-size) * var(--stone-scale)); height: 100%; }
 .stone-size { width: calc(var(--stone-size) * var(--stone-scale)); height: calc(var(--stone-height) * var(--stone-scale)); flex-shrink: 0; transition: width .5s ease, height .5s ease; }
 .stone-size svg { width: 100%; height: 100%; display: block; }
@@ -316,7 +316,7 @@
   .welcome-duo { --duo-sprout-size: 95px; --stone-scale: .6; height: 216px; }
   .presenting-stone { left: 104px; }
   .stone-bubble { width: 112px; font-size: 10px; }
-  .debt-free-flag { left: calc(100% - 125px - var(--flag-closeness) * 15px); width: 125px; height: 157px; }
+  .debt-free-flag { left: calc(100% - 125px - var(--flag-closeness) * 15px); width: 125px; height: 131px; }
   .flag-date { font-size: 18px; }
   .flag-banner { padding: 10px 8px; }
   .duo-close .debt-free-flag { left: 75px; }
@@ -325,7 +325,7 @@
 @media (max-width: 380px) {
   .welcome-duo { --duo-sprout-size: 80px; --stone-scale: .5; }
   .presenting-stone { left: 82px; }
-  .stone-bubble { width: 100px; bottom: calc(100% + 8px); }
+  .stone-bubble { width: 80px; font-size: 9px; padding: 7px 6px; bottom: calc(100% + 8px); }
   .debt-free-flag { left: calc(100% - 110px - var(--flag-closeness) * 8px); width: 110px; }
   .flag-date { font-size: 17px; }
   .hero-slider-label { font-size: 10px; }

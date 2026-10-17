@@ -16,7 +16,7 @@ export function WelcomeCharacters({
   pay: number;
   months: number;
   date: string;
-  interest: number;
+  interest: number | null;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const previous = useRef({ pay, months });
@@ -148,8 +148,8 @@ export function WelcomeCharacters({
         </div>
       </div>
       <div className="flag-facts">
-        <span className="flag-interest"><Coins className="size-3" />{usd(interest)} interest</span>
-        <span className="flag-work"><Clock3 className="size-3" />{workDaysLabel(interest, 1000)} of work</span>
+        <span className="flag-interest"><Coins className="size-3" />{interest === null ? "Interest grows" : `${usd(interest)} interest`}</span>
+        <span className="flag-work"><Clock3 className="size-3" />{interest === null ? "No payoff yet" : `${workDaysLabel(interest, 1000)} of work`}</span>
         <p className="text-[9px] text-muted-foreground">Interest on $1,000/month take-home pay</p>
       </div>
     </div>
