@@ -112,7 +112,7 @@ export async function handleSprout(request:Request) {
       if(error) throw new Error("Sprout's answer could not be saved. Please keep this page open.");
     },onError:error=>error instanceof Error && error.message.startsWith("Sprout's answer") ? error.message : "Sprout couldn't finish this answer. Start a fresh question when you're ready.",
   });
-  void result.text.catch(()=>resolveUpstream(null));
+  void Promise.resolve(result.text).catch(()=>resolveUpstream(null));
   const upstream=await upstreamReady;
   if(!upstream || !upstream.ok) {
     const body=upstream ? await upstream.clone().json().catch(()=>null) as {message?:string,error?:{message?:string}}|null : null;

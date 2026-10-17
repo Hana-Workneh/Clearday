@@ -1,4 +1,5 @@
 # My plan
+- [ ] Create temporary User A/B, test cross-user and anonymous read/edit/delete on all user tables, fix any gaps, and delete only temporary users/data.
 - [ ] Build Ask Sprout floating chat, account history, checked numeric answers, server-enforced 10/5 daily limits; test five questions in demo and signed-in modes.
 - [x] Apply first-time feedback: numbered calculator, borrowing story, Add loan, prominent Sprout ideas and in-place preview/save; verify signed-in loan/plan saves and both themes on phone/desktop.
 - [x] Add yellow win and milestone accents across Home, badges, payment celebration, timeline and debt-free card; verify both themes.
