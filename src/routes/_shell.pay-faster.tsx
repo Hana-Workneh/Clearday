@@ -6,6 +6,9 @@ import { Slider } from "@/components/ui/slider";
 import { simulate, formatMonth, type PlanResult, type Strategy } from "@/lib/debt";
 import { saveProfile, useProfile, planOptions } from "@/lib/store";
 import { markStartStep } from "@/lib/start-here";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { canCompareOrder, comparePayoff, equivalentOrders } from "@/lib/pay-faster";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
   validateSearch: (search: Record<string, unknown>): { extra?: number } => {
@@ -25,7 +28,6 @@ export const Route = createFileRoute("/_shell/pay-faster")({
   component: PayFaster,
 });
 
-const months = (n: number) => `${n} ${n === 1 ? "month" : "months"}`;
 const options: { key: Strategy; title: string; text: string }[] = [
   { key: "avalanche", title: "Most expensive loan first", text: "Saves the most money." },
   { key: "snowball", title: "Smallest loan first", text: "Clear one loan fast and feel the win." },
@@ -53,11 +55,13 @@ function PayFaster() {
 
   const loans = profile?.loans ?? [];
   const now = useMemo(() => new Date(), []);
-  const base = useMemo(() => simulate(loans, now), [loans, now]);
-  const next = useMemo(() => simulate(loans, now, { ...(profile ? planOptions(profile, now) : {}), extra, strategy }), [profile, loans, now, extra, strategy]);
+  const baseOptions = useMemo(() => ({ ...(profile ? planOptions(profile, now) : {}), extra: 0 }), [profile, now]);
+  const nextOptions = useMemo(() => ({ ...baseOptions, extra, strategy }), [baseOptions, extra, strategy]);
+  const base = useMemo(() => simulate(loans, now, baseOptions), [loans, now, baseOptions]);
+  const next = useMemo(() => simulate(loans, now, nextOptions), [loans, now, nextOptions]);
   const byStrategy = useMemo(
-    () => Object.fromEntries(options.map((o) => [o.key, simulate(loans, now, { extra, strategy: o.key })])) as Record<Strategy, PlanResult>,
-    [loans, now, extra],
+    () => Object.fromEntries(options.map((o) => [o.key, simulate(loans, now, { ...nextOptions, strategy: o.key })])) as Record<Strategy, PlanResult>,
+    [loans, now, nextOptions],
   );
 
   if (profile === undefined) return null;
@@ -72,13 +76,19 @@ function PayFaster() {
     );
   }
 
-  const sooner = base.monthsLeft != null && next.monthsLeft != null ? base.monthsLeft - next.monthsLeft : 0;
-  const saving = Math.max(0, Math.round(base.totalInterest - next.totalInterest));
-  const better = sooner > 0 || saving > 1;
+  const comparison = comparePayoff(base, next, loans, baseOptions, nextOptions);
+  const saving = Math.max(0, comparison.saving);
+  const better = comparison.difference > 0 || saving > 0;
+  const interestText = Math.abs(comparison.saving) > 0 && Math.abs(comparison.saving) < 1
+    ? "less than " + usd(1) : usd(Math.abs(comparison.saving));
+  const resultText = next.monthsLeft === null
+    ? "This payment doesn't yet clear your loans. Try a little more if you can."
+    : base.monthsLeft === null
+      ? "Your extra payment gives you a debt free date."
+      : `${comparison.time} and ${interestText} ${comparison.saving >= 0 ? "less" : "more"} interest.`;
+  const almostPaid = extra > 0 && (base.monthsLeft ?? 600) <= 1 && comparison.days < 2 && saving < 1;
   const daysBack = profile.income > 0 ? saving / (profile.income / 22) : 0;
   const daysBackText = daysBack >= 1 ? `${Math.round(daysBack)} work ${Math.round(daysBack) === 1 ? "day" : "days"} back` : `${Math.round(daysBack * 10) / 10} work days back`;
-  const nowMonths = base.monthsLeft ?? 600;
-  const newWidth = Math.max(4, Math.round(((next.monthsLeft ?? 600) / nowMonths) * 100));
   const label = next.debtFreeDate ? formatMonth(next.debtFreeDate) : "Not yet";
 
   const use = async () => {
@@ -101,7 +111,21 @@ function PayFaster() {
     <div className="mx-auto grid max-w-6xl gap-6">
       <div>
         <h1 className="page-title">Pay faster</h1>
-        <p className="page-sub mt-1">Small changes can bring your free day much closer.</p>
+        <p className="page-sub mt-2 max-w-3xl">Paying a little extra each month gets you to your debt free day sooner and costs you less interest. Move the slider to see how much.</p>
+        <Dialog>
+          <DialogTrigger asChild><Button variant="link" className="mt-2 h-auto px-0 text-green-text">How this works</Button></DialogTrigger>
+          <DialogContent className="leaf-lg w-[calc(100%-40px)] bg-card">
+            <DialogTitle className="font-heading">How this works</DialogTitle>
+            <div className="flex items-start gap-4">
+              <Sprout mood="waving" size={64} />
+              <DialogDescription className="grid gap-3">
+                <span>We add monthly interest, then subtract your payments and any extra.</span>
+                <span>When a loan is paid off, its payment helps the next loan in your chosen order.</span>
+                <span>Dates use monthly payments; weeks and days estimate the final part-payment. Your lender’s timing may differ.</span>
+              </DialogDescription>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-5">
@@ -117,57 +141,58 @@ function PayFaster() {
           <div className="leaf mt-6 bg-background p-6">
             <p className="text-sm font-semibold text-muted-foreground">New debt free date</p>
             <p key={label} className={`big-date mt-2 ${better ? "animate-in zoom-in-95 fade-in duration-500" : ""}`}>{label}</p>
+            <p role="status" className="mt-4 text-sm font-semibold leading-relaxed">{resultText}</p>
+            {almostPaid && <p className="mt-2 text-sm text-muted-foreground">Your loans are almost paid off, so extra money only helps a little. Nice work!</p>}
             <div className="mt-4 flex flex-wrap gap-2">
-              {sooner > 0 && <span className="chip-green">{months(sooner)} sooner</span>}
-              {saving > 0 && <span className="chip-purple">{usd(saving)} less interest</span>}
               {daysBack >= 0.1 && <span className="chip-yellow">You get {daysBackText}</span>}
-              {!better && <span className="text-sm text-muted-foreground">Slide to see what a little extra could do.</span>}
             </div>
           </div>
 
           <div className="mt-6 grid gap-3 text-sm">
             <div>
-              <div className="mb-1.5 flex justify-between"><span className="font-semibold">Now</span><span className="text-muted-foreground">{base.debtFreeDate ? formatMonth(base.debtFreeDate) : "—"}</span></div>
-              <div className="h-3 w-full rounded-full bg-bar" />
+              <div className="mb-1.5 flex flex-wrap justify-between gap-x-4 gap-y-1"><span className="font-semibold">Now · no extra</span><span className="text-muted-foreground">{base.debtFreeDate ? formatMonth(base.debtFreeDate) : "Not yet"} · Starting point</span></div>
+              <div className="h-3 w-full rounded-full bg-background"><div data-testid="base-bar" className="h-3 rounded-full bg-bar" style={{ width: `${comparison.baseWidth ?? 100}%` }} /></div>
             </div>
             <div>
-              <div className="mb-1.5 flex justify-between"><span className="font-semibold">With {usd(extra)} extra</span><span className="text-muted-foreground">{label}</span></div>
-              <div className="h-3 rounded-full bg-green transition-all duration-500" style={{ width: `${Math.min(100, newWidth)}%` }} />
+              <div className="mb-1.5 flex flex-wrap justify-between gap-x-4 gap-y-1"><span className="font-semibold">With {usd(extra)} extra</span><span className="text-muted-foreground">{label} · {base.monthsLeft !== null && next.monthsLeft !== null ? comparison.time : "Timing not comparable yet"}</span></div>
+              <div className="h-3 w-full rounded-full bg-background"><div data-testid="extra-bar" className="h-3 rounded-full bg-green transition-all duration-500 motion-reduce:transition-none" style={{ width: `${comparison.nextWidth ?? 100}%` }} /></div>
             </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">Weeks, days and bar lengths estimate the final part-payment. Dates follow the monthly schedule.{(base.monthsLeft === null || next.monthsLeft === null) && " A full bar marked ‘Not yet’ has no calculated end date."}</p>
           </div>
         </section>
 
         {/* Right: order */}
         <section className="flex flex-col gap-4 lg:col-span-2">
-          <div className="leaf-lg border bg-card p-6">
+          {canCompareOrder(loans) ? <div className="leaf-lg border bg-card p-6">
             <h2 className="font-heading text-lg font-semibold">Which loan should you pay first?</h2>
+            {equivalentOrders(Object.values(byStrategy)) && <p className="mt-2 text-sm text-muted-foreground">With your loans, the order doesn't change much.</p>}
             <div className="mt-4 grid gap-3">
               {options.map((o) => {
                 const p = byStrategy[o.key];
                 const on = strategy === o.key;
                 return (
-                  <button key={o.key} onClick={() => setStrategy(o.key)} aria-pressed={on} disabled={loans.length < 2 && o.key !== "avalanche"}
-                    className={`leaf p-4 text-left transition disabled:opacity-40 ${on ? "border-2 border-foreground" : "border-2 border-transparent bg-background hover:border-line-strong"}`}>
+                  <Button variant="ghost" key={o.key} onClick={() => setStrategy(o.key)} aria-pressed={on}
+                    className={`leaf block h-auto whitespace-normal p-4 text-left transition ${on ? "border-2 border-foreground" : "border-2 border-transparent bg-background hover:border-line-strong"}`}>
                     <p className="font-semibold">{o.title}</p>
                     <p className="mt-0.5 text-sm text-muted-foreground">{o.text}</p>
                     <p className="mt-2 text-xs font-semibold text-muted-foreground">
                       {p.debtFreeDate ? formatMonth(p.debtFreeDate) : "Not yet"} · {usd(p.totalInterest)} interest
                     </p>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
-          </div>
+          </div> : <p className="leaf border bg-card p-6 text-sm text-muted-foreground">Add another loan to compare which one to pay first.</p>}
 
           <div className="flex items-end gap-3">
             <Sprout key={better ? `j${next.monthsLeft}` : "t"} mood={saved || better ? "cheering" : "thinking"} size={64} />
             <p className="leaf flex-1 bg-chip-purple p-4 text-sm text-chip-purple-text">
-              {saved ? "Saved! Your new date is on Home." : tip}
+              {saved ? "Saved! Your new date is on Home." : canCompareOrder(loans) ? tip : "Every extra payment goes to your remaining loan. Choose an amount that feels comfortable."}
             </p>
           </div>
 
           {error && <p role="alert" className="text-sm text-tip">{error}</p>}
-          <button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Make this my plan"}</button>
+          <Button onClick={use} disabled={saved || isSaving} className="btn-main w-full">{isSaving ? "Saving…" : "Make this my plan"}</Button>
         </section>
       </div>
     </div>

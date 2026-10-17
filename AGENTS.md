@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Architecture
+- Pay faster uses pure display-only final-payment interpolation in `src/lib/pay-faster.ts` for estimated short-term savings and proportional bars; the shared monthly engine still owns dates, interest and persistence — avoids inventing exact daily interest calculations.
 - Product tours use client-loaded driver.js with shared Sprout/buttons, session-storage demo dismissal and owner-keyed local account dismissal; pending replay survives navigation and startup waits for visible Home targets — prevents lost starts without writing financial data.
 - Ask Sprout uses owner-scoped chat rows, a streaming server boundary and verified calculation placeholders; demo requests return deterministic calculation replies before the paid provider, conversations remain session-local and atomic server counters enforce daily limits — prevents anonymous AI spending.
 - Setup loan-entry validation and automatic commits live in pure `src/lib/loan-entry.ts` with tests — both add-another and continue use the same field rules and stable IDs for edits.

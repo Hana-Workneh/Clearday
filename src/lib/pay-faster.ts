@@ -20,8 +20,9 @@ export function comparePayoff(base: PlanResult, next: PlanResult, loans: Loan[],
   const nextDuration = payoffDuration(next, loans, nextOptions);
   const difference = baseDuration !== null && nextDuration !== null ? baseDuration - nextDuration : 0;
   const days = Math.round(Math.abs(difference) * 30.4375);
-  const unit = Math.abs(difference) >= 1 ? timeLabel(Math.max(1, Math.floor(Math.abs(difference))), "month")
-    : days >= 7 ? `About ${timeLabel(Math.round(days / 7), "week" as never)}` : `About ${timeLabel(days, "day")}`;
+  const weeks = Math.round(days / 7);
+  const unit = Math.abs(difference) >= 1 ? `About ${timeLabel(Math.round(Math.abs(difference)), "month")}`
+    : days >= 7 ? `About ${weeks} ${weeks === 1 ? "week" : "weeks"}` : `About ${timeLabel(days, "day")}`;
   const time = days === 0 ? "Same payoff timing" : `${unit} ${difference >= 0 ? "sooner" : "later"}`;
   const scale = Math.max(baseDuration ?? 0, nextDuration ?? 0);
   return {
