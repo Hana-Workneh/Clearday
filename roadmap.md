@@ -1,4 +1,5 @@
 # My plan
+- [ ] Fix fresh-visitor entry, demo/account refresh recovery and friendly fallback; verify all six pages locally and on the published site when available.
 - [x] Clarify Pay faster results, proportional bars, loan-order guidance and Sprout explanation; 32 tests pass. Live Hana $75 extra shows about nine months sooner and $293 less interest; same-month weeks, single-loan hiding, tiny-benefit message and phone themes verified without account changes.
 - [x] Replace hero with uploaded two-column interactive panel design; flag/sliders/pebbles, one opening glide and input cancellation verified at desktop and 320/350/390px, light/dark and reduced motion. Phone bubble and flag separated; 21 calculation/presentation tests pass.
 - [x] Simplify hero to left-column grounded characters and centered calculator; remove hover/scroll motion and unused replay code. Hana pays $30/$100/$35 monthly over 30 months total; after four months, $75 extra saves nine months and $292.76 (displayed $293). Verified demo entry, Pay faster, showcase, both themes on desktop/phone, reduced motion and slider extremes; 30 tests pass.
