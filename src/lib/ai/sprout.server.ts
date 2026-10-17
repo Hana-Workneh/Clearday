@@ -116,13 +116,11 @@ export async function handleSprout(request: Request) {
       .order("created_at", { ascending: false })
       .limit(40);
     if (historyError) return errorResponse("Your conversation could not load.", 503);
-    messages = (history ?? [])
-      .reverse()
-      .map((row) => ({
-        id: row.message_id,
-        role: row.role as "user" | "assistant",
-        parts: row.parts as UIMessage["parts"],
-      }));
+    messages = (history ?? []).reverse().map((row) => ({
+      id: row.message_id,
+      role: row.role as "user" | "assistant",
+      parts: row.parts as UIMessage["parts"],
+    }));
   } else {
     // Demo profile changes stay local, but every financial field is validated before calculation.
     if (!profile) return errorResponse("Open Hana's demo to ask Sprout.", 400);
@@ -188,15 +186,13 @@ export async function handleSprout(request: Request) {
             .json()
             .catch(() => null)) as { message?: string; error?: { message?: string } } | null;
           const message = body?.message || body?.error?.message || "Lovable AI access is paused.";
-          const { error } = await supabaseAdmin
-            .from("ai_advice_gate")
-            .upsert({
-              id: "advice",
-              status: response.status,
-              message,
-              kind: response.status === 402 ? "credits" : "denied",
-              updated_at: new Date().toISOString(),
-            });
+          const { error } = await supabaseAdmin.from("ai_advice_gate").upsert({
+            id: "advice",
+            status: response.status,
+            message,
+            kind: response.status === 402 ? "credits" : "denied",
+            updated_at: new Date().toISOString(),
+          });
           if (error) console.error("Could not save Ask Sprout pause", error.code);
         }
         resolveUpstream(response);
@@ -252,17 +248,15 @@ export async function handleSprout(request: Request) {
     sendReasoning: true,
     onFinish: async ({ responseMessage, isAborted }) => {
       if (isAborted || input.demo || !user) return;
-      const { error } = await client
-        .from("sprout_messages")
-        .upsert(
-          {
-            user_id: user.id,
-            message_id: responseMessage.id,
-            role: "assistant",
-            parts: responseMessage.parts as never,
-          },
-          { onConflict: "user_id,message_id" },
-        );
+      const { error } = await client.from("sprout_messages").upsert(
+        {
+          user_id: user.id,
+          message_id: responseMessage.id,
+          role: "assistant",
+          parts: responseMessage.parts as never,
+        },
+        { onConflict: "user_id,message_id" },
+      );
       if (error) throw new Error("Sprout's answer could not be saved. Please keep this page open.");
     },
     onError: (error) =>
