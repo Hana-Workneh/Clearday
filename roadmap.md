@@ -1,5 +1,5 @@
 # My plan
-- [ ] Adjust welcome nav/hero breakpoints and compact scene; check 1440/1280/1100/1024/900/768/600/390/360px in both themes.
+- [x] Adjust welcome nav/hero breakpoints and compact scene; 1440/1280/1100/1024/900/768/600/390/360px passed both themes with no horizontal overflow, menu use, contained bubbles/flags and 20px stacked panel gap. Animated slider/pebble restore verified at 900/360px; 21 calculation/presentation tests pass.
 - [x] Redesign How it works as three matching character scenes; equal heights, contained bubbles/flags, once-only ordered animations and no horizontal overflow verified at 1440/1280/1024/768/390/320px in both themes; reduced motion has no scene animations and changed-file lint passes.
 - [x] Add safe visitor redirects, intentional setup entry, demo/account restoration and calm Sprout fallback. All six pages passed fresh-window visitor/demo/signed-in refresh checks; damaged demo recovery and fallback demo action passed; 25 regression tests pass.
 - [ ] Repeat the six-page fresh-window checks on the published URL — blocked: this project has no published URL.
