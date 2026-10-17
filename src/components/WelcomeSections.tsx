@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  ArrowUpRight,
-  Quote,
-  CloudRain,
-  Sunrise,
-} from "lucide-react";
+import { ArrowUpRight, Quote, CloudRain, Sunrise } from "lucide-react";
 import { Sprout } from "./Sprout";
 import { Stone } from "./Stone";
 import { HowItWorks } from "./HowItWorks";
@@ -202,7 +197,9 @@ export function WelcomeSections() {
                 <span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground">
                   <CloudRain className="size-5" />
                 </span>
-                <div className="feeling-character"><Stone size={120} /></div>
+                <div className="feeling-character">
+                  <Stone size={120} />
+                </div>
               </div>
               <h3 className="mt-4 font-heading text-xl font-semibold">Without a plan</h3>
               <p className="mt-2 text-balance text-2xl font-heading font-semibold text-muted-foreground">
@@ -284,7 +281,9 @@ export function WelcomeSections() {
           </p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <Button asChild className="band-btn">
-              <Link to="/setup" onClick={beginSetup}>Find my debt free date</Link>
+              <Link to="/setup" onClick={beginSetup}>
+                Find my debt free date
+              </Link>
             </Button>
             <Button
               variant="ghost"
