@@ -1,12 +1,10 @@
-import home from "@/assets/see-home.jpg";
-import celebrate from "@/assets/see-celebrate.jpg";
-import pay from "@/assets/see-pay.jpg";
+import { HanaMiniScreen } from "./HanaMiniScreens";
 
 const shots = [
-  { src: home, alt: "Clearday Home showing the debt free date and progress pills", caption: "Your debt free date, front and center." },
-  { src: celebrate, alt: "Payment celebration with confetti and a cheering Sprout", caption: "Every payment gets a little celebration." },
-  { src: pay, alt: "Pay faster page with the extra-payment slider", caption: "Slide a little extra and watch the date move." },
-];
+  { screen: "home", caption: "Your debt free date, front and center." },
+  { screen: "celebrate", caption: "Every payment gets a little celebration." },
+  { screen: "pay", caption: "Slide a little extra and watch the date move." },
+] as const;
 
 export function SeeItInAction() {
   return (
@@ -24,7 +22,7 @@ export function SeeItInAction() {
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
                 <span className="size-2 rounded-full bg-muted-foreground/30" />
               </div>
-              <img src={s.src} alt={s.alt} loading="lazy" width={1200} height={800} className="block aspect-[3/2] h-auto w-full max-w-full object-cover object-top" />
+              <HanaMiniScreen screen={s.screen} />
             </div>
             <figcaption className="mt-3 text-center text-sm text-muted-foreground">{s.caption}</figcaption>
           </figure>

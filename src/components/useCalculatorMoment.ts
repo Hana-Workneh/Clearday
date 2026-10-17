@@ -25,16 +25,22 @@ export function useCalculatorMoment() {
     let pointer: { x: number; y: number } | undefined;
     const position = () => {
       // The untransformed parent is stable during lifting and bouncing.
-      const c = card.parentElement?.getBoundingClientRect();
+      const anchor = card.parentElement;
+      const c = anchor?.getBoundingClientRect();
       const h = home.getBoundingClientRect();
-      if (!c) return;
-      mover.style.setProperty("--hop-x", `${c.left + c.width * .25 - h.left - h.width / 2}px`);
-      mover.style.setProperty("--hop-y", `${c.top - h.top - h.height * .88 - 8}px`);
+      if (!c || !anchor) return;
+      const prior = Number.parseFloat(anchor.style.getPropertyValue('--hover-clearance')) || 0;
+      const headerBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 64;
+      const clearance = Math.max(0, headerBottom + h.height * .93 + 12 - c.top);
+      anchor.style.setProperty('--hover-clearance', `${clearance}px`);
+      mover.style.setProperty("--hop-x", `${c.left + c.width * .24 - h.left - h.width / 2}px`);
+      mover.style.setProperty("--hop-y", `${c.top - (h.top - prior) - h.height * .93 - 6}px`);
     };
     const settle = () => {
       setHolding(false);
       setBouncing(false);
       card.dataset['lifted'] = "false";
+      card.parentElement?.style.setProperty('--hover-clearance', '0px');
       card.style.setProperty("--tilt-x", "0deg");
       card.style.setProperty("--tilt-y", "0deg");
     };
@@ -88,7 +94,7 @@ export function useCalculatorMoment() {
       if (!visible) away = true;
       else if (away) { away = false; checkPointer(); play(); }
     }, { threshold: [0, VIEW_THRESHOLD, 1] });
-    observer.observe(card.parentElement ?? card);
+    observer.observe(card);
     const resize = new ResizeObserver(position);
     resize.observe(home);
     resize.observe(card);
