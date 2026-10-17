@@ -57,7 +57,7 @@ export function WelcomeNav() {
           scrolled ? "border-b bg-background/80 backdrop-blur-md" : "border-b border-transparent"
         }`}
       >
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-2 px-5">
+        <div className="page-wrap flex h-16 items-center justify-between gap-2">
           <a
             href="#top"
             onClick={(e) => {
