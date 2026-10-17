@@ -1,6 +1,6 @@
 import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Check, Star, Plus, Flag, Leaf, HandCoins, Milestone, Trophy } from "lucide-react";
 import { openPayment } from "@/components/PaymentFlow";
 import { Sprout } from "@/components/Sprout";
@@ -222,12 +222,12 @@ function Progress() {
           <div className="road-scene">
             {/* The road */}
             <div className="road-track" aria-hidden="true">
-              <div className="road-fill" style={{ "--p": `${pct}%` } as React.CSSProperties} />
+              <div className="road-fill" style={{ "--p": `${pct}%` } as CSSProperties} />
             </div>
 
             {/* Stops */}
             {stops.map((s) => (
-              <div key={s.id} className="road-stop" style={{ "--p": `${s.pct}%` } as React.CSSProperties}>
+              <div key={s.id} className="road-stop" style={{ "--p": `${s.pct}%` } as CSSProperties}>
                 <button
                   type="button"
                   aria-label={`${s.name}: ${s.reached ? `earned${s.date ? ` on ${day(s.date)}` : ""}` : s.toGo != null ? `${usd(s.toGo)} to go` : "not reached yet"}`}
@@ -270,7 +270,7 @@ function Progress() {
             ))}
 
             {/* Sprout at the end of the green fill */}
-            <div className="road-sprout" style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%` } as React.CSSProperties}>
+            <div className="road-sprout" style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%` } as CSSProperties}>
               <p className="road-you leaf border bg-card font-bold">
                 {allDone ? "You made it · 100%" : payments.length === 0 ? "You are here · Start" : `You are here · ${pct}% · ${usd(leftNow)} left`}
               </p>
@@ -279,7 +279,7 @@ function Progress() {
 
             {/* Stone a little ahead, gone at 100% */}
             {!allDone && (
-              <div className="road-stone" style={{ "--p": `${Math.min(pct + 9, 88)}%` } as React.CSSProperties}>
+              <div className="road-stone" style={{ "--p": `${Math.min(pct + 9, 88)}%` } as CSSProperties}>
                 <p className="road-stone-label">{usd(leftNow)} to go</p>
                 <Stone size={pct > 90 ? 34 : 52} />
               </div>
