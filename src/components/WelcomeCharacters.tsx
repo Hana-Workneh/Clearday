@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Sprout } from "./Sprout";
 import { Stone } from "./Stone";
+import { usd } from "@/lib/debt";
+import { stoneSize, stoneReaction, stoneIsPebbles } from "@/lib/welcome-stone";
 
 export function WelcomeCharacters({
   owe,
@@ -12,22 +14,21 @@ export function WelcomeCharacters({
   months: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const previous = useRef(months);
+  const previous = useRef({pay, months});
   const [reaction, setReaction] = useState<"hello" | "closer" | "further" | "calm">("hello");
   const [beat, setBeat] = useState(0);
-  const close = months <= 6;
-  const stoneSize = Math.round(
-    Math.max(42, Math.min(130, 45 + (owe / 20000) * 70 + (1 - pay / 1000) * 25)),
-  );
+  const close = stoneIsPebbles(months);
+  const size = stoneSize(owe);
   useEffect(() => {
-    if (months !== previous.current) {
-      setReaction(months < previous.current ? "closer" : "further");
-      setBeat((n) => n + 1);
-      previous.current = months;
+    const next = stoneReaction(previous.current, {pay, months});
+    if (next !== "calm") {
+      setReaction(next);
+      setBeat(n => n + 1);
     }
-    const timer = setTimeout(() => setReaction("calm"), 1400);
+    previous.current = {pay, months};
+    const timer = setTimeout(() => setReaction("calm"), 1200);
     return () => clearTimeout(timer);
-  }, [months]);
+  }, [pay, months]);
   useEffect(() => {
     const desktop = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -57,6 +58,7 @@ export function WelcomeCharacters({
       className={`welcome-duo ${close ? "duo-close" : ""}`}
       data-reaction={reaction}
       data-months={months}
+      data-stone-size={size}
     >
       <div key={beat} className={`presenting-sprout reaction-${reaction}`}>
         <Sprout
@@ -65,7 +67,7 @@ export function WelcomeCharacters({
           interactive
           worried={reaction === "further"}
         />
-        {reaction === "closer" && (
+        {(reaction === "closer" || close) && (
           <svg className="duo-sparkles" viewBox="0 0 200 200" aria-hidden="true">
             <g className="fill-sun">
               <path d="M22 35 L25 44 L34 47 L25 50 L22 59 L19 50 L10 47 L19 44 Z" />
@@ -75,7 +77,9 @@ export function WelcomeCharacters({
           </svg>
         )}
       </div>
-      <div className="presenting-stone">
+      <div className={`presenting-stone stone-reaction-${reaction}`}>
+        {!close && <p className="stone-bubble" aria-live="polite">{reaction === "closer" ? "Hey! Stop paying me off!" : reaction === "further" ? "I'm not going anywhere." : `I'm your ${usd(owe)} debt.`}</p>}
+        <div className="stone-stage">
         {close ? (
           <svg
             viewBox="0 0 120 90"
@@ -84,24 +88,28 @@ export function WelcomeCharacters({
             aria-label="Stone crumbled into small pebbles"
           >
             <g className="fill-stone">
-              <path d="M12 74 L18 65 L30 67 L34 78 L16 80 Z" />
-              <path d="M49 75 L58 59 L72 64 L77 80 L53 82 Z" />
-              <path d="M89 78 L94 69 L105 72 L111 81 L92 84 Z" />
+              <path className="pebble-roll-left" d="M12 74 L18 65 L30 67 L34 78 L16 80 Z" />
+              <path className="pebble-roll-middle" d="M49 75 L58 59 L72 64 L77 80 L53 82 Z" />
+              <path className="pebble-roll-right" d="M89 78 L94 69 L105 72 L111 81 L92 84 Z" />
             </g>
             <path d="M58 59 L72 64 L65 72 L49 75 Z" className="fill-stone-shade" />
           </svg>
         ) : (
-          <Stone size={stoneSize} surprised={reaction === "closer"} />
+          <div className="stone-size" style={{width:size, height:size * 110 / 120}}>
+            <div className="stone-impact" key={beat}><div className="stone-breathe"><div className="stone-grumble"><Stone size={170} surprised={reaction === "closer"} smug={reaction === "further"} /></div></div></div>
+          </div>
         )}
         {reaction === "closer" && !close && (
           <svg key={beat} viewBox="0 0 150 140" className="stone-chips" aria-hidden="true">
             <g className="fill-stone">
-              <path d="M16 40 L24 35 L28 45 L19 49 Z" />
-              <path d="M125 26 L134 30 L129 39 L120 35 Z" />
-              <path d="M112 73 L119 68 L126 76 L116 81 Z" />
+              <path className="chip-left" d="M16 40 L24 35 L28 45 L19 49 Z" />
+              <path className="chip-right" d="M125 26 L134 30 L129 39 L120 35 Z" />
+              <path className="chip-bottom" d="M112 73 L119 68 L126 76 L116 81 Z" />
             </g>
           </svg>
         )}
+        </div>
+        <span className="stone-label">Your debt</span>
       </div>
     </div>
   );
