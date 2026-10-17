@@ -15,12 +15,14 @@ export function Sprout({
   className = "",
   interactive = false,
   worried = false,
+  holding = false,
 }: {
   mood?: SproutMood;
   size?: number;
   className?: string;
   interactive?: boolean;
   worried?: boolean;
+  holding?: boolean;
 }) {
   const cheers = mood === "cheering" || mood === "crowned";
   const openEyes = mood === "waving" || mood === "thinking";
@@ -38,7 +40,7 @@ export function Sprout({
         <path d="M60 36 V30" className="stroke-leaf-dark" strokeWidth="3" strokeLinecap="round" />
         <path d="M60 31 C52 19 40 19 35 23 C43 31 52 33 60 31 Z" className="fill-leaf-dark" />
         <path d="M60 31 C68 15 82 15 88 19 C80 29 70 33 60 31 Z" className="fill-leaf-mint" />
-        {mood === "waving" && (
+        {mood === "waving" && !holding && (
           <>
             <path
               d="M26 82 Q15 90 18 99"
@@ -58,7 +60,7 @@ export function Sprout({
             </g>
           </>
         )}
-        {cheers && (
+        {cheers && !holding && (
           <>
             <path
               d="M27 74 Q12 62 15 46"
@@ -143,7 +145,13 @@ export function Sprout({
             fill="none"
           />
         )}
-        {mood === "thinking" && (
+        {holding && (
+          <g className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none">
+            <path d="M26 80 Q15 91 20 108 L28 108" />
+            <path d="M94 80 Q105 91 100 108 L92 108" />
+          </g>
+        )}
+        {mood === "thinking" && !holding && (
           <path
             d="M94 86 Q103 96 84 82"
             className="stroke-green"

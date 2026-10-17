@@ -3,15 +3,18 @@ import { Sprout } from "./Sprout";
 import { Stone } from "./Stone";
 import { usd } from "@/lib/debt";
 import { stoneSize, stoneReaction, stoneIsPebbles } from "@/lib/welcome-stone";
+import type { useCalculatorMoment } from "./useCalculatorMoment";
 
 export function WelcomeCharacters({
   owe,
   pay,
   months,
+  moment,
 }: {
   owe: number;
   pay: number;
   months: number;
+  moment: ReturnType<typeof useCalculatorMoment>;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const previous = useRef({ pay, months });
@@ -60,13 +63,18 @@ export function WelcomeCharacters({
       data-months={months}
       data-stone-size={size}
     >
-      <div key={beat} className={`presenting-sprout reaction-${reaction}`}>
+      <div ref={moment.homeRef} className="sprout-home-slot">
+      <div ref={moment.moverRef} className={`sprout-mover ${moment.holding ? "sprout-holding" : ""}`} data-holding={moment.holding}>
+      <div className={`presenting-sprout reaction-${reaction}`}>
+      <div key={moment.bounce} className={moment.holding ? (moment.bouncing ? "sprout-edge-bounce" : "") : "sprout-idle"}>
         <Sprout
           mood={reaction === "closer" || close ? "cheering" : "waving"}
           size={200}
           interactive
           worried={reaction === "further"}
+          holding={moment.holding}
         />
+      </div>
         {(reaction === "closer" || close) && (
           <svg className="duo-sparkles" viewBox="0 0 200 200" aria-hidden="true">
             <g className="fill-sun">
@@ -76,6 +84,8 @@ export function WelcomeCharacters({
             </g>
           </svg>
         )}
+      </div>
+      </div>
       </div>
       <div className={`presenting-stone stone-reaction-${reaction}`}>
         {!close && (
