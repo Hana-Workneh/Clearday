@@ -159,7 +159,10 @@ function Progress() {
     if (!startDate || !plan.debtFreeDate) return null;
     const days = Math.round((startDate.getTime() - plan.debtFreeDate.getTime()) / 86400000);
     if (days <= 6) return null;
-    if (days < 31) return `${timeLabel(Math.max(1, Math.round(days / 7)), "week").replace("week", "week")} sooner`.replace("weeks", "weeks");
+    if (days < 31) {
+      const weeks = Math.max(1, Math.round(days / 7));
+      return `${weeks} ${weeks === 1 ? "week" : "weeks"} sooner`;
+    }
     return `${timeLabel(Math.round(days / 30.44), "month")} sooner`;
   })();
 
