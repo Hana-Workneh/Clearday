@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/PageLoading";
 import { isDebtFree } from "@/lib/celebration";
 import { CleardayLogo } from "@/components/CleardayLogo";
+import { AskSprout } from "@/components/AskSprout";
 
 export const Route = createFileRoute("/_shell")({ component: Shell });
 
@@ -68,6 +69,7 @@ function Shell() {
         ))}
       </nav>
       <PaymentFlow />
+      <AskSprout />
     </div>
   );
 }

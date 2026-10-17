@@ -77,6 +77,59 @@ export type Database = {
         }
         Relationships: []
       }
+      sprout_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          parts: Json
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          parts: Json
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          parts?: Json
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sprout_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sprout_usage: {
+        Row: {
+          count: number
+          day: string
+          visitor: string
+        }
+        Insert: {
+          count?: number
+          day: string
+          visitor: string
+        }
+        Update: {
+          count?: number
+          day?: string
+          visitor?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -84,6 +137,10 @@ export type Database = {
     Functions: {
       claim_ai_advice: {
         Args: { _limit: number; _user: string }
+        Returns: boolean
+      }
+      claim_sprout_question: {
+        Args: { _demo: boolean; _visitor: string }
         Returns: boolean
       }
       clean_clearday_json: { Args: { value: Json }; Returns: Json }

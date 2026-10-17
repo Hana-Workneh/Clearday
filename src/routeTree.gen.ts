@@ -20,6 +20,7 @@ import { Route as ShellPlanRouteImport } from './routes/_shell.plan'
 import { Route as ShellProgressRouteImport } from './routes/_shell.progress'
 import { Route as ShellSettingsRouteImport } from './routes/_shell.settings'
 import { Route as ApiAdviceRouteImport } from './routes/api/advice'
+import { Route as ApiSproutRouteImport } from './routes/api/sprout'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -75,6 +76,11 @@ const ApiAdviceRoute = ApiAdviceRouteImport.update({
   path: '/api/advice',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSproutRoute = ApiSproutRouteImport.update({
+  id: '/api/sprout',
+  path: '/api/sprout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ShellProgressRoute
   '/settings': typeof ShellSettingsRoute
   '/api/advice': typeof ApiAdviceRoute
+  '/api/sprout': typeof ApiSproutRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ShellProgressRoute
   '/settings': typeof ShellSettingsRoute
   '/api/advice': typeof ApiAdviceRoute
+  '/api/sprout': typeof ApiSproutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_shell/progress': typeof ShellProgressRoute
   '/_shell/settings': typeof ShellSettingsRoute
   '/api/advice': typeof ApiAdviceRoute
+  '/api/sprout': typeof ApiSproutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/settings'
     | '/api/advice'
+    | '/api/sprout'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/settings'
     | '/api/advice'
+    | '/api/sprout'
   id:
     | '__root__'
     | '/'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/_shell/progress'
     | '/_shell/settings'
     | '/api/advice'
+    | '/api/sprout'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -160,6 +172,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SetupRoute: typeof SetupRoute
   ApiAdviceRoute: typeof ApiAdviceRoute
+  ApiSproutRoute: typeof ApiSproutRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -241,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdviceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/sprout': {
+      id: '/api/sprout'
+      path: '/api/sprout'
+      fullPath: '/api/sprout'
+      preLoaderRoute: typeof ApiSproutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -270,6 +290,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SetupRoute: SetupRoute,
   ApiAdviceRoute: ApiAdviceRoute,
+  ApiSproutRoute: ApiSproutRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
