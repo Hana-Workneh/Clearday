@@ -10,6 +10,7 @@ import { markStartStep } from "@/lib/start-here";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { canCompareOrder, comparePayoff, equivalentOrders } from "@/lib/pay-faster";
+import { exactExtra } from "@/lib/extra-input";
 
 export const Route = createFileRoute("/_shell/pay-faster")({
   validateSearch: (search: Record<string, unknown>): { extra?: number } => {
@@ -42,6 +43,7 @@ function PayFaster() {
   const suggested = Route.useSearch().extra;
   const navigate = useNavigate();
   const [extra, setExtra] = useState(0);
+  const [extraDraft, setExtraDraft] = useState<string | null>(null);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
   const [saved, setSaved] = useState(false);
   const [isSaving, setSaving] = useState(false);
@@ -134,9 +136,9 @@ function PayFaster() {
         <section className="leaf-lg border bg-card p-6 md:p-8 lg:col-span-3">
           <div className="flex items-end justify-between">
             <p className="font-semibold text-muted-foreground">Extra each month</p>
-            <div className="flex flex-wrap items-center justify-end gap-3"><p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p><Input aria-label="Exact extra each month" type="number" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step="0.01" value={extra} onChange={(event) => { const value = Number(event.target.value); if (Number.isFinite(value)) setExtra(Math.max(0, Math.min(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0), value))); }} className="w-24 bg-background" /></div>
+            <div className="flex flex-wrap items-center justify-end gap-3"><p className="font-heading text-4xl font-bold tracking-tight">{usd(extra)}</p><Input aria-label="Exact extra each month" type="number" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step="0.01" value={extraDraft ?? extra} onChange={(event) => { setExtraDraft(event.target.value); const value = exactExtra(event.target.value, Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)); if (value !== null) setExtra(value); }} onBlur={() => setExtraDraft(null)} className="w-24 bg-background" /></div>
           </div>
-          <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => setExtra(v[0] ?? 0)} aria-label="Extra money each month" />
+          <Slider className="mt-6" min={0} max={Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0)} step={5} value={[extra]} onValueChange={(v) => { setExtraDraft(null); setExtra(v[0] ?? 0); }} aria-label="Extra money each month" />
           <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{usd(0)}</span><span>{usd(Math.max(300, suggested ?? 0, profile.plan?.extra ?? 0))}</span></div>
 
           <div className="leaf mt-6 bg-background p-6">

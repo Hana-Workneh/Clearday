@@ -51,6 +51,7 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
   const cleanLoan =
     priority?.name.replace(/[^\p{L}\p{N} '-]/gu, "").slice(0, 120) || "your next loan";
   const facts: Record<string, string> = {
+    balance: money(active.reduce((sum, loan) => sum + loan.balance, 0), profile.currency),
     date: current.debtFreeDate
       ? formatMonth(current.debtFreeDate)
       : "not yet within the calculation range",
@@ -89,13 +90,19 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
           ? hasAmount && !/one.off|one.time|single project/i.test(question)
             ? "A small, clearly scoped freelance project could help if the work fits your schedule. If {{amount}} is your reliable monthly take-home gain after costs and tax, adding it to debt gives an estimated free date of {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Check your contract before side work, keep employer code and data private, and protect essentials. One-off income needs a different calculation."
             : "A small, clearly scoped freelance project can help, but check your contract before side work. Protect your rest and never use employer code or confidential data. What would you keep each month after costs and tax, and is the project recurring or one-off? I can compare that with your current free date of {{date}}."
-          : /afford|buy|phone|purchase/i.test(question)
+          : /explain|how.*work|understand.*plan|what.*plan/i.test(question)
+            ? "Your plan estimates monthly interest, then subtracts your planned payments of {{monthly}}. Comfortable extra goes to {{priorityLoan}}; payments from completed loans help the remaining loans. Your estimated debt free date is {{date}}. Clearday does not move money."
+          : /budget|living cost|essentials|spend|save money/i.test(question)
+            ? "Your income is {{income}} and planned debt payments are {{monthly}}, leaving {{leftAfterDebt}} before living costs. Start with essentials and a cash buffer, then decide whether a little extra is comfortable. What are your main monthly living costs?"
+          : /balance|how much.*owe|total debt|debt left/i.test(question)
+            ? "Your current loans have {{balance}} left. Your planned payments are {{monthly}} each month, and your estimated debt free date is {{date}}. Ask about extra payments or your loan order to compare next steps."
+          : /afford|buy|purchase|can i.*phone/i.test(question)
             ? "I can't say it's affordable without knowing your living costs and savings. Your income is {{income}} and planned debt payments are {{monthly}} a month, leaving {{leftAfterDebt}} before essentials. Keep essentials and a cash buffer safe; avoid borrowing for the {{amount}} purchase."
             : /first|order|priority/i.test(question)
               ? "Your chosen plan puts {{priorityLoan}} first. Keep the required payments on every loan; send any comfortable extra to that one. Your estimated debt free date is {{date}}."
               : /extra|more|what if/i.test(question)
                 ? "With {{amount}} more each month, your estimated debt free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Only add what feels comfortable after essentials."
-                : "Your current estimated debt free date is {{date}}, with {{interest}} of interest still to pay. Keep essentials safe and make your planned payments. You can explore a comfortable extra without changing your saved plan.";
+                : "I can help with this plan's date, loan order, extra payments and budgeting. Your current estimated debt free date is {{date}}, with {{interest}} of interest still to pay. What would you like to understand? Keep essentials safe; you can preview a comfortable extra without changing your saved plan.";
   return { facts, fallback, options, current, extraPlan, monthly, extraAmount };
 }
 

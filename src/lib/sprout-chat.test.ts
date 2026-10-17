@@ -12,6 +12,22 @@ const profile: Profile = {
   plan: { extra: 0 },
 };
 describe("Ask Sprout financial safeguards", () => {
+  it("answers a custom total-debt question with the real balance", () => {
+    const { facts, fallback } = chatFacts(profile, "How much do I owe in total?");
+    expect(facts['balance']).toBe('$1,000');
+    expect(checkedChatAnswer(fallback, facts, fallback)).toContain('$1,000 left');
+  });
+  it("uses actual income and payments for a custom budgeting question", () => {
+    const { facts, fallback } = chatFacts(profile, "Help me budget for essentials");
+    expect(facts['monthly']).toBe('$100');
+    expect(facts['leftAfterDebt']).toBe('$900');
+    expect(checkedChatAnswer(fallback, facts, fallback)).toContain('$900 before living costs');
+  });
+  it("explains a custom plan question without making up numbers", () => {
+    const { facts, fallback } = chatFacts(profile, "Can you explain how my plan works?");
+    expect(facts['monthly']).toBe('$100');
+    expect(checkedChatAnswer(fallback, facts, fallback)).toContain('payments of $100');
+  });
   it("converts a $10k annual gross raise to monthly take-home with an explicit illustrative tax assumption", () => {
     const r = chatFacts(
       profile,
