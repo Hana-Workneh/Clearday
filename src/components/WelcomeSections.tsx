@@ -15,6 +15,7 @@ import { Slider } from "./ui/slider";
 import { Button } from "./ui/button";
 import { scrollToSection } from "./WelcomeNav";
 import { SeeItInAction } from "./SeeItInAction";
+import { beginSetup } from "@/lib/app-access";
 import { timeLabel } from "@/lib/time-label";
 
 const steps = [
@@ -385,7 +386,7 @@ export function WelcomeSections() {
           </p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <Button asChild className="band-btn">
-              <Link to="/setup">Find my debt free date</Link>
+              <Link to="/setup" onClick={beginSetup}>Find my debt free date</Link>
             </Button>
             <Button
               variant="ghost"

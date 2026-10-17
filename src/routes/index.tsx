@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { beginSetup } from "@/lib/app-access";
 import { startDemo } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { WelcomeSections } from "@/components/WelcomeSections";
@@ -9,6 +10,7 @@ import { simulate } from "@/lib/debt";
 import { ArrowRight, Check, LockKeyhole, Play, Sprout, Timer } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (s: Record<string, unknown>): { start?: boolean | undefined } => ({ start: s["start"] === true || s["start"] === "true" ? true : undefined }),
   head: () => ({
     meta: [
       { title: "Clearday — See the day you'll be free" },
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/")({
 
 function Welcome() {
   const navigate = useNavigate();
+  const { start } = Route.useSearch();
   const [owe, setOwe] = useState(4000);
   const [pay, setPay] = useState(155);
   const result = useMemo(() => simulate([
@@ -38,6 +41,7 @@ function Welcome() {
   return (
     <div className="min-h-screen" id="top">
       <WelcomeNav />
+      {start && <div role="status" className="page-wrap relative pt-24 text-center text-sm font-semibold text-muted-foreground">Start your plan or try the demo</div>}
       <section className="page-wrap relative pb-14 pt-24 md:pb-16 md:pt-24">
         <div className="relative grid items-center gap-9 lg:grid-cols-[1fr_1.12fr] lg:gap-12">
           <div className="relative min-w-0 text-center md:text-left">
@@ -51,7 +55,7 @@ function Welcome() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
               <Button asChild className="btn-main">
-                <Link to="/setup">Find my debt free date<ArrowRight className="size-4" /></Link>
+                <Link to="/setup" onClick={beginSetup}>Find my debt free date<ArrowRight className="size-4" /></Link>
               </Button>
               <Button
                 variant="outline"

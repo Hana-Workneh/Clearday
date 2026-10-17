@@ -56,9 +56,19 @@ export async function refreshAccount() {
   accountProfile = null;
   accountError = "";
   notify();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user;
+  try {
+    const result = await supabase.auth.getUser();
+    // Missing session is expected for visitors. Other failures must not erase saved data.
+    if (result.error && result.error.name !== "AuthSessionMissingError") throw result.error;
+    user = result.data.user;
+  } catch {
+    if (version !== generation) return;
+    accountError = "Your saved account could not load. Please try again.";
+    ready = true;
+    notify();
+    return;
+  }
   if (version !== generation) return;
   accountId = user?.id ?? null;
   if (user) {
@@ -130,7 +140,18 @@ export const today = () => new Date().toISOString().slice(0, 10);
 export function loadProfile(): Profile | null {
   try {
     const demo = sessionStorage.getItem(DEMO_KEY);
-    if (demo) return JSON.parse(demo) as Profile;
+    if (demo) {
+      try {
+        const parsed = JSON.parse(demo);
+        const valid = profileSchema.parse(parsed);
+        return { ...valid, demo: true, demoPersona: demoIdentity(parsed) };
+      } catch {
+        // A stale or damaged demo is disposable; never replace real account data.
+        const hana = createDemoPersona("hana");
+        sessionStorage.setItem(DEMO_KEY, JSON.stringify(hana));
+        return hana;
+      }
+    }
     if (accountId) return accountProfile;
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;

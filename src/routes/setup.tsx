@@ -14,6 +14,7 @@ import { Sprout } from "@/components/Sprout";
 import { Confetti } from "@/components/Confetti";
 import { emptyLoan, loanErrors, loanNumber, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
 import { timeLabel } from "@/lib/time-label";
+import { AppEntry } from "@/components/AppEntry";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -31,8 +32,10 @@ export const Route = createFileRoute("/setup")({
     edit: typeof s["edit"] === "string" ? s["edit"] : undefined,
     empty: s["empty"] === true || s["empty"] === "true" ? true : undefined,
   }),
-  component: Setup,
+  component: SetupEntry,
 });
+
+function SetupEntry() { return <AppEntry setup><Setup /></AppEntry>; }
 
 const steps = ["Your income", "Your loans", "Your date"];
 const field = "leaf min-h-14 w-full border bg-card px-5 py-4 text-base outline-none focus:ring-2 focus:ring-ring";
