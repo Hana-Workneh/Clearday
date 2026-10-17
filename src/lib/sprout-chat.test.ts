@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chatFacts, checkedChatAnswer, SPROUT_USER_LIMIT, SPROUT_DEMO_LIMIT } from "./sprout-chat";
+import { chatFacts, checkedChatAnswer, SPROUT_USER_LIMIT, SPROUT_DEMO_LIMIT, SPROUT_DEMO_TOTAL_LIMIT } from "./sprout-chat";
 import type { Profile } from "./store";
 const profile: Profile = {
   name: "Test",
@@ -54,7 +54,8 @@ describe("Ask Sprout financial safeguards", () => {
     expect(r.facts["sooner"]).toBe("5");
   });
   it("allows ten account questions per day", () => expect(SPROUT_USER_LIMIT).toBe(10));
-  it("allows five demo questions per day", () => expect(SPROUT_DEMO_LIMIT).toBe(5));
+  it("allows fifteen demo questions per visitor per day", () => expect(SPROUT_DEMO_LIMIT).toBe(15));
+  it("allows five hundred demo questions total per day", () => expect(SPROUT_DEMO_TOTAL_LIMIT).toBe(500));
   it("calculates fifty extra without AI estimates", () => {
     const result = chatFacts(profile, "What if I pay $50 more?", new Date(2026, 9, 17));
     expect(result.extraPlan.monthsLeft).toBe(7);

@@ -116,9 +116,10 @@ describe("Ask Sprout anonymous spending protection", () => {
     expect(mocks.generation).not.toHaveBeenCalled();
   });
   it.each([
-    { data: false, error: null },
-    { data: null, error: { code: "unavailable" } },
-  ])("returns calculated quick answers when demo counters block or are unavailable: %s", async (claim) => {
+    ["visitor limit", { data: false, error: null }],
+    ["total limit", { data: false, error: null }],
+    ["counter unavailable", { data: null, error: { code: "unavailable" } }],
+  ])("returns calculated quick answers at %s", async (_reason, claim) => {
     mocks.claim.mockResolvedValue(claim);
     const question = "What if I pay $50 more?";
     const response = await handleSprout(request(question));
