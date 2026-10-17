@@ -22,9 +22,15 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     if (remaining > 0) options.boost = { amount: profile.catchUp.amount, months: remaining };
   }
   const current = simulate(profile.loans, now, options);
-  const raw = question.match(/(?:\$|USD\s*)?([\d,]+(?:\.\d+)?)/i)?.[1];
-  const amount = raw ? Number(raw.replaceAll(",", "")) : 50;
+  const raw = question.match(/(?:\$|USD\s*)?([\d,]+(?:\.\d+)?)\s*(k\b|thousand\b)?/i);
+  const amount = raw?.[1] ? Number(raw[1].replaceAll(",", "")) * (raw[2] ? 1000 : 1) : 50;
   const checked = Number.isFinite(amount) && amount >= 0 && amount <= 100000000 ? amount : 0;
+  const raise = /raise|salary increase|pay rise|promotion/i.test(question);
+  const net = /net|take.home|after.tax/i.test(question);
+  const isMonthly = /monthly|per month|a month|each month/i.test(question);
+  const extraAmount = raise ? checked / (isMonthly ? 1 : 12) * (net ? 1 : 0.7) : checked;
+  const freelance = /freelanc|contract project|side work|side gig/i.test(question);
+  const hasAmount = !!raw;
   const monthly = profile.loans.some((l) => l.balance > 0)
     ? profile.loans.reduce((s, l) => s + l.payment, 0) +
       (options.extra ?? 0) +
@@ -32,7 +38,7 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     : 0;
   const extraPlan = simulate(profile.loans, now, {
     ...options,
-    extra: (options.extra ?? 0) + checked,
+    extra: (options.extra ?? 0) + extraAmount,
   });
   const active = profile.loans.filter((l) => l.balance > 0);
   const priority =
@@ -52,6 +58,9 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     monthly: money(monthly, profile.currency),
     leftAfterDebt: money(profile.income - monthly, profile.currency),
     amount: money(checked, profile.currency),
+    extraMonthly: money(extraAmount, profile.currency),
+    grossMonthly: money(checked / (isMonthly ? 1 : 12), profile.currency),
+    taxAssumption: "30%",
     extraDate: extraPlan.debtFreeDate
       ? formatMonth(extraPlan.debtFreeDate)
       : "not yet within the calculation range",
@@ -66,14 +75,20 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     priorityLoan: cleanLoan,
     priorityRate: `${priority?.rate ?? 0}%`,
   };
-  const fallback = /afford|buy|phone|purchase/i.test(question)
+  const fallback = raise
+    ? (net ? "If that raise is take-home pay" : "Assuming that raise is before tax, this illustration sets aside {{taxAssumption}} for taxes; your actual tax may differ") + (isMonthly ? ", and arrives monthly" : ", and is an annual raise") + ", it adds about {{extraMonthly}} a month. If you put all of that extra toward debt after essentials, your estimated free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. A raise is not guaranteed; use your actual take-home increase before changing your plan."
+    : freelance
+      ? hasAmount
+        ? "A small, clearly scoped freelance project could help if the work fits your schedule. If {{amount}} is your reliable monthly take-home gain after costs and tax, adding it to debt gives an estimated free date of {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Check your contract before side work, keep employer code and data private, and protect essentials. One-off income needs a different calculation."
+        : "A small, clearly scoped freelance project can help, but check your contract before side work. Protect your rest and never use employer code or confidential data. What would you keep each month after costs and tax, and is the project recurring or one-off? I can compare that with your current free date of {{date}}."
+    : /afford|buy|phone|purchase/i.test(question)
     ? "I can't say it's affordable without knowing your living costs and savings. Your income is {{income}} and planned debt payments are {{monthly}} a month, leaving {{leftAfterDebt}} before essentials. Keep essentials and a cash buffer safe; avoid borrowing for the {{amount}} purchase."
     : /first|order|priority/i.test(question)
       ? "Your chosen plan puts {{priorityLoan}} first. Keep the required payments on every loan; send any comfortable extra to that one. Your estimated debt free date is {{date}}."
       : /extra|more|what if/i.test(question)
         ? "With {{amount}} more each month, your estimated debt free date is {{extraDate}} — {{sooner}} months sooner, saving {{savedInterest}} in interest. Only add what feels comfortable after essentials."
         : "Your current estimated debt free date is {{date}}, with {{interest}} of interest still to pay. Keep essentials safe and make your planned payments. You can explore a comfortable extra without changing your saved plan.";
-  return { facts, fallback, options, current, extraPlan, monthly };
+  return { facts, fallback, options, current, extraPlan, monthly, extraAmount };
 }
 
 export function checkedChatAnswer(text: string, facts: Record<string, string>, fallback: string) {
