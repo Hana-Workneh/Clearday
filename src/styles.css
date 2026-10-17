@@ -322,6 +322,16 @@
   .duo-close .debt-free-flag { left: 75px; }
   .stone-pebbles { width: 70px; height: 60px; }
 }
+@media (max-width: 380px) {
+  .welcome-duo { --duo-sprout-size: 80px; --stone-scale: .5; }
+  .presenting-stone { left: 82px; }
+  .stone-bubble { width: 100px; bottom: calc(100% + 8px); }
+  .debt-free-flag { left: calc(100% - 110px - var(--flag-closeness) * 8px); width: 110px; }
+  .flag-date { font-size: 17px; }
+  .hero-slider-label { font-size: 10px; }
+  .hero-slider-value { font-size: 18px; }
+  .flag-interest, .flag-work { font-size: 9px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .welcome-duo *, .welcome-duo *::after { animation: none !important; transition: none !important; }
   .duo-sparkles, .stone-chips { display: none; }

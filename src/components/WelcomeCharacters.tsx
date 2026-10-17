@@ -149,7 +149,7 @@ export function WelcomeCharacters({
       </div>
       <div className="flag-facts">
         <span className="flag-interest"><Coins className="size-3" />{usd(interest)} interest</span>
-        <span className="flag-work"><Clock3 className="size-3" />{workDaysLabel(interest, 1000)} work days</span>
+        <span className="flag-work"><Clock3 className="size-3" />{workDaysLabel(interest, 1000)} of work</span>
         <p className="text-[9px] text-muted-foreground">Interest on $1,000/month take-home pay</p>
       </div>
     </div>
