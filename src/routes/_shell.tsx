@@ -3,16 +3,14 @@ import { Home, Zap, Map, TrendingUp, Settings, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaymentFlow, openPayment } from "@/components/PaymentFlow";
-import { useAccount, useProfile, leaveDemo, refreshAccount } from "@/lib/store";
+import { useAccount, useProfile, refreshAccount } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/PageLoading";
 import { isDebtFree } from "@/lib/celebration";
 import { CleardayLogo } from "@/components/CleardayLogo";
 import { AskSprout } from "@/components/AskSprout";
 import { ProductTour } from "@/components/ProductTour";
-import { requestProductTour } from "@/lib/product-tour";
-import { switchDemoPersona } from "@/lib/store";
-import { demoPersonas, demoIdentity } from "@/lib/demo-personas";
+import { demoIdentity } from "@/lib/demo-personas";
 
 import { AppEntry } from "@/components/AppEntry";
 
@@ -32,7 +30,7 @@ function Shell() {
   const account = useAccount();
   const location = useLocation();
   return (
-    <div className="flex min-h-screen w-full">
+    <div className={`app-shell flex min-h-screen w-full ${profile?.demo && !account.id ? "demo-shell" : ""}`}>
       <aside className="sticky top-0 hidden h-screen w-[230px] shrink-0 flex-col border-r bg-card p-5 md:flex">
         <Link to="/" className="mb-8 flex items-center gap-2">
           <CleardayLogo />
@@ -60,7 +58,7 @@ function Shell() {
         </Button>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-4 sm:flex sm:justify-between md:justify-end md:px-10">
+        <header className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-4 sm:flex sm:justify-between md:justify-end md:px-10 ${location.pathname === "/home" ? "home-top-row" : ""}`}>
           <Link to="/" className="flex min-w-0 items-center gap-1.5 md:hidden">
             <CleardayLogo />
           </Link>
@@ -83,45 +81,6 @@ function Shell() {
         <main
           className={`flex-1 px-5 md:px-10 md:pb-10 ${location.pathname === "/home" ? "pb-44" : "pb-28"}`}
         >
-          {profile?.demo && (
-            <div className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-y bg-chip-purple px-3 py-3 text-chip-purple-text">
-              <p className="min-w-0 text-sm font-semibold">You're viewing a demo</p>
-              <div className="flex items-center gap-2">
-                <Button asChild variant="outline" className="btn-secondary !h-10 shrink-0 !px-3 text-sm">
-                  <Link to="/home" onClick={requestProductTour}>
-                    Take the tour
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="btn-secondary !h-10 shrink-0 !px-3 text-sm"
-                >
-                  <Link to="/auth" onClick={leaveDemo}>
-                    Start my own
-                  </Link>
-                </Button>
-              </div>
-              <div
-                className="flex w-full flex-wrap items-center gap-2 border-t pt-3"
-                role="group"
-                aria-label="Demo persona"
-              >
-                <span className="text-sm font-semibold">Try as:</span>
-                {demoPersonas.map((persona) => (
-                  <Button
-                    key={persona.id}
-                    variant={demoIdentity(profile) === persona.id ? "default" : "outline"}
-                    aria-pressed={demoIdentity(profile) === persona.id}
-                    className="h-auto rounded-full px-3 py-2 text-left text-xs"
-                    onClick={() => switchDemoPersona(persona.id)}
-                  >
-                    {persona.name} · {persona.job.toLowerCase()}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
           {account.error ? (
             <div role="alert" className="mx-auto max-w-xl py-12 text-center">
               <Sprout mood="calm" size={90} />

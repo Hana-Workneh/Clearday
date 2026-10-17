@@ -22,15 +22,15 @@
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
 - Welcome hero owns shared slider values for one calculator/character/flag panel; pure tested presentation helpers map payoff time to flag travel, pointer gaze is frame-throttled and self-demo cancels on input — preserves verified calculations and keeps controls unobstructed.
-- Header branding uses shared `CleardayLogo` theme assets; Home reuses the debt engine — keeps branding and math consistent.
+- Header branding uses shared `CleardayLogo` assets — keeps branding consistent.
 - Welcome showcase mini screens use a display-only Hana demo snapshot and the shared debt engine, Sprout and theme tokens; they never read accounts or save payments — keeps previews reliable and separate from user finances.
 - Time labels share a formatter; chat units normalize after verified tokens — preserves checked numbers and grammar.
 - My plan timeline, suggestion impact and job-tag rules (`safeAdvice`) live in pure `src/lib/plan.ts` with tests; AI returns a cleaned job label and ideas, never payoff calculations or tag text — keeps estimates consistent and stops offensive titles being echoed.
 - AI runs in a bearer-verified streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — prevents anonymous paid requests and keeps prompts/keys private.
 - Suggested extras are previewed in the shared IdeaPreview dialog and confirmed through planFromIdea, or passed through validated Pay faster search state without saving — both paths reuse the debt engine and preserve the user's chosen loan order.
 - Completed-loan stats and nonmutating demo previews live in pure `src/lib/celebration.ts` with tests; all completion screens use `DebtFreeMoment` — keeps earned milestones separate from sample previews.
-- Home win selection is display-only in `src/lib/celebration.ts`, using exact balance thresholds and the latest logged payment — milestone accents never change financial or persistence rules.
+- Home greeting uses tested display-only helpers with shared progress/milestone calculations — keeps threshold reactions separate from financial data.
 - Celebration image exports are prepared on a browser canvas using resolved theme colors and the exact visible Sprout before download; new savings goals stay in the existing owner-scoped profile document — avoids CSS export clipping, preserves mobile download activation and completed-loan history.
 - AI idea requests are capped per account per UTC day by a service-only atomic counter (claim_ai_advice) checked in /api/advice before calling the model — demo ideas are fixed and never hit the AI.
-- Demo personas use a pure module, persona-keyed session profiles/chat and shell remounts — prevents cross-persona leaks.
+- Demo personas use session-keyed profiles/chat and shell remounts; root `DemoBar` reuses switching/tour/exit actions — prevents leaks and keeps controls on every page.
 - How it works uses display-only scenes with shared characters/hero tokens and once-only scroll animations — separates story examples from account calculations.
