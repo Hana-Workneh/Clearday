@@ -10,7 +10,7 @@ import { simulate } from "@/lib/debt";
 import { ArrowRight, Check, LockKeyhole, Play, Sprout, Timer } from "lucide-react";
 
 export const Route = createFileRoute("/")({
-  validateSearch: (s: Record<string, unknown>): { start?: boolean } => ({ start: s.start === true || s.start === "true" ? true : undefined }),
+  validateSearch: (s: Record<string, unknown>): { start?: boolean | undefined } => ({ start: s["start"] === true || s["start"] === "true" ? true : undefined }),
   head: () => ({
     meta: [
       { title: "Clearday — See the day you'll be free" },
