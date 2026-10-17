@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Sprout } from "@/components/Sprout";
 import { Confetti } from "@/components/Confetti";
 import { emptyLoan, loanErrors, loanNumber, draftIsEmpty, canContinueLoans, commitLoan, type LoanDraft } from "@/lib/loan-entry";
+import { timeLabel } from "@/lib/time-label";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -194,7 +195,7 @@ function Setup() {
                 <Sprout mood="cheering" size={120} />
                 <p className="mt-6 text-lg font-semibold text-muted-foreground">You'll be debt free by</p>
                 <h1 className="big-date mt-3" aria-live="polite"><CountUpMonth target={plan.debtFreeDate} /></h1>
-                <p className="mt-3 text-sm text-muted-foreground">That's {plan.monthsLeft} months away.</p>
+                <p className="mt-3 text-sm text-muted-foreground">That's {timeLabel(plan.monthsLeft ?? "600+", "month")} away.</p>
                 <p className="mx-auto mt-5 max-w-md font-heading text-xl font-semibold leading-snug">Right now you'd work {workDaysLabel(plan.totalInterest, +income)} just to pay interest. Let's win some of those days back.</p>
               </div>
             ) : (

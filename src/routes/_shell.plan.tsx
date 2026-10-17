@@ -11,6 +11,7 @@ import { buildTimeline, ideaImpact, safeIdeas, displayJob, type Idea } from "@/l
 import { IdeaPreview } from "@/components/IdeaPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { demoIdeas } from "@/lib/demo-personas";
+import { timeLabel } from "@/lib/time-label";
 
 export const Route = createFileRoute("/_shell/plan")({
   head: () => ({
@@ -406,7 +407,7 @@ function MyPlan() {
         <div className="flex items-center justify-between gap-2">
           <h2 className="font-heading text-xl font-semibold">Your path to freedom</h2>
           <span className="text-xs text-muted-foreground">
-            {result.monthsLeft ?? "600+"} months to go
+            {timeLabel(result.monthsLeft ?? "600+", "month")} to go
           </span>
         </div>
         <ol className="mt-5">

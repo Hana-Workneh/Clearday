@@ -1,6 +1,7 @@
 import { simulate, formatMonth, type PlanOptions } from "./debt";
 import { money } from "./account-data";
 import type { Profile } from "./store";
+import { correctTimeUnits } from "./time-label";
 
 export const SPROUT_USER_LIMIT = 10;
 export const SPROUT_DEMO_LIMIT = 5;
@@ -113,5 +114,5 @@ export function checkedChatAnswer(text: string, facts: Record<string, string>, f
     /\b(take|apply|get|new)\b.{0,24}\b(loan|credit|borrow)/i.test(withoutTokens)
       ? fallback
       : text;
-  return candidate.replace(/\{\{(\w+)\}\}/g, (_, key: string) => facts[key] ?? "");
+  return correctTimeUnits(candidate.replace(/\{\{(\w+)\}\}/g, (_, key: string) => facts[key] ?? ""));
 }
