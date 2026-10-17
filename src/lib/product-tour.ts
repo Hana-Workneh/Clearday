@@ -2,7 +2,10 @@ export const TOUR_EVENT = "clearday-take-tour";
 export type TourStorage = Pick<Storage, "getItem" | "setItem">;
 let replayPending = false;
 
-export function tourStorage(demo: boolean, stores: { localStorage: TourStorage; sessionStorage: TourStorage }) {
+export function tourStorage(
+  demo: boolean,
+  stores: { localStorage: TourStorage; sessionStorage: TourStorage },
+) {
   return demo ? stores.sessionStorage : stores.localStorage;
 }
 

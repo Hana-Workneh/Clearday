@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { consumeTourReplay, hasTourReplay, rememberTour, requestProductTour, shouldShowTour, tourKey, tourStorage } from "./product-tour";
+import {
+  consumeTourReplay,
+  hasTourReplay,
+  rememberTour,
+  requestProductTour,
+  shouldShowTour,
+  tourKey,
+  tourStorage,
+} from "./product-tour";
 import { vi } from "vitest";
 
 function storage() {
@@ -42,14 +50,20 @@ describe("tour dismissal", () => {
     expect(shouldShowTour(firstSession, key)).toBe(true);
     rememberTour(firstSession, key, "finished");
     expect(shouldShowTour(firstSession, key)).toBe(false);
-    expect(shouldShowTour(tourStorage(true, { localStorage, sessionStorage: storage() }), key)).toBe(true);
+    expect(
+      shouldShowTour(tourStorage(true, { localStorage, sessionStorage: storage() }), key),
+    ).toBe(true);
   });
   it("remembers a new account's completed tour across sessions", () => {
     const localStorage = storage();
     const key = tourKey(false, "new-account");
-    expect(shouldShowTour(tourStorage(false, { localStorage, sessionStorage: storage() }), key)).toBe(true);
+    expect(
+      shouldShowTour(tourStorage(false, { localStorage, sessionStorage: storage() }), key),
+    ).toBe(true);
     rememberTour(localStorage, key, "finished");
-    expect(shouldShowTour(tourStorage(false, { localStorage, sessionStorage: storage() }), key)).toBe(false);
+    expect(
+      shouldShowTour(tourStorage(false, { localStorage, sessionStorage: storage() }), key),
+    ).toBe(false);
   });
   it("keeps replay pending across navigation until the spotlight starts", () => {
     vi.stubGlobal("window", { dispatchEvent: vi.fn() });

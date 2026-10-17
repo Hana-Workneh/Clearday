@@ -5,7 +5,16 @@ import type { Driver } from "driver.js";
 import { Sprout } from "./Sprout";
 import { Button } from "./ui/button";
 import { useAccount, useProfile } from "@/lib/store";
-import { consumeTourReplay, hasTourReplay, rememberTour, shouldShowTour, tourKey, tourSteps, tourStorage, TOUR_EVENT } from "@/lib/product-tour";
+import {
+  consumeTourReplay,
+  hasTourReplay,
+  rememberTour,
+  shouldShowTour,
+  tourKey,
+  tourSteps,
+  tourStorage,
+  TOUR_EVENT,
+} from "@/lib/product-tour";
 
 export function ProductTour() {
   const profile = useProfile();
@@ -42,64 +51,70 @@ export function ProductTour() {
       const { driver } = await import("driver.js");
       if (cancelled) return;
       const start = () => {
-      if (cancelled || tour) return;
-      const targets = tourSteps.map((step) =>
-        Array.from(document.querySelectorAll<HTMLElement>(`[data-tour="${step.target}"]`)).find(
-          (element) => element.getClientRects().length > 0,
-        ),
-      );
-      if (targets.some((target) => !target)) return;
-      observer?.disconnect();
-      consumeTourReplay();
-      previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      tour = driver({
-        animate: !reduced,
-        smoothScroll: false,
-        overlayOpacity: 0.4,
-        overlayColor: getComputedStyle(document.documentElement).getPropertyValue("--ink").trim(),
-        stagePadding: 8,
-        stageRadius: 20,
-        popoverOffset: 14,
-        disableActiveInteraction: true,
-        overlayClickBehavior: "none",
-        showButtons: [],
-        showProgress: false,
-        popoverClass: "sprout-tour",
-        allowKeyboardControl: true,
-        steps: tourSteps.map((_step, index) => ({
-          ...(targets[index] ? { element: targets[index] } : {}),
-          popover: { description: " ", side: "bottom", align: "center" },
-        })),
-        onPopoverRender: (popover, options) => {
-          popover.wrapper.setAttribute("aria-label", "Sprout's product tour");
-          popover.wrapper.setAttribute("aria-modal", "true");
-          popover.closeButton.remove();
-          popover.footer.remove();
-          popover.description.replaceChildren();
-          const host = document.createElement("div");
-          popover.description.appendChild(host);
-          setBubble({ host, index: options.index ?? 0 });
-        },
-        onDestroyed: (_element, _step, options) => {
-          if (!cancelled && options.reason !== "api") {
-            try {
-              rememberTour(storage(), key, options.reason === "done" ? "finished" : "skipped");
-            } catch {
-              /* Storage is optional. */
+        if (cancelled || tour) return;
+        const targets = tourSteps.map((step) =>
+          Array.from(document.querySelectorAll<HTMLElement>(`[data-tour="${step.target}"]`)).find(
+            (element) => element.getClientRects().length > 0,
+          ),
+        );
+        if (targets.some((target) => !target)) return;
+        observer?.disconnect();
+        consumeTourReplay();
+        previousFocus =
+          document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        tour = driver({
+          animate: !reduced,
+          smoothScroll: false,
+          overlayOpacity: 0.4,
+          overlayColor: getComputedStyle(document.documentElement).getPropertyValue("--ink").trim(),
+          stagePadding: 8,
+          stageRadius: 20,
+          popoverOffset: 14,
+          disableActiveInteraction: true,
+          overlayClickBehavior: "none",
+          showButtons: [],
+          showProgress: false,
+          popoverClass: "sprout-tour",
+          allowKeyboardControl: true,
+          steps: tourSteps.map((_step, index) => ({
+            ...(targets[index] ? { element: targets[index] } : {}),
+            popover: { description: " ", side: "bottom", align: "center" },
+          })),
+          onPopoverRender: (popover, options) => {
+            popover.wrapper.setAttribute("aria-label", "Sprout's product tour");
+            popover.wrapper.setAttribute("aria-modal", "true");
+            popover.closeButton.remove();
+            popover.footer.remove();
+            popover.description.replaceChildren();
+            const host = document.createElement("div");
+            popover.description.appendChild(host);
+            setBubble({ host, index: options.index ?? 0 });
+          },
+          onDestroyed: (_element, _step, options) => {
+            if (!cancelled && options.reason !== "api") {
+              try {
+                rememberTour(storage(), key, options.reason === "done" ? "finished" : "skipped");
+              } catch {
+                /* Storage is optional. */
+              }
             }
-          }
-          setBubble(null);
-          instance.current = null;
-          previousFocus?.focus({ preventScroll: true });
-        },
-      });
-      instance.current = tour;
-      tour.drive();
+            setBubble(null);
+            instance.current = null;
+            previousFocus?.focus({ preventScroll: true });
+          },
+        });
+        instance.current = tour;
+        tour.drive();
       };
       // Home can finish rendering after the account and shell are ready.
       observer = new MutationObserver(start);
-      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "data-tour"] });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class", "style", "data-tour"],
+      });
       start();
     }, 650);
     return () => {
