@@ -1,4 +1,5 @@
 # My plan
+- [ ] Make welcome Sprout and Stone react to the live calculator; add section appearances and verify desktop/phone and reduced motion.
 - [x] Add Sprout's six-step Home tour with isolated remembered completion/skip and replay; all steps, Back, Skip, reload, demo/Settings replay and bounds verified on desktop/phone in both themes, reduced motion and signed-in animated flow. Four dismissal tests pass; no financial data changed.
 - [x] Create temporary User A/B, test cross-user and anonymous read/edit/delete on all database tables; all blocked, owner rows unchanged, cleanup verified. AI ideas are browser-only and have no database row to test.
 - [x] Build Ask Sprout floating chat, account history, checked numeric answers, server-enforced 10/5 daily limits; five questions passed in demo and temporary signed-in modes, history restored, phone themes and early Stop checked. New chat lint/tests pass; full-project lint retains existing issues.
