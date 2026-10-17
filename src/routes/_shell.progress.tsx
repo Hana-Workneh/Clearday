@@ -2,7 +2,7 @@ import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Check, Circle, Plus, Flag, Leaf, HandCoins, Milestone, Trophy } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { openPayment } from "@/components/PaymentFlow";
 import { Sprout } from "@/components/Sprout";
 import { Stone } from "@/components/Stone";
@@ -253,9 +253,9 @@ function Progress() {
               Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}
             </p>
             {soonerLabel ? (
-              <Tooltip><TooltipTrigger asChild><span tabIndex={0} className="rounded-full bg-chip-green px-2.5 py-1 text-[13px] font-bold text-chip-green-text">
+              <TooltipProvider><Tooltip><TooltipTrigger asChild><span tabIndex={0} className="rounded-full bg-chip-green px-2.5 py-1 text-[13px] font-bold text-chip-green-text">
                 {soonerLabel}
-              </span></TooltipTrigger><TooltipContent>Compared to your debt free date when you first started.</TooltipContent></Tooltip>
+              </span></TooltipTrigger><TooltipContent>Compared to your debt free date when you first started.</TooltipContent></Tooltip></TooltipProvider>
             ) : (
               <span className="rounded-full bg-secondary px-2.5 py-1 text-[13px] font-bold text-muted-foreground">
                 Same as your plan

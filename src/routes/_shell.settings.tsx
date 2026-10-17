@@ -14,7 +14,7 @@ import type { Loan } from "@/lib/debt";
 import { requestProductTour } from "@/lib/product-tour";
 
 export const Route = createFileRoute("/_shell/settings")({
-  validateSearch: (search: Record<string, unknown>): { edit?: "job" } => search.edit === "job" ? { edit: "job" } : {},
+  validateSearch: (search: Record<string, unknown>): { edit?: "job" } => search['edit'] === "job" ? { edit: "job" } : {},
   head: () => ({ meta: [
     { title: "Settings · Clearday" },
     { name: "description", content: "Change your currency, theme and other preferences." },
