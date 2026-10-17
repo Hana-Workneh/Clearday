@@ -1,6 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import { createOpenAI } from "@ai-sdk/openai";
-import { streamText, convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, type UIMessage, type TextStreamPart } from "ai";
+import {
+  streamText,
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  type UIMessage,
+  type TextStreamPart,
+} from "ai";
 import { z } from "zod";
 import { profileSchema } from "../account-data";
 import { chatFacts, checkedChatAnswer, SPROUT_LIMIT_MESSAGE } from "../sprout-chat";
@@ -178,7 +185,11 @@ export async function handleSprout(request: Request) {
         execute: ({ writer }) => {
           writer.write({ type: "start" });
           writer.write({ type: "text-start", id: "demo-answer" });
-          writer.write({ type: "text-delta", id: "demo-answer", delta: checkedChatAnswer(fallback, facts, fallback) });
+          writer.write({
+            type: "text-delta",
+            id: "demo-answer",
+            delta: checkedChatAnswer(fallback, facts, fallback),
+          });
           writer.write({ type: "text-end", id: "demo-answer" });
           writer.write({ type: "finish", finishReason: "stop" });
         },

@@ -11,7 +11,10 @@ vi.mock("@supabase/supabase-js", () => ({
   createClient: () => ({ auth: { getUser: mocks.auth } }),
 }));
 vi.mock("@ai-sdk/openai", () => ({ createOpenAI: mocks.provider }));
-vi.mock("ai", async (original) => ({ ...(await original<typeof import("ai")>()), streamText: mocks.generation }));
+vi.mock("ai", async (original) => ({
+  ...(await original<typeof import("ai")>()),
+  streamText: mocks.generation,
+}));
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: { rpc: mocks.claim, from: mocks.table },
 }));
@@ -19,13 +22,26 @@ import { handleSprout } from "./sprout.server";
 import { chatFacts, checkedChatAnswer, SPROUT_LIMIT_MESSAGE } from "../sprout-chat";
 
 const profile = {
-  name: "Hana", income: 500, job: "Marketing officer", currency: "USD" as const,
-  loans: [{ id: "phone", name: "Phone loan", balance: 140, startBalance: 300, rate: 9, payment: 40 }],
+  name: "Hana",
+  income: 500,
+  job: "Marketing officer",
+  currency: "USD" as const,
+  loans: [
+    { id: "phone", name: "Phone loan", balance: 140, startBalance: 300, rate: 9, payment: 40 },
+  ],
 };
 function request(question: string, demo = true, signedIn = false) {
   return new Request("https://clearday.example/api/sprout", {
-    method: "POST", headers: { "Content-Type": "application/json", ...(signedIn ? { Authorization: "Bearer test-token" } : {}) },
-    body: JSON.stringify({ demo, profile, messages: [{ id: "question", role: "user", parts: [{ type: "text", text: question }] }] }),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(signedIn ? { Authorization: "Bearer test-token" } : {}),
+    },
+    body: JSON.stringify({
+      demo,
+      profile,
+      messages: [{ id: "question", role: "user", parts: [{ type: "text", text: question }] }],
+    }),
   });
 }
 beforeEach(() => {
@@ -37,7 +53,13 @@ beforeEach(() => {
   mocks.auth.mockResolvedValue({ data: { user: { id: "account-a" } } });
 });
 describe("Ask Sprout anonymous spending protection", () => {
-  it.each(["What if I pay $50 more?", "Which loan should I pay first?", "Can I afford a $300 phone?", "When will I be debt free?", "What if I pay $100 extra?"])("answers demo question without AI: %s", async question => {
+  it.each([
+    "What if I pay $50 more?",
+    "Which loan should I pay first?",
+    "Can I afford a $300 phone?",
+    "When will I be debt free?",
+    "What if I pay $100 extra?",
+  ])("answers demo question without AI: %s", async (question) => {
     const response = await handleSprout(request(question));
     expect(response.status).toBe(200);
     const body = await response.text();
@@ -46,7 +68,10 @@ describe("Ask Sprout anonymous spending protection", () => {
     expect(mocks.provider).not.toHaveBeenCalled();
     expect(mocks.generation).not.toHaveBeenCalled();
     expect(mocks.table).not.toHaveBeenCalled();
-    expect(mocks.claim).toHaveBeenCalledWith("claim_sprout_question", expect.objectContaining({ _demo: true }));
+    expect(mocks.claim).toHaveBeenCalledWith(
+      "claim_sprout_question",
+      expect.objectContaining({ _demo: true }),
+    );
   });
   it("still returns free demo replies with a signed-in caller", async () => {
     vi.stubEnv("LOVABLE_API_KEY", "test-ai-key");
