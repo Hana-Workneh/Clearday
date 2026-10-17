@@ -2,8 +2,18 @@ import { describe, it, expect } from "vitest";
 import { createDemoPersona, demoIdeas, demoPersonas } from "./demo-personas";
 import { safeAdvice } from "./plan";
 import { profileSchema } from "./account-data";
+import { simulate } from "./debt";
 
 describe("Demo personas", () => {
+  it("calculates the truthful effect of $75 extra from Hana's unchanged demo loans", () => {
+    const now = new Date(2026, 9, 17);
+    const hana = createDemoPersona("hana", now);
+    const current = simulate(hana.loans, now, hana.plan);
+    const faster = simulate(hana.loans, now, { ...hana.plan, extra: 75 });
+    expect(current.monthsLeft).toBe(3);
+    expect(faster.monthsLeft).toBe(2);
+    expect(current.totalInterest - faster.totalInterest).toBeCloseTo(2.08, 2);
+  });
   it("offers Hana, Kofi, Maya and Grace with Hana first", () => {
     expect(demoPersonas.map((p) => p.name)).toEqual(["Hana", "Kofi", "Maya", "Grace"]);
     expect(demoPersonas.map((p) => p.job.toLowerCase())).toEqual([
