@@ -35,7 +35,7 @@ export function HanaMiniScreen({ screen }: { screen: "home" | "celebrate" | "pay
         <p className="mt-2 font-heading text-[28px] font-bold leading-tight">{current.debtFreeDate ? formatMonth(current.debtFreeDate) : "Your free day"}</p>
         <Pills />
         <p className="mt-2 text-xs font-semibold">{paid}% of the way there</p>
-        <span className="chip-yellow mt-3 inline-flex items-center gap-1 text-[10px]"><Star className="size-3" /> Next win · 10% paid</span>
+        <span className="chip-yellow mt-3 inline-flex items-center gap-1 text-[10px]"><Star className="size-3" /> Next win · 25% paid</span>
       </div>
       <div className="mt-5 border-t pt-3">
         <p className="text-xs font-semibold">Your loans · {usd(remaining)} left</p>
