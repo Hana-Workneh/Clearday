@@ -35,7 +35,7 @@ export function AskSprout() {
           aria-label="Ask Sprout"
           title="Ask Sprout"
           variant="outline"
-          className="fixed bottom-[152px] right-5 z-30 h-16 w-16 rounded-full border-2 bg-card p-0 shadow-lg md:bottom-6"
+          className="ask-sprout-launcher fixed bottom-[152px] right-5 z-30 h-16 w-16 rounded-full border-2 bg-card p-0 shadow-lg md:bottom-6"
         >
           <Sprout mood="waving" size={58} />
         </Button>
@@ -45,7 +45,7 @@ export function AskSprout() {
           role="dialog"
           aria-modal="false"
           aria-label="Ask Sprout"
-          className="fixed bottom-[78px] right-3 z-40 flex h-[min(620px,calc(100dvh-96px))] w-[min(400px,calc(100vw-24px))] flex-col overflow-hidden rounded-[28px_28px_28px_8px] border bg-card shadow-xl md:bottom-6 md:right-6"
+          className="ask-sprout-panel fixed bottom-[78px] right-3 z-40 flex h-[min(620px,calc(100dvh-96px))] w-[min(400px,calc(100vw-24px))] flex-col overflow-hidden rounded-[28px_28px_28px_8px] border bg-card shadow-xl md:bottom-6 md:right-6"
         >
           <header className="flex items-center gap-2 border-b px-4 py-2">
             <Sprout mood="happy" size={48} />
