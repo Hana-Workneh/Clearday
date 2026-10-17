@@ -8,12 +8,12 @@ const shots = [
 
 export function SeeItInAction() {
   return (
-    <section id="see-it" className="mx-auto max-w-5xl scroll-mt-24 py-12 md:px-5 md:py-16" aria-labelledby="see-title">
-      <div className="mb-8 px-5 text-center md:px-0">
+    <section id="see-it" className="page-wrap section-pad scroll-mt-24 !px-0 md:!px-8" aria-labelledby="see-title">
+      <div className="section-head px-5 text-center md:px-0">
         <p className="text-xs font-bold uppercase text-muted-foreground">The real app</p>
-        <h2 id="see-title" className="mt-2 text-3xl font-semibold">See it in action</h2>
+        <h2 id="see-title" className="mt-3 text-3xl font-semibold">See it in action</h2>
       </div>
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
+      <div className="flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
         {shots.map((s) => (
           <figure key={s.caption} className="w-[82%] min-w-0 shrink-0 snap-center md:w-auto">
             <div className="leaf overflow-hidden border bg-card shadow-[var(--shadow-product)]">

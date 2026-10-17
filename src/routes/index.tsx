@@ -38,8 +38,8 @@ function Welcome() {
   return (
     <div className="min-h-screen" id="top">
       <WelcomeNav />
-      <section className="relative mx-auto max-w-6xl px-5 pb-12 pt-24 md:pt-28">
-        <div className="relative grid items-center gap-9 lg:grid-cols-[1fr_1.12fr] lg:gap-10">
+      <section className="page-wrap relative pb-14 pt-24 md:pb-16 md:pt-24">
+        <div className="relative grid items-center gap-9 lg:grid-cols-[1fr_1.12fr] lg:gap-12">
           <div className="relative min-w-0 text-center md:text-left">
             <p className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-2 text-xs font-semibold text-green-text"><Sprout className="size-4" />See the day you'll be free</p>
             <h1 className="mt-5 text-[30px] font-semibold leading-tight sm:text-[34px] md:text-[44px]">

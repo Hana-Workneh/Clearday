@@ -140,8 +140,13 @@
   * { border-color: var(--color-border); }
   button, .font-heading { font-family: var(--font-heading); }
   body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
-  h1, h2, h3 { font-family: var(--font-heading); }
+  h1, h2, h3 { font-family: var(--font-heading); text-wrap: balance; }
+  p, blockquote, figcaption, li { text-wrap: pretty; }
 }
+
+@utility page-wrap { width: 100%; max-width: 1180px; margin-inline: auto; padding-inline: 20px; @media (min-width: 768px) { padding-inline: 32px } }
+@utility section-pad { padding-block: 56px; @media (min-width: 768px) { padding-block: 96px } }
+@utility section-head { margin-bottom: 40px; }
 
 @utility leaf { border-radius: 20px 20px 20px 6px; }
 @utility leaf-lg { border-radius: 28px 28px 28px 8px; }

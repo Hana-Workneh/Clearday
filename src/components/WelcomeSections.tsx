@@ -153,22 +153,22 @@ export function WelcomeSections() {
     <>
       <section
         id="the-numbers"
-        className="mx-auto max-w-5xl scroll-mt-24 px-5 py-12 md:py-16"
+        className="page-wrap section-pad scroll-mt-24"
         aria-labelledby="facts-title"
       >
-        <Reveal className="mb-8 max-w-2xl">
+        <Reveal className="section-head max-w-2xl">
           <p className="text-xs font-bold text-green-text">WHY THIS MATTERS</p>
-          <h2 id="facts-title" className="mt-3 text-balance text-3xl font-semibold leading-tight">
+          <h2 id="facts-title" className="mt-3 text-3xl font-semibold leading-tight">
             Borrowing takes a minute. Paying it back can take years.
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             From Nairobi to New York, people borrow easily but can't see the end.
           </p>
         </Reveal>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3 md:gap-5">
           {facts.map((fact, index) => (
             <Reveal key={fact.suffix + fact.value} delay={index * 120}>
-              <article className="leaf-lg flex h-full flex-col border bg-card p-6">
+              <article className="leaf-lg flex h-full flex-col border bg-card p-7">
                 <p className="font-heading text-6xl font-bold leading-none whitespace-nowrap text-stat-purple">
                   <CountUp value={fact.value} suffix={fact.suffix} />
                 </p>
@@ -187,11 +187,11 @@ export function WelcomeSections() {
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-8">
+        <Reveal className="mt-6 md:mt-8">
           <div className="flex justify-end pr-5 -mb-3" aria-hidden="true">
             <Sprout mood="calm" size={76} />
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-5">
             {[
               {
                 quote: "Little did I know what I had got into.",
@@ -202,7 +202,7 @@ export function WelcomeSections() {
                 source: "Borrower, Reddit r/StudentLoans",
               },
             ].map((q) => (
-              <figure key={q.source} className="leaf border bg-card p-5">
+              <figure key={q.source} className="leaf h-full border bg-card p-7">
                 <Quote className="mb-3 size-5 text-muted-foreground/50" />
                 <blockquote className="text-base italic leading-relaxed">“{q.quote}”</blockquote>
                 <figcaption className="mt-3 text-xs text-muted-foreground">{q.source}</figcaption>
@@ -214,17 +214,17 @@ export function WelcomeSections() {
 
       <section
         id="two-feelings"
-        className="mx-auto max-w-5xl scroll-mt-24 px-5 py-12 md:py-16"
+        className="page-wrap section-pad scroll-mt-24"
         aria-labelledby="feelings-title"
       >
-        <Reveal className="mb-8 text-center">
+        <Reveal className="section-head text-center">
           <h2 id="feelings-title" className="text-3xl font-semibold">
             The same debt, two different feelings
           </h2>
         </Reveal>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-5">
           <Reveal>
-            <article className="feeling-card leaf-lg relative flex h-full flex-col border bg-card p-6 md:p-7">
+            <article className="feeling-card leaf-lg relative flex h-full flex-col border bg-card p-7">
               <div className="grid h-32 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
                 <span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground">
                   <CloudRain className="size-5" />
@@ -242,7 +242,7 @@ export function WelcomeSections() {
             </article>
           </Reveal>
           <Reveal delay={120}>
-            <article className="feeling-card leaf-lg relative flex h-full flex-col border-2 border-green bg-card p-6 md:p-7">
+            <article className="feeling-card leaf-lg relative flex h-full flex-col border-2 border-green bg-card p-7">
               <div className="grid h-32 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
                 <span className="grid size-11 place-items-center rounded-full bg-chip-green text-chip-green-text">
                   <Sunrise className="size-5" />
@@ -266,21 +266,21 @@ export function WelcomeSections() {
 
       <section
         id="how-it-works"
-        className="mx-auto max-w-5xl scroll-mt-24 px-5 pb-14 pt-14 md:pb-20 md:pt-16"
+        className="page-wrap section-pad scroll-mt-24"
         aria-labelledby="how-title"
       >
-        <Reveal className="mb-8 text-center">
+        <Reveal className="section-head text-center">
           <p className="text-xs font-bold uppercase text-muted-foreground">
             A little clarity goes a long way
           </p>
-          <h2 id="how-title" className="mt-2 text-3xl font-semibold">
+          <h2 id="how-title" className="mt-3 text-3xl font-semibold">
             How it works
           </h2>
         </Reveal>
-        <div className="grid gap-5 md:grid-cols-3 md:gap-5">
+        <div className="grid gap-4 md:grid-cols-3 md:gap-5">
           {steps.map((step, index) => (
             <Reveal key={step.title} delay={index * 120}>
-              <article className="welcome-step leaf-lg relative flex h-full min-w-0 flex-col border bg-card p-5 md:p-6">
+              <article className="welcome-step leaf-lg relative flex h-full min-w-0 flex-col border bg-card p-7">
                 {index === 2 && (
                   <div className="sprout-peek" aria-hidden="true">
                     <Sprout mood="waving" size={72} />
@@ -347,13 +347,12 @@ export function WelcomeSections() {
         className="scroll-mt-24 border-y bg-card"
         aria-labelledby="why-title"
       >
-        <div className="mx-auto max-w-5xl px-5 py-12 md:py-16">
+        <div className="page-wrap section-pad">
           <Reveal>
             <p className="text-xs font-bold uppercase text-green-text">Why Clearday</p>
-            <div className="mt-4 grid gap-6 md:grid-cols-[1fr_2fr] md:gap-12">
+            <div className="mt-3 grid gap-4 md:grid-cols-[1fr_2fr] md:gap-12">
               <h2 id="why-title" className="font-heading text-3xl font-semibold leading-tight">
-                Why I built
-                <br className="hidden md:block" /> Clearday
+                Why I built Clearday
               </h2>
               <div>
                 <p className="text-base leading-relaxed text-muted-foreground">
@@ -371,7 +370,7 @@ export function WelcomeSections() {
       </section>
 
       <section className="band-green" aria-labelledby="end-title">
-        <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center md:py-20">
+        <div className="page-wrap section-pad flex flex-col items-center text-center">
           <span className="band-sprout">
             <Sprout mood="cheering" size={110} />
           </span>
@@ -381,7 +380,7 @@ export function WelcomeSections() {
           >
             Your debt free day is waiting.
           </h2>
-          <p className="mt-3 max-w-md text-base font-medium opacity-80">
+          <p className="mt-4 max-w-md text-base font-medium opacity-80">
             Add your loans, see your date, and start moving it closer. It takes two minutes.
           </p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -399,8 +398,8 @@ export function WelcomeSections() {
         </div>
       </section>
 
-      <footer className="border-t px-5 py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 text-center">
+      <footer className="border-t py-8">
+        <div className="page-wrap flex flex-col items-center gap-3 text-center">
           <p className="text-xs text-muted-foreground">
             Clearday is a planning tool, not financial advice.
           </p>
