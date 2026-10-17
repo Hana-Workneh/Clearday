@@ -19,9 +19,8 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
   const raw = question.match(/(?:\$|USD\s*)?([\d,]+(?:\.\d+)?)/i)?.[1];
   const amount = raw ? Number(raw.replaceAll(",", "")) : 50;
   const checked = Number.isFinite(amount) && amount >= 0 && amount <= 100000000 ? amount : 0;
-  const monthly = profile.loans.filter(l => l.balance > 0).reduce((s, l) => s + l.payment, 0) + (options.extra ?? 0) + (options.boost?.amount ?? 0);
+  const monthly = profile.loans.some(l => l.balance > 0) ? profile.loans.reduce((s, l) => s + l.payment, 0) + (options.extra ?? 0) + (options.boost?.amount ?? 0) : 0;
   const extraPlan = simulate(profile.loans, now, { ...options, extra: (options.extra ?? 0) + checked });
-  const purchasePlan = simulate(profile.loans, now, { ...options, extra: (options.extra ?? 0) + checked / 12 });
   const active = profile.loans.filter(l => l.balance > 0);
   const priority = options.strategy === "order" ? active[0] : [...active].sort((a,b) => options.strategy === "snowball" ? a.balance - b.balance : b.rate - a.rate)[0];
   const cleanLoan = priority?.name.replace(/[^\p{L}\p{N} '\-]/gu, "").slice(0,120) || "your next loan";
@@ -35,7 +34,6 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
     extraDate: extraPlan.debtFreeDate ? formatMonth(extraPlan.debtFreeDate) : "not yet within the calculation range",
     sooner: current.monthsLeft !== null && extraPlan.monthsLeft !== null ? String(Math.max(0,current.monthsLeft - extraPlan.monthsLeft)) : "an unknown number of",
     savedInterest: money(Math.max(0, current.totalInterest - extraPlan.totalInterest), profile.currency),
-    purchaseAlternativeDate: purchasePlan.debtFreeDate ? formatMonth(purchasePlan.debtFreeDate) : "not yet within the calculation range",
     priorityLoan: cleanLoan,
     priorityRate: `${priority?.rate ?? 0}%`,
   };

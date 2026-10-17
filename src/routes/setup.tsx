@@ -6,6 +6,7 @@ import { LoanMenu } from "@/components/LoanMenu";
 import { SetupCompanion } from "@/components/SetupCompanion";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CleardayLogo } from "@/components/CleardayLogo";
+import { AskSprout } from "@/components/AskSprout";
 import { simulate, formatMonth, workDaysLabel, addMonths, type Loan } from "@/lib/debt";
 import { loadProfile, saveProfile, useProfile } from "@/lib/store";
 import { Button } from "@/components/ui/button";

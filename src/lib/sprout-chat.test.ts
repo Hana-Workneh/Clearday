@@ -10,4 +10,8 @@ describe("Ask Sprout financial safeguards", () => {
   it("rejects invented amounts and dates", () => {const {facts,fallback} = chatFacts(profile,"What if I pay $50 more?"); expect(checkedChatAnswer("You save $999 by June 2028",facts,fallback)).not.toContain("999");});
   it("fills only verified calculation tokens", () => {const {facts,fallback} = chatFacts(profile,"Which loan first?"); expect(checkedChatAnswer("Start with {{priorityLoan}}.",facts,fallback)).toBe("Start with Phone loan.");});
   it("blocks unsafe suggestions", () => {const {facts,fallback} = chatFacts(profile,"help"); expect(checkedChatAnswer("Try crypto trading",facts,fallback)).not.toContain("crypto");});
+  it("includes payments rolled over from completed loans", () => {
+    const result=chatFacts({...profile,loans:[...profile.loans,{id:"paid",name:"Paid loan",balance:0,startBalance:200,rate:0,payment:50}]},"help");
+    expect(result.monthly).toBe(150);
+  });
 });
