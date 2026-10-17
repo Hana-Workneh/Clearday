@@ -38,6 +38,10 @@ export function safeAdvice(value: unknown): { ideas: Idea[]; note: boolean } {
 export function extraFromIdea(plan: PlanOptions, amount: number) {
   return Math.max(0, plan.extra ?? 0) + Math.max(0, amount);
 }
+/** Confirm the same extra shown in the preview, preserving the chosen loan order. */
+export function planFromIdea(plan: PlanOptions, amount: number): PlanOptions {
+  return { ...plan, extra: extraFromIdea(plan, amount) };
+}
 export function ideaImpact(loans: Loan[], plan: PlanOptions, amount: number, now: Date) {
   const current = simulate(loans, now, plan);
   const next = simulate(loans, now, { ...plan, extra: extraFromIdea(plan, amount) });

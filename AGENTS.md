@@ -22,7 +22,7 @@
 - The welcome dashboard preview is an isolated presentational component with sample values, shared Sprout and theme tokens — shows the product without reading or changing user finances.
 - My plan timeline, suggestion impact and job-tag rules (`safeAdvice`) live in pure `src/lib/plan.ts` with tests; AI returns a cleaned job label and ideas, never payoff calculations or tag text — keeps estimates consistent and stops offensive titles being echoed.
 - AI runs in a bearer-verified streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — prevents anonymous paid requests and keeps prompts/keys private.
-- Suggested extras travel through validated Pay faster search state and are saved only with the existing plan confirmation — lets users review ideas before committing.
+- Suggested extras are previewed in the shared IdeaPreview dialog and confirmed through planFromIdea, or passed through validated Pay faster search state without saving — both paths reuse the debt engine and preserve the user's chosen loan order.
 - Completed-loan stats and nonmutating demo previews live in pure `src/lib/celebration.ts` with tests; all completion screens use `DebtFreeMoment` — keeps earned milestones separate from sample previews.
 - Home win selection is display-only in `src/lib/celebration.ts`, using exact balance thresholds and the latest logged payment — milestone accents never change financial or persistence rules.
 - Celebration image exports are prepared on a browser canvas using resolved theme colors and the exact visible Sprout before download; new savings goals stay in the existing owner-scoped profile document — avoids CSS export clipping, preserves mobile download activation and completed-loan history.
