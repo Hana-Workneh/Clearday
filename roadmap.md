@@ -1,6 +1,6 @@
 # My plan
-- [ ] Create temporary User A/B, test cross-user and anonymous read/edit/delete on all user tables, fix any gaps, and delete only temporary users/data.
-- [ ] Build Ask Sprout floating chat, account history, checked numeric answers, server-enforced 10/5 daily limits; test five questions in demo and signed-in modes.
+- [x] Create temporary User A/B, test cross-user and anonymous read/edit/delete on all database tables; all blocked, owner rows unchanged, cleanup verified. AI ideas are browser-only and have no database row to test.
+- [x] Build Ask Sprout floating chat, account history, checked numeric answers, server-enforced 10/5 daily limits; five questions passed in demo and temporary signed-in modes, history restored, phone themes and early Stop checked. New chat lint/tests pass; full-project lint retains existing issues.
 - [x] Apply first-time feedback: numbered calculator, borrowing story, Add loan, prominent Sprout ideas and in-place preview/save; verify signed-in loan/plan saves and both themes on phone/desktop.
 - [x] Add yellow win and milestone accents across Home, badges, payment celebration, timeline and debt-free card; verify both themes.
 - [x] Refresh setup header, desktop companion preview, progress bar, larger fields and phone layout; verify unchanged saving flow in both themes.
@@ -22,4 +22,5 @@
 - [x] Build Settings, currencies, loan editing, sign-out and account deletion.
 - [x] Verify demo, currency persistence and loan editing/deletion.
 - [x] Verify signed-in import, final payment, image download and saved goal read-back; restore original account data.
-- [ ] Verify account isolation across two users and account deletion — needs a second test account and permission for destructive deletion.- [x] AI ideas tailored to any job title, skills/hobbies field, tested with 9 job titles
+- [x] Verify account isolation across two temporary users and deletion; cleanup queries show no temporary users or associated test records remain.
+- [x] AI ideas tailored to any job title, skills/hobbies field, tested with 9 job titles
