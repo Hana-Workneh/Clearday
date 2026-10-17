@@ -48,9 +48,15 @@
   --color-chip-yellow: var(--chip-yellow);
   --color-chip-yellow-text: var(--chip-yellow-text);
   --color-stat-purple: var(--stat-purple);
+  --color-stone: var(--stone);
+  --color-stone-shade: var(--stone-shade);
+  --color-stone-light: var(--stone-light);
 }
 
 :root {
+  --stone: oklch(0.602 0.024 73.6);
+  --stone-shade: oklch(0.5 0.021 68.2);
+  --stone-light: oklch(0.69 0.024 73.6);
   --background: #F6F7F5;
   --foreground: #0B1411;
   --card: #FFFFFF;
@@ -206,4 +212,34 @@
 .sprout-tour .driver-popover-arrow-side-bottom { border-top-color: transparent; border-left-color: transparent; border-right-color: transparent; }
 @media (prefers-reduced-motion: reduce) { .driver-overlay, .driver-popover { animation: none !important; transition: none !important; } }
 .sprout-think-bob { animation: bob 2.4s ease-in-out infinite; }
+.welcome-calculator-scene { max-width: 448px; }
+.welcome-duo { display: flex; align-items: end; justify-content: center; height: 126px; gap: 4px; pointer-events: none; }
+.presenting-sprout { position: relative; width: 126px; height: 126px; transform-origin: 50% 95%; }
+.presenting-sprout > svg:first-child { width: 100%; height: 100%; }
+.presenting-sprout .anim-jump, .presenting-sprout .sprout-sway { animation: none; }
+.presenting-sprout .wave-arm { animation-iteration-count: 1; animation-duration: 1.2s; }
+.presenting-stone { position: relative; display: flex; align-items: end; justify-content: center; width: 110px; height: 110px; }
+.presenting-stone > svg:first-child { max-width: 100%; height: auto; transition: width .5s ease; }
+.duo-sparkles { position: absolute; inset: 0; width: 100%; height: 100%; animation: duo-sparkle .85s ease-out both; }
+.stone-chips { position: absolute; inset: 0; width: 100%; height: 100%; animation: stone-chip .8s ease-out both; }
+.stone-pebbles { width: 105px; }
+.reaction-closer { animation: duo-jump-spin 1s ease-in-out; }
+.duo-close .presenting-sprout { scale: 1.08; }
+.sprout-blink { transform-origin: 60px 70px; animation: sprout-blink 5.1s infinite; }
+.sprout-peek { position: absolute; right: 20px; top: -45px; height: 45px; overflow: hidden; }
+@keyframes sprout-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46% { transform: scaleY(.07); } }
+@keyframes duo-jump-spin { 0%,100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-24px) rotate(-12deg); } 70% { transform: translateY(-12px) rotate(360deg); } 99% { transform: translateY(0) rotate(360deg); } }
+@keyframes duo-sparkle { 0% { opacity: 0; transform: scale(.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.2) translateY(-18px); } }
+@keyframes stone-chip { from { opacity: 1; transform: translateY(-8px) scale(.6); } to { opacity: 0; transform: translateY(38px) scale(1.3) rotate(15deg); } }
+@media (min-width: 1024px) {
+  .welcome-calculator-scene { max-width: 630px; padding-left: 172px; }
+  .welcome-duo { position: absolute; left: -17px; top: 85px; width: 200px; height: 300px; display: block; }
+  .presenting-sprout { width: 200px; height: 200px; }
+  .presenting-stone { margin-left: 68px; width: 130px; height: 120px; margin-top: -14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reaction-closer, .sprout-blink { animation: none; }
+  .duo-sparkles, .stone-chips { display: none; }
+  .presenting-stone > svg:first-child { transition: none; }
+}
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }

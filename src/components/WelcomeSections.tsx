@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { PlusCircle, CalendarHeart, Rocket, ArrowUpRight, Quote, CloudRain, Sunrise } from "lucide-react";
 import { Sprout } from "./Sprout";
+import { Stone } from "./Stone";
 import { Slider } from "./ui/slider";
 import { Button } from "./ui/button";
 import { scrollToSection } from "./WelcomeNav";
@@ -109,6 +110,7 @@ export function WelcomeSections() {
           ))}
         </div>
         <Reveal className="mt-8">
+          <div className="flex justify-end pr-5 -mb-3" aria-hidden="true"><Sprout mood="calm" size={76} /></div>
           <div className="grid gap-4 md:grid-cols-2">
             {[{ quote: "Little did I know what I had got into.", source: "Borrower, Nation Africa" }, { quote: "There's no light at the end of this tunnel.", source: "Borrower, Reddit r/StudentLoans" }].map((q) => (
               <figure key={q.source} className="leaf border bg-card p-5">
@@ -128,7 +130,7 @@ export function WelcomeSections() {
         <div className="grid gap-5 md:grid-cols-2">
           <Reveal>
             <article className="leaf-lg flex h-full flex-col border bg-card p-6 md:p-7">
-              <span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground"><CloudRain className="size-5" /></span>
+              <div className="flex items-center justify-between"><span className="grid size-11 place-items-center rounded-full bg-secondary text-muted-foreground"><CloudRain className="size-5" /></span><Stone size={100} /></div>
               <h3 className="mt-4 font-heading text-xl font-semibold">Without a plan</h3>
               <p className="mt-2 text-balance text-2xl font-heading font-semibold text-muted-foreground">“I owe $4,000… someday it’ll be gone.”</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">A heavy number with no end. It sits in the back of your mind, and it's easier not to look at it.</p>
@@ -136,7 +138,7 @@ export function WelcomeSections() {
           </Reveal>
           <Reveal delay={120}>
             <article className="leaf-lg flex h-full flex-col border-2 border-green bg-card p-6 md:p-7">
-              <span className="grid size-11 place-items-center rounded-full bg-chip-green text-chip-green-text"><Sunrise className="size-5" /></span>
+              <div className="flex min-h-[100px] items-center justify-between"><span className="grid size-11 place-items-center rounded-full bg-chip-green text-chip-green-text"><Sunrise className="size-5" /></span><Stone size={32} pebble /></div>
               <h3 className="mt-4 font-heading text-xl font-semibold">With Clearday</h3>
               <p className="mt-2 text-balance text-2xl font-heading font-semibold">“I’ll be debt free in June 2029.”</p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">A day to look forward to. Every payment moves it closer, and you can see it happen.</p>
@@ -154,6 +156,7 @@ export function WelcomeSections() {
           {steps.map((step, index) => (
             <Reveal key={step.title} delay={index * 120}>
               <article className="welcome-step leaf-lg relative flex h-full min-w-0 flex-col border bg-card p-5 md:p-6">
+                {index === 2 && <div className="sprout-peek" aria-hidden="true"><Sprout mood="waving" size={72} /></div>}
                 <div className="flex items-center justify-between">
                   <span className="font-heading text-5xl font-semibold text-muted-foreground/45">0{index + 1}</span>
                   <span className={`grid size-11 shrink-0 place-items-center rounded-full ${step.accent}`}><step.icon className="size-5" /></span>

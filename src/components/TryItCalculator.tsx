@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Sprout, type SproutMood } from "./Sprout";
+import { WelcomeCharacters } from "./WelcomeCharacters";
 import { Slider } from "./ui/slider";
 import { simulate, addMonths, formatMonth, usd, workDaysLabel } from "@/lib/debt";
 
@@ -36,8 +36,6 @@ function useCountUp(target: number, duration = 450) {
 export function TryItCalculator() {
   const [owe, setOwe] = useState(4000);
   const [pay, setPay] = useState(155);
-  const [sliding, setSliding] = useState(false);
-  const slideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const result = useMemo(
     () => simulate([{ id: "try", name: "Loan", balance: owe, startBalance: owe, rate: RATE, payment: pay }]),
@@ -47,23 +45,15 @@ export function TryItCalculator() {
   const animatedMonths = useCountUp(months);
   const date = addMonths(new Date(), Math.max(1, Math.round(animatedMonths)));
 
-  const firstMonths = useRef<number | null>(null);
-  if (firstMonths.current === null) firstMonths.current = months;
-  const mood: SproutMood = sliding ? "thinking" : months < (firstMonths.current ?? months) ? "happy" : "happy";
-
   const onSlide = (setter: (n: number) => void) => (v: number[]) => {
     setter(v[0] ?? 0);
-    setSliding(true);
-    if (slideTimer.current) clearTimeout(slideTimer.current);
-    slideTimer.current = setTimeout(() => setSliding(false), 700);
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="welcome-calculator-scene relative w-full">
+      <WelcomeCharacters owe={owe} pay={pay} months={months} />
+      <div className="relative w-full max-w-md">
       <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
-        <div className="pointer-events-none absolute -top-9 right-5">
-          <Sprout mood={mood} size={72} />
-        </div>
         <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
         <p className="mt-1 text-xs text-muted-foreground">Move the sliders to see your date.</p>
         <div className="mt-5">
@@ -102,6 +92,7 @@ export function TryItCalculator() {
           Find my debt free date
         </Link>
       </p>
+      </div>
     </div>
   );
 }

@@ -9,7 +9,7 @@ const bodyAnim: Record<SproutMood, string> = {
   crowned: "sprout-dance",
 };
 
-export function Sprout({ mood = "happy", size = 120, className = "" }: { mood?: SproutMood; size?: number; className?: string }) {
+export function Sprout({ mood = "happy", size = 120, className = "", interactive = false, worried = false }: { mood?: SproutMood; size?: number; className?: string; interactive?: boolean; worried?: boolean }) {
   const cheers = mood === "cheering" || mood === "crowned";
   const openEyes = mood === "waving" || mood === "thinking";
   return (
@@ -28,6 +28,7 @@ export function Sprout({ mood = "happy", size = 120, className = "" }: { mood?: 
           <path d="M93 74 Q108 62 105 46" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />
         </>}
         <path d="M24 72 A36 36 0 0 1 60 36 H62 A34 34 0 0 1 96 70 V74 A34 34 0 0 1 62 108 H30 A6 6 0 0 1 24 102 Z" className="fill-green" />
+        <g className={interactive ? "sprout-blink" : undefined}><g data-sprout-eyes="" transform={interactive ? "translate(2 1)" : undefined}>
         {openEyes ? mood === "thinking" ? <>
           <circle cx="48" cy="67" r="4" className="fill-ink" />
           <circle cx="72" cy="67" r="4" className="fill-ink" />
@@ -40,10 +41,12 @@ export function Sprout({ mood = "happy", size = 120, className = "" }: { mood?: 
           <path d={mood === "calm" ? "M43 70 Q48 74 53 70" : "M43 70 Q48 63 53 70"} className="stroke-ink" strokeWidth="3.5" strokeLinecap="round" fill="none" />
           <path d={mood === "calm" ? "M67 70 Q72 74 77 70" : "M67 70 Q72 63 77 70"} className="stroke-ink" strokeWidth="3.5" strokeLinecap="round" fill="none" />
         </>}
+        </g></g>
+        {worried && <g className="stroke-ink" strokeWidth="2" strokeLinecap="round"><path d="M42 59 L52 62" /><path d="M68 62 L78 59" /></g>}
         <ellipse cx="39" cy="82" rx="5" ry="3" className="fill-cheek" fillOpacity="0.7" />
         <ellipse cx="81" cy="82" rx="5" ry="3" className="fill-cheek" fillOpacity="0.7" />
         {cheers ? <path d="M50 80 Q60 96 70 80 Z" className="fill-ink" /> :
-          <path d={mood === "calm" ? "M54 84 Q60 88 66 84" : mood === "waving" ? "M52 84 Q60 92 68 84" : "M52 82 Q60 90 68 82"} className="stroke-ink" strokeWidth="3" strokeLinecap="round" fill="none" />}
+          <path d={worried ? "M54 87 Q60 82 66 87" : mood === "calm" ? "M54 84 Q60 88 66 84" : mood === "waving" ? "M52 84 Q60 92 68 84" : "M52 82 Q60 90 68 82"} className="stroke-ink" strokeWidth="3" strokeLinecap="round" fill="none" />}
         {mood === "thinking" && <path d="M94 86 Q103 96 84 82" className="stroke-green" strokeWidth="8" strokeLinecap="round" fill="none" />}
         {mood === "calm" && <path d="M60 104 C52 98 50 92 54 89 C57 87 60 89 60 92 C60 89 63 87 66 89 C70 92 68 98 60 104 Z" className="fill-sun" />}
         {mood === "crowned" && <path d="M46 40 L50 30 L56 37 L60 28 L64 37 L70 30 L74 40 Z" className="fill-sun" />}
