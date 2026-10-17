@@ -84,7 +84,7 @@ function Shell() {
             <div className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-y bg-chip-purple px-3 py-3 text-chip-purple-text">
               <p className="min-w-0 text-sm font-semibold">You're viewing a demo</p>
               <div className="flex items-center gap-2">
-                <Button asChild variant="link" className="px-1 text-xs text-chip-purple-text">
+                <Button asChild variant="outline" className="btn-secondary !h-10 shrink-0 !px-3 text-sm">
                   <Link to="/home" onClick={requestProductTour}>
                     Take the tour
                   </Link>

@@ -1,4 +1,5 @@
 # My plan
+- [x] Repair tour startup with session-only demo dismissal, persistent account dismissal, pending navigation replay and visible-target waiting; fresh private-window demo, six steps, same-session dismissal and both replay buttons verified on desktop/phone; seven regression tests pass.
 - [x] Repair showcase with noninteractive Hana mini screens; aligned hero, bottom-edge characters, safe top-edge hover and mirrored equal-height feeling cards checked on desktop/phone in both themes; slider dragging, cooldown and reduced motion verified; 17 tests pass.
 - [x] Add calculator hover/scroll card-holding Sprout; desktop/phone replays, exactly two 500ms bounces, three-second cooldown, draggable sliders and reduced motion verified; nine presentation tests pass.
 - [x] Apply exact supplied Stone SVG, debt label/bubble, coordinated slider reactions and opening story; desktop/phone interactions, 70/170px sizes, twelve-month pebbles, no overflow and motion-free alternative verified; 20 tests and changed-file lint pass.

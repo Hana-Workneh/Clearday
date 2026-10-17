@@ -1,5 +1,21 @@
 export const TOUR_EVENT = "clearday-take-tour";
 export type TourStorage = Pick<Storage, "getItem" | "setItem">;
+let replayPending = false;
+
+export function tourStorage(
+  demo: boolean,
+  stores: { localStorage: TourStorage; sessionStorage: TourStorage },
+) {
+  return demo ? stores.sessionStorage : stores.localStorage;
+}
+
+export function hasTourReplay() {
+  return replayPending;
+}
+
+export function consumeTourReplay() {
+  replayPending = false;
+}
 
 export function tourKey(demo: boolean, accountId: string | null) {
   return `clearday-tour:${demo ? "demo" : `account:${accountId ?? "local"}`}`;
@@ -11,6 +27,7 @@ export function rememberTour(storage: TourStorage, key: string, result: "finishe
   storage.setItem(key, result);
 }
 export function requestProductTour() {
+  replayPending = true;
   window.dispatchEvent(new Event(TOUR_EVENT));
 }
 
