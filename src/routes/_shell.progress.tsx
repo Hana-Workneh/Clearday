@@ -118,11 +118,18 @@ function Progress() {
       toGo: paidOffLoan ? undefined : undefined,
     });
 
-    // If two stops sit too close, the later one shows its name only.
+    // Stops too close to each other (or to Sprout/Stone) show a marker only;
+    // their full info lives in the popover.
+    const allDoneNow = leftNow <= 0 && total > 0;
+    const sproutPct = allDoneNow ? 88 : Math.min(pct, 86);
+    const stonePct = allDoneNow ? -1 : Math.min(pct + 9, 88);
     const ordered = [...stops].sort((a, b) => a.pct - b.pct);
     const crowded = new Set<string>();
     for (let i = 1; i < ordered.length; i++) {
       if (ordered[i]!.pct - ordered[i - 1]!.pct < 11) crowded.add(ordered[i]!.id);
+    }
+    for (const s of stops) {
+      if (Math.abs(s.pct - sproutPct) < 11 || (stonePct >= 0 && Math.abs(s.pct - stonePct) < 11)) crowded.add(s.id);
     }
 
     return { plan, payments: [...payments].reverse(), pct, total, paidLogged, leftNow, loans, stops, crowded };
@@ -237,13 +244,15 @@ function Progress() {
                 >
                   {s.reached ? <Check className="size-3.5" strokeWidth={3.5} /> : s.id === nextStopId ? <Star className="size-3.5 fill-current" /> : null}
                 </button>
-                <div className="road-stop-label">
-                  <span className="road-stop-name">{s.name}</span>
-                  {!crowded.has(s.id) && s.reached && s.date && <span className="road-stop-sub">{day(s.date)}</span>}
-                  {!crowded.has(s.id) && !s.reached && s.id === nextStopId && s.toGo != null && (
-                    <span className="road-stop-sub">{usd(s.toGo)} to go</span>
-                  )}
-                </div>
+                {!crowded.has(s.id) && (
+                  <div className="road-stop-label">
+                    <span className="road-stop-name">{s.name}</span>
+                    {s.reached && s.date && <span className="road-stop-sub">{day(s.date)}</span>}
+                    {!s.reached && s.id === nextStopId && s.toGo != null && (
+                      <span className="road-stop-sub">{usd(s.toGo)} to go</span>
+                    )}
+                  </div>
+                )}
                 {openStop === s.id && openStopData && (
                   <div
                     role="dialog"
