@@ -30,12 +30,12 @@ export function safeIdeas(value: unknown): Idea[] {
   return ideas;
 }
 /** Turns the AI answer into tagged ideas. Job ideas come first; note=true asks the user to add a clearer job. */
-export function safeAdvice(value: unknown): { ideas: Idea[]; note: boolean } {
+export function safeAdvice(value: unknown, income?: number): { ideas: Idea[]; note: boolean } {
   const parsed = adviceSchema.parse(value);
   const label = cleanText(parsed.jobLabel).slice(0, 60);
   const usable = label.length > 1 && !rude.test(label);
   const sorted = [...parsed.ideas].sort((a, b) => Number(b.forJob) - Number(a.forJob));
-  const ideas = safeIdeas({ ideas: sorted.map(({ forJob, ...i }) => ({ ...i, ...(usable && forJob ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label}` } : {}) })) });
+  const ideas = safeIdeas({ ideas: sorted.map(({ forJob, ...i }) => ({ ...i, ...(usable && forJob ? { tag: `Because you're ${/^[aeiou]/i.test(label) ? "an" : "a"} ${label}` } : {}) })) }).map(idea => ({...idea, monthlyAmount: income === undefined ? idea.monthlyAmount : Math.min(idea.monthlyAmount, Math.max(5, Math.floor(income * .15 / 5) * 5)), detail: idea.kind === "earn" && /freelanc|side work|mentor|code.review|template|tutor|course|gig|contract project|writing|audit/i.test(`${idea.title} ${idea.detail}`) && !/check your contract before side work/i.test(idea.detail) ? `${idea.detail.slice(0,420)} Check your contract before side work.` : idea.detail}));
   return { ideas, note: !usable };
 }
 

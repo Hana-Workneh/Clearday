@@ -12,6 +12,21 @@ const profile: Profile = {
   plan: { extra: 0 },
 };
 describe("Ask Sprout financial safeguards", () => {
+  it("converts a $10k annual gross raise to monthly take-home with an explicit illustrative tax assumption", () => {
+    const r = chatFacts(profile, "If I get a $10k raise, how much sooner am I debt free?", new Date(2026,9,17));
+    expect(r.extraAmount).toBeCloseTo(10000 / 12 * .7);
+    expect(r.extraPlan.monthsLeft).toBe(2);
+    expect(r.facts["sooner"]).toBe("8");
+    expect(r.facts["taxAssumption"]).toBe("30%");
+  });
+  it("does not tax an explicitly net monthly raise again", () => {
+    const r = chatFacts(profile,"What if my take-home raise is $100 per month?");
+    expect(r.extraAmount).toBe(100); expect(r.extraPlan.monthsLeft).toBe(5);
+  });
+  it("calculates recurring freelance take-home income using the engine", () => {
+    const r = chatFacts(profile,"Freelance work leaves $100 net each month",new Date(2026,9,17));
+    expect(r.extraPlan.monthsLeft).toBe(5); expect(r.facts["sooner"]).toBe("5");
+  });
   it("allows ten account questions per day", () => expect(SPROUT_USER_LIMIT).toBe(10));
   it("allows five demo questions per day", () => expect(SPROUT_DEMO_LIMIT).toBe(5));
   it("calculates fifty extra without AI estimates", () => {
