@@ -219,7 +219,7 @@
 @media (prefers-reduced-motion: reduce) { .driver-overlay, .driver-popover { animation: none !important; transition: none !important; } }
 .sprout-think-bob { animation: bob 2.4s ease-in-out infinite; }
 .welcome-calculator-scene { max-width: 448px; }
-.welcome-duo { position: absolute; inset: 0; pointer-events: none; }
+.welcome-duo { position: absolute; inset: 0; pointer-events: none; transform: translateY(var(--hover-clearance, 0px)); transition: transform .45s cubic-bezier(.22,.8,.3,1); }
 .sprout-home-slot { position: absolute; bottom: -65px; left: 4px; width: 130px; height: 130px; z-index: 3; pointer-events: none; }
 .calculator-real-date { margin-top: 100px; }
 .sprout-mover { width: 100%; height: 100%; transition: transform .45s cubic-bezier(.22,.8,.3,1); pointer-events: none; }
@@ -231,7 +231,7 @@
 .sprout-holding .presenting-sprout { animation: none; scale: 1; }
 .calculator-card-anchor { position: relative; perspective: 1000px; }
 .calculator-moment-card { --shadow-calculator-lift: 0 24px 64px color-mix(in srgb, var(--foreground) 12%, transparent); padding-bottom: 150px; box-shadow: var(--shadow-product); transition: transform .45s cubic-bezier(.22,.8,.3,1), box-shadow .45s ease; transform-origin: center; }
-.calculator-moment-card[data-lifted="true"] { transform: translateY(-6px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); box-shadow: var(--shadow-calculator-lift); }
+.calculator-moment-card[data-lifted="true"] { transform: translateY(calc(var(--hover-clearance, 0px) - 6px)) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); box-shadow: var(--shadow-calculator-lift); }
 @keyframes sprout-idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes sprout-edge-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 .presenting-sprout .anim-jump, .presenting-sprout .anim-bob, .presenting-sprout .sprout-sway { animation: none; }
@@ -267,12 +267,12 @@
 .sprout-peek { position: absolute; right: 20px; top: -45px; height: 45px; overflow: hidden; }
 .feeling-card { min-height: 390px; }
 .feeling-character { width: 128px; height: 128px; display: flex; align-items: center; justify-content: center; }
-.hana-mini-screen { height: 390px; padding: 20px; background: var(--card); color: var(--foreground); overflow: hidden; }
+.hana-mini-screen { height: 410px; padding: 20px; background: var(--card); color: var(--foreground); overflow: hidden; }
 .hana-mini-screen .anim-jump, .hana-mini-screen .wave-arm { animation: none; }
 .mini-confetti { position: absolute; inset: 0 0 auto; height: 145px; pointer-events: none; }
 .mini-confetti i { position: absolute; width: 5px; height: 11px; background: var(--sun); transform: rotate(25deg); }
 .mini-confetti i:nth-child(3n) { background: var(--green); }
-.mini-confetti i:nth-child(3n + 1) { background: var(--purple); }
+.mini-confetti i:nth-child(3n + 1) { background: var(--tip); }
 .mini-confetti i:nth-child(4n) { transform: rotate(-35deg); }
 .mini-confetti i:nth-child(1) { left: 7%; top: 12%; } .mini-confetti i:nth-child(2) { left: 17%; top: 42%; } .mini-confetti i:nth-child(3) { left: 26%; top: 8%; } .mini-confetti i:nth-child(4) { left: 35%; top: 65%; } .mini-confetti i:nth-child(5) { left: 42%; top: 3%; } .mini-confetti i:nth-child(6) { left: 53%; top: 20%; } .mini-confetti i:nth-child(7) { left: 68%; top: 7%; } .mini-confetti i:nth-child(8) { left: 78%; top: 35%; } .mini-confetti i:nth-child(9) { left: 90%; top: 13%; } .mini-confetti i:nth-child(10) { left: 5%; top: 80%; } .mini-confetti i:nth-child(11) { left: 20%; top: 92%; } .mini-confetti i:nth-child(12) { left: 85%; top: 85%; } .mini-confetti i:nth-child(13) { left: 74%; top: 65%; } .mini-confetti i:nth-child(14) { left: 94%; top: 54%; } .mini-confetti i:nth-child(15) { left: 32%; top: 30%; } .mini-confetti i:nth-child(16) { left: 63%; top: 95%; }
 @keyframes sprout-blink { 0%, 44%, 48%, 100% { transform: scaleY(1); } 46% { transform: scaleY(.07); } }
@@ -295,6 +295,6 @@
   .duo-sparkles, .stone-chips { display: none; }
   .stone-reaction-closer .stone-impact { transform: scale(.92); }
   .stone-reaction-further .stone-impact { transform: scale(1.05); }
-  .sprout-mover, .calculator-moment-card, .calculator-moment-card[data-lifted="true"] { transform: none !important; transition: none !important; }
+  .welcome-duo, .sprout-mover, .calculator-moment-card, .calculator-moment-card[data-lifted="true"] { transform: none !important; transition: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }

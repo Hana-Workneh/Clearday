@@ -7,7 +7,7 @@ import { Star, Sparkles } from "lucide-react";
 const snapshotDate = new Date(2026, 9, 17);
 const hana = createDemoPersona("hana", snapshotDate);
 const current = simulate(hana.loans, snapshotDate, hana.plan);
-const faster = simulate(hana.loans, snapshotDate, { ...hana.plan, extra: 30 });
+const faster = simulate(hana.loans, snapshotDate, { ...hana.plan, extra: 75 });
 const initialDebt = hana.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
 const remaining = hana.loans.reduce((sum, loan) => sum + loan.balance, 0);
 const paid = Math.round((1 - remaining / initialDebt) * 100);
@@ -53,7 +53,7 @@ export function HanaMiniScreen({ screen }: { screen: "home" | "celebrate" | "pay
     {screen === "pay" && <>
       <h3 className="font-heading text-xl font-semibold">Pay faster</h3>
       <p className="mt-4 text-xs font-semibold">Extra each month</p>
-      <p className="mt-1 font-heading text-3xl font-bold">$30</p>
+      <p className="mt-1 font-heading text-3xl font-bold">$75</p>
       <div className="relative my-5 h-2 rounded-full bg-track"><span className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-green" /><span className="absolute left-1/3 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-green bg-card" /></div>
       <p className="text-xs text-muted-foreground">With a little extra, debt free by</p>
       <p className="mt-2 font-heading text-[28px] font-bold leading-tight">{faster.debtFreeDate ? formatMonth(faster.debtFreeDate) : "Your free day"}</p>

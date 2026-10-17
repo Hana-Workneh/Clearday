@@ -25,16 +25,22 @@ export function useCalculatorMoment() {
     let pointer: { x: number; y: number } | undefined;
     const position = () => {
       // The untransformed parent is stable during lifting and bouncing.
-      const c = card.getBoundingClientRect();
+      const anchor = card.parentElement;
+      const c = anchor?.getBoundingClientRect();
       const h = home.getBoundingClientRect();
-      if (!c) return;
+      if (!c || !anchor) return;
+      const prior = Number.parseFloat(anchor.style.getPropertyValue('--hover-clearance')) || 0;
+      const headerBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 64;
+      const clearance = Math.max(0, headerBottom + h.height * .93 + 12 - c.top);
+      anchor.style.setProperty('--hover-clearance', `${clearance}px`);
       mover.style.setProperty("--hop-x", `${c.left + c.width * .24 - h.left - h.width / 2}px`);
-      mover.style.setProperty("--hop-y", `${c.top - h.top - h.height * .93}px`);
+      mover.style.setProperty("--hop-y", `${c.top - (h.top - prior) - h.height * .93 - 6}px`);
     };
     const settle = () => {
       setHolding(false);
       setBouncing(false);
       card.dataset['lifted'] = "false";
+      card.parentElement?.style.setProperty('--hover-clearance', '0px');
       card.style.setProperty("--tilt-x", "0deg");
       card.style.setProperty("--tilt-y", "0deg");
     };
@@ -61,7 +67,7 @@ export function useCalculatorMoment() {
     };
     const checkPointer = () => {
       if (!fine.matches || reduced.matches || !pointer) return;
-      const rect = card.getBoundingClientRect();
+      const rect = card.parentElement?.getBoundingClientRect();
       if (!rect) return;
       const inside = pointer.x >= rect.left - HOVER_MARGIN && pointer.x <= rect.right + HOVER_MARGIN && pointer.y >= rect.top - HOVER_MARGIN && pointer.y <= rect.bottom + HOVER_MARGIN;
       if (inside !== hovered) {
