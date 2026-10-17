@@ -1,4 +1,5 @@
 # My plan
+- [ ] Simplify hero to left-column grounded characters and centered calculator, remove hover/scroll character motion, update Hana loans for about 30 months, verify real showcase results and both themes on phone/desktop.
 - [x] Clean mini-screen headers and payment celebration; correct dynamic time plurals including chat and setup; desktop/phone both themes verified, 23 tests pass. Hana's unchanged $75 example truthfully saves 1 month and $2.08, displayed as $2, not the unsupported 5 months/$180.
 - [x] Repair tour startup with session-only demo dismissal, persistent account dismissal, pending navigation replay and visible-target waiting; fresh private-window demo, six steps, same-session dismissal and both replay buttons verified on desktop/phone; seven regression tests pass.
 - [x] Repair showcase with noninteractive Hana mini screens; aligned hero, bottom-edge characters, safe top-edge hover and mirrored equal-height feeling cards checked on desktop/phone in both themes; slider dragging, cooldown and reduced motion verified; 17 tests pass.
