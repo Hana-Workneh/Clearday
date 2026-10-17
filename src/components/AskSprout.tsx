@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { suggestedQuestions } from "@/lib/sprout-chat";
 import { saveStoppedSproutMessage } from "@/lib/sprout-chat.functions";
 import { toast } from "sonner";
+import { demoIdentity } from "@/lib/demo-personas";
 
 const DEMO_HISTORY = "clearday-sprout-demo";
 export function AskSprout() {
@@ -66,7 +67,7 @@ export function AskSprout() {
             </Button>
           </header>
           <ChatWindow
-            key={profile.demo ? "demo" : account.id}
+            key={profile.demo ? demoIdentity(profile) : account.id}
             profile={profile}
             owner={account.id}
           />
@@ -76,6 +77,7 @@ export function AskSprout() {
   );
 }
 function ChatWindow({ profile, owner }: { profile: Profile; owner: string | null }) {
+  const historyKey = `${DEMO_HISTORY}:${demoIdentity(profile)}`;
   const textarea = useRef<HTMLTextAreaElement>(null);
   const current = useRef(profile);
   current.current = profile;
@@ -111,7 +113,7 @@ function ChatWindow({ profile, owner }: { profile: Profile; owner: string | null
     [],
   );
   const { messages, setMessages, sendMessage, status, error, stop, clearError } = useChat({
-    id: profile.demo ? "sprout-demo" : `sprout-${owner}`,
+    id: profile.demo ? `sprout-demo-${demoIdentity(profile)}` : `sprout-${owner}`,
     transport,
     onFinish: async ({ message, isAbort }) => {
       if (isAbort && !current.current.demo && !savedAbort.current) {
@@ -134,7 +136,7 @@ function ChatWindow({ profile, owner }: { profile: Profile; owner: string | null
     async function load() {
       try {
         if (profile.demo) {
-          const raw = sessionStorage.getItem(DEMO_HISTORY);
+          const raw = sessionStorage.getItem(historyKey);
           if (raw && active) setMessages(JSON.parse(raw) as UIMessage[]);
         } else {
           const {
@@ -161,10 +163,16 @@ function ChatWindow({ profile, owner }: { profile: Profile; owner: string | null
     return () => {
       active = false;
     };
-  }, [profile.demo, setMessages]);
+  }, [profile.demo, historyKey, setMessages]);
   useEffect(() => {
-    if (loaded && profile.demo) sessionStorage.setItem(DEMO_HISTORY, JSON.stringify(messages));
-  }, [loaded, profile.demo, messages]);
+    if (loaded && profile.demo) sessionStorage.setItem(historyKey, JSON.stringify(messages));
+  }, [loaded, profile.demo, messages, historyKey]);
+  useEffect(
+    () => () => {
+      void stop();
+    },
+    [stop],
+  );
   const busy = status === "submitted" || status === "streaming";
   useEffect(() => {
     if (!busy && loaded) textarea.current?.focus();

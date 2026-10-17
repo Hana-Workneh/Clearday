@@ -20,6 +20,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
 }));
 import { handleSprout } from "./sprout.server";
 import { chatFacts, checkedChatAnswer, SPROUT_LIMIT_MESSAGE } from "../sprout-chat";
+import { createDemoPersona } from "../demo-personas";
 
 const profile = {
   name: "Hana",
@@ -53,6 +54,31 @@ beforeEach(() => {
   mocks.auth.mockResolvedValue({ data: { user: { id: "account-a" } } });
 });
 describe("Ask Sprout anonymous spending protection", () => {
+  it.each(["hana", "kofi", "maya", "grace"] as const)(
+    "uses %s's own demo finances without paid AI",
+    async (id) => {
+      const sample = createDemoPersona(id);
+      const question = "If I get a $10k raise, how much sooner am I debt free?";
+      const response = await handleSprout(
+        new Request("https://clearday.example/api/sprout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            demo: true,
+            profile: sample,
+            messages: [{ id: "raise", role: "user", parts: [{ type: "text", text: question }] }],
+          }),
+        }),
+      );
+      expect(response.status).toBe(200);
+      const { facts, fallback } = chatFacts(sample, question);
+      expect(await response.text()).toContain(
+        JSON.stringify(checkedChatAnswer(fallback, facts, fallback)),
+      );
+      expect(mocks.provider).not.toHaveBeenCalled();
+      expect(mocks.table).not.toHaveBeenCalled();
+    },
+  );
   it.each([
     "What if I pay $50 more?",
     "Which loan should I pay first?",
