@@ -1,4 +1,5 @@
 # My plan
+- [x] Apply first-time feedback: numbered calculator, borrowing story, Add loan, prominent Sprout ideas and in-place preview/save; verify signed-in loan/plan saves and both themes on phone/desktop.
 - [x] Add yellow win and milestone accents across Home, badges, payment celebration, timeline and debt-free card; verify both themes.
 - [x] Refresh setup header, desktop companion preview, progress bar, larger fields and phone layout; verify unchanged saving flow in both themes.
 - [x] Add welcome dashboard preview, exact headline break and fact heading; check desktop and phone in both themes.

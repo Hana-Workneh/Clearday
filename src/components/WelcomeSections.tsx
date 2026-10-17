@@ -93,7 +93,8 @@ export function WelcomeSections() {
       <section id="the-numbers" className="mx-auto max-w-5xl scroll-mt-24 px-5 py-12 md:py-16" aria-labelledby="facts-title">
         <Reveal className="mb-8 max-w-2xl">
           <p className="text-xs font-bold text-green-text">WHY THIS MATTERS</p>
-          <h2 id="facts-title" className="mt-3 text-balance text-3xl font-semibold leading-tight">Debt is easy to get into and hard to see out of.</h2>
+          <h2 id="facts-title" className="mt-3 text-balance text-3xl font-semibold leading-tight">Borrowing takes a minute. Paying it back can take years.</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">From Nairobi to New York, people borrow easily but can't see the end.</p>
         </Reveal>
         <div className="grid gap-4 md:grid-cols-3">
           {facts.map((fact, index) => (

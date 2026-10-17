@@ -2,14 +2,14 @@ import { money } from "@/lib/account-data";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { LoanMenu } from "@/components/LoanMenu";
 import { useMemo } from "react";
-import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star } from "lucide-react";
+import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Star, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, workDaysLabel } from "@/lib/debt";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
 import { isDebtFree, nextWin } from "@/lib/celebration";
-import { ideaImpact, extraFromIdea } from "@/lib/plan";
+import { ideaImpact, extraFromIdea, displayJob } from "@/lib/plan";
 import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
 
@@ -73,6 +73,11 @@ function Home() {
 
       <QuietCard profile={profile} />
 
+      <aside className="leaf flex flex-wrap items-center justify-between gap-4 bg-chip-purple px-6 py-5 text-chip-purple-text">
+        <div className="flex min-w-0 items-center gap-3"><Sparkles className="size-5 shrink-0" /><p className="font-heading font-semibold">{displayJob(profile.job) ? `Sprout has ideas for you as a ${displayJob(profile.job)}` : "Sprout has ideas for you"}</p></div>
+        <Button asChild variant="outline" className="btn-secondary shrink-0"><Link to="/plan">See ideas <ArrowRight /></Link></Button>
+      </aside>
+
       {win && <div role="status" className="chip-yellow w-fit max-w-full"><Star aria-hidden className="size-4 shrink-0 fill-sun text-sun" /><span>{win.reached ? `You reached ${win.name}!` : `Next win: ${win.name}, ${usd(win.remaining)} to go`}</span></div>}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
@@ -104,9 +109,9 @@ function Home() {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
         <section className={`${card} min-w-0 md:p-8`} aria-label="Your loans">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Your loans</h2>
-            <Link to="/setup" className="text-sm font-semibold text-green-text">Edit</Link>
+            <Button asChild variant="outline" className="btn-secondary"><Link to="/setup" search={{ step: 1 }}><Plus className="size-4" />Add loan</Link></Button>
           </div>
           <ul className="mt-6 divide-y">
             {profile.loans.map((l) => {

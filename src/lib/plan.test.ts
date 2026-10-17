@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea , safeAdvice } from "./plan";
+import { buildTimeline, safeIdeas, ideaImpact, extraFromIdea, planFromIdea, safeAdvice, displayJob } from "./plan";
 import type { Profile } from "./store";
 const now = new Date(2026, 9, 16);
 const profile: Profile = { name: "A", job: "Barista", income: 3000, startedAt: "2026-09-01", loans: [{ id: "a", name: "A", balance: 100, startBalance: 100, rate: 0, payment: 50 }, { id: "b", name: "B", balance: 300, startBalance: 300, rate: 0, payment: 50 }], payments: [{ id: "p", loanId: "a", amount: 50, date: "2026-09-05" }] };
@@ -17,6 +17,10 @@ describe("My plan", () => {
     expect(rows.find(r => r.milestones.includes("Debt free"))?.totalLeft).toBe(0);
   });
   it("adds an idea to the chosen extra amount", () => { expect(extraFromIdea({ extra: 100 }, 50)).toBe(150); });
+  it("confirms a $120 idea as monthly extra while preserving the chosen order", () => {
+    expect(planFromIdea({ strategy: "snowball" }, 120)).toEqual({ extra: 120, strategy: "snowball" });
+    expect(planFromIdea({ extra: 40, strategy: "order" }, 120)).toEqual({ extra: 160, strategy: "order" });
+  });
   it("calculates months sooner rather than trusting AI", () => { expect(ideaImpact(profile.loans, {}, 100, now).monthsSooner).toBe(2); });
   it.each(["gambling", "crypto trading", "new loans"])("rejects %s suggestions", word => {
     expect(() => safeIdeas({ ideas: [1,2,3].map(() => ({title: word,detail: "Try it",monthlyAmount: 50,kind: "earn"})) })).toThrow();
@@ -28,6 +32,7 @@ describe("My plan", () => {
   });
 });
 describe("safeAdvice job tags", () => {
+  it("does not repeat rude job titles in the Home invitation", () => { expect(displayJob("shithead")).toBe(""); expect(displayJob("teacher")).toBe("teacher"); });
   const idea = (forJob: boolean, title = "Idea") => ({ title, detail: "A small step.", monthlyAmount: 23, kind: "earn" as const, forJob });
   it("tags job ideas with the cleaned job and lists them first", () => {
     const r = safeAdvice({ jobLabel: "nurse", ideas: [idea(false, "g"), idea(true, "a"), idea(true, "b"), idea(true, "c")] });
