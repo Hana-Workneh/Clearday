@@ -17,7 +17,7 @@
 - Setup's companion preview is presentational and receives live form values; only existing setup actions save loans or calculate the final plan — visual feedback must not change financial or persistence rules.
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.
 - `src/lib/store.ts` reads and writes authenticated progress in an owner-scoped Cloud profile JSON document; anonymous real drafts stay local until imported, while demos use separate session storage — prevents sample imports and account-to-account cache leaks.
-- Shared demo and account pages remain public; private reads and writes use authenticated RLS and account deletion uses a middleware-verified server function — supports no-signup demos without weakening data privacy.
+- Public demo/account pages use AppEntry to await browser restoration before mounting; intentional setup uses a session marker. Private operations retain RLS and verified server functions — prevents refresh crashes without weakening privacy.
 - Account profile documents use shared client/server validation in `src/lib/account-data.ts`, authenticated server-function writes and database validation for direct writes; stable loan/payment IDs keep imports idempotent and prevent bypassing input checks.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.

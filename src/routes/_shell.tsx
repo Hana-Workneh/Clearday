@@ -14,7 +14,10 @@ import { requestProductTour } from "@/lib/product-tour";
 import { switchDemoPersona } from "@/lib/store";
 import { demoPersonas, demoIdentity } from "@/lib/demo-personas";
 
-export const Route = createFileRoute("/_shell")({ component: Shell });
+import { AppEntry } from "@/components/AppEntry";
+
+export const Route = createFileRoute("/_shell")({ component: ShellEntry });
+function ShellEntry() { return <AppEntry><Shell /></AppEntry>; }
 
 const nav = [
   { to: "/home", label: "Home", icon: Home },
