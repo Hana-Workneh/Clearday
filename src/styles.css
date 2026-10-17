@@ -351,6 +351,76 @@
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }
 
 /* Three chapters of the welcome character journey. */
+.welcome-hero { padding-block: 96px 48px; }
+.welcome-hero-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.08fr); gap: 32px; align-items: center; }
+.welcome-hero-copy { text-align: left; }
+.welcome-hero-title { margin-top: 20px; font-size: 44px; }
+.welcome-hero-subtitle { margin-top: 16px; max-width: 480px; }
+.welcome-hero-buttons { margin-top: 32px; flex-wrap: wrap; }
+.welcome-hero-buttons > * { white-space: nowrap; padding-inline: 20px; }
+.welcome-hero-trust { margin-top: 20px; }
+.welcome-hero-trust > span { white-space: nowrap; }
+.welcome-hero-fact { margin-top: 24px; }
+.welcome-hero-panel { width: 100%; }
+.welcome-hero-panel { text-align: left; }
+.hero-scene-panel { container-type: inline-size; }
+.duo-close .presenting-stone { left: calc(100% - 90px); width: 70px; }
+.duo-close .stone-stage { width: 70px; }
+.duo-close .stone-label { left: 35px; }
+@media (min-width: 1200px) { .welcome-hero-title { font-size: 52px; } }
+@media (min-width: 900px) and (max-width: 1099px) {
+  .welcome-hero-grid { gap: 24px; }
+  .welcome-hero-buttons { gap: 8px; }
+  .welcome-hero-buttons > * { padding-inline: 14px; font-size: 14px; }
+}
+@media (max-width: 899px) {
+  .welcome-hero-grid { grid-template-columns: minmax(0,1fr); gap: 20px; text-align: center; }
+  .welcome-hero-copy { display: contents; text-align: center; }
+  .welcome-hero-pill { order: 1; justify-self: center; }
+  .welcome-hero-title { order: 2; margin: 0 auto; max-width: 560px; }
+  .welcome-hero-subtitle { order: 3; margin: 0 auto; max-width: 560px; }
+  .welcome-hero-buttons { order: 4; margin: 4px 0 0; justify-content: center; }
+  .welcome-hero-panel { order: 5; margin-inline: auto; }
+  .welcome-hero-trust { order: 6; margin-top: 0; justify-content: center; }
+  .welcome-hero-fact { order: 7; margin: 0 auto; }
+}
+@media (max-width: 599px) {
+  .welcome-hero { padding-block: 88px 32px; }
+  .welcome-hero-title { font-size: 38px; }
+  .welcome-hero-subtitle { font-size: 16px; }
+  .welcome-hero-buttons { flex-direction: column; }
+  .welcome-hero-buttons > * { width: 100%; }
+  .welcome-nav-actions { gap: 4px; }
+  .welcome-nav-logo > span { gap: 5px; }
+  .welcome-nav-logo > span > svg { width: 24px; height: 24px; }
+  .welcome-nav-logo > span > span { font-size: 20px; }
+  .welcome-nav-demo { padding-inline: 10px; font-size: 12px; }
+  .welcome-nav-menu { width: 32px; height: 36px; }
+  .welcome-nav-actions [aria-label="Color theme"] { gap: 0; padding: 3px; height: 36px; }
+  .welcome-nav-actions [aria-label="Color theme"] button { width: 25px; height: 28px; }
+}
+@container (max-width: 460px) {
+  .hero-slider-card { padding: 16px; }
+  .welcome-duo { --duo-sprout-size: 100px; --stone-scale: .6; height: 216px; }
+  .presenting-stone { left: 110px; }
+  .stone-bubble { width: 90px; margin-left: 0; font-size: 10px; padding: 8px; }
+  .debt-free-flag { left: calc(100% - 125px - var(--flag-closeness) * 10px); width: 125px; height: 131px; }
+  .flag-date { font-size: 18px; }
+  .flag-banner { padding: 10px 8px; }
+  .duo-close .debt-free-flag { left: 115px; }
+  .stone-pebbles { width: 70px; height: 60px; }
+}
+@container (max-width: 330px) {
+  .welcome-duo { --duo-sprout-size: 80px; --stone-scale: .5; }
+  .presenting-stone { left: 82px; }
+  .stone-bubble { width: 72px; margin-left: -8px; font-size: 9px; padding: 7px 6px; bottom: calc(100% + 8px); }
+  .debt-free-flag { left: calc(100% - 110px - var(--flag-closeness) * 8px); width: 110px; }
+  .flag-date { font-size: 17px; }
+  .hero-slider-label { grid-template-columns: 20px minmax(0,1fr) auto; gap: 6px; font-size: 10px; }
+  .hero-slider-value { font-size: 18px; }
+  .flag-interest, .flag-work { font-size: 9px; }
+  .duo-close .debt-free-flag { left: 94px; }
+}
 .how-journey-card { min-width: 0; height: 100%; padding: 16px; display: flex; flex-direction: column; }
 .how-scene { position: relative; height: 200px; flex-shrink: 0; border-radius: 20px 20px 20px 6px; background: linear-gradient(135deg, var(--hero-panel-start), var(--hero-panel-end)); container-type: inline-size; }
 .how-ground { position: absolute; inset: auto 12px 48px; border-top: 1px dashed var(--hero-scene-ground); }

@@ -57,48 +57,66 @@ export function WelcomeNav() {
           scrolled ? "border-b bg-background/80 backdrop-blur-md" : "border-b border-transparent"
         }`}
       >
-        <div className="page-wrap flex h-16 items-center justify-between gap-2">
+        <div className="welcome-nav-row page-wrap grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 min-[1100px]:flex min-[1100px]:justify-between">
           <a
             href="#top"
             onClick={(e) => {
               e.preventDefault();
-              window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+              window.scrollTo({
+                top: 0,
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                  ? "auto"
+                  : "smooth",
+              });
             }}
             aria-label="Back to top"
+            className="welcome-nav-logo min-w-0"
           >
             <CleardayLogo animate />
           </a>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Page sections">
+          <nav
+            className="hidden shrink-0 items-center gap-1 min-[1100px]:flex"
+            aria-label="Page sections"
+          >
             {links.map((link) => (
-              <button
+              <Button
+                variant="ghost"
                 key={link.id}
                 onClick={() => go(link.id)}
-                className={`rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
-                  active === link.id ? "bg-chip-green text-chip-green-text" : "text-muted-foreground hover:text-foreground"
+                className={`h-auto whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
+                  active === link.id
+                    ? "bg-chip-green text-chip-green-text"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.label}
-              </button>
+              </Button>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="welcome-nav-actions flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <Button asChild variant="ghost" className="hidden sm:inline-flex">
-              <Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link>
+            <Button
+              asChild
+              variant="ghost"
+              className="hidden whitespace-nowrap min-[1100px]:inline-flex"
+            >
+              <Link to={account.id ? "/home" : "/auth"}>
+                {account.id ? "My account" : "Sign in"}
+              </Link>
             </Button>
             <Button
               onClick={() => {
                 startDemo();
                 navigate({ to: "/home" });
               }}
-              className="hidden h-10 rounded-full px-4 font-heading text-sm font-semibold sm:inline-flex"
+              className="welcome-nav-demo h-10 shrink-0 whitespace-nowrap rounded-full px-4 font-heading text-sm font-semibold"
             >
               Try the demo
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="welcome-nav-menu shrink-0 min-[1100px]:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
@@ -108,21 +126,29 @@ export function WelcomeNav() {
           </div>
         </div>
         {open && (
-          <nav className="border-t bg-background/95 px-5 py-3 backdrop-blur-md md:hidden" aria-label="Page sections">
+          <nav
+            className="border-t bg-background/95 px-5 py-3 backdrop-blur-md min-[1100px]:hidden"
+            aria-label="Page sections"
+          >
             {links.map((link) => (
-              <button
+              <Button
+                variant="ghost"
                 key={link.id}
                 onClick={() => go(link.id)}
-                className={`block w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                  active === link.id ? "bg-chip-green text-chip-green-text" : "text-muted-foreground"
+                className={`block h-auto w-full whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+                  active === link.id
+                    ? "bg-chip-green text-chip-green-text"
+                    : "text-muted-foreground"
                 }`}
               >
                 {link.label}
-              </button>
+              </Button>
             ))}
             <div className="mt-2 flex gap-2 border-t pt-3">
               <Button asChild variant="outline" className="h-11 flex-1 rounded-full">
-                <Link to={account.id ? "/home" : "/auth"}>{account.id ? "My account" : "Sign in"}</Link>
+                <Link to={account.id ? "/home" : "/auth"}>
+                  {account.id ? "My account" : "Sign in"}
+                </Link>
               </Button>
               <Button
                 onClick={() => {
@@ -139,7 +165,14 @@ export function WelcomeNav() {
       </header>
       {showTop && (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })}
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ? "auto"
+                : "smooth",
+            })
+          }
           aria-label="Back to top"
           className="fixed bottom-6 right-5 z-40 grid size-11 place-items-center rounded-full border bg-card text-foreground shadow-lg transition-opacity hover:bg-secondary"
         >
