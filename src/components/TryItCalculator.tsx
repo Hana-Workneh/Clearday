@@ -46,7 +46,10 @@ export function TryItCalculator() {
       setSelfDemo(true);
       const start = performance.now();
       const glide = (time: number) => {
-        if (userTouched.current) { setSelfDemo(false); return; }
+        if (userTouched.current) {
+          setSelfDemo(false);
+          return;
+        }
         const progress = Math.min(1, (time - start) / 500);
         setPay(Math.round((155 + 65 * (1 - Math.pow(1 - progress, 3))) / 5) * 5);
         if (progress < 1) frame = requestAnimationFrame(glide);
@@ -54,7 +57,10 @@ export function TryItCalculator() {
       };
       frame = requestAnimationFrame(glide);
     }, 1300);
-    return () => {clearTimeout(timer); cancelAnimationFrame(frame);};
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   const result = useMemo(
@@ -76,7 +82,6 @@ export function TryItCalculator() {
 
   return (
     <div className="welcome-calculator-scene relative w-full" data-self-demo={selfDemo}>
-      
       <div className="relative w-full max-w-md">
         <div className="leaf-lg relative border bg-card p-6 shadow-[var(--shadow-product)] sm:p-7">
           <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
