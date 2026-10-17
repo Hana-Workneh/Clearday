@@ -14,6 +14,7 @@ import type { Loan } from "@/lib/debt";
 import { requestProductTour } from "@/lib/product-tour";
 
 export const Route = createFileRoute("/_shell/settings")({
+  validateSearch: (search: Record<string, unknown>): { edit?: "job" } => search.edit === "job" ? { edit: "job" } : {},
   head: () => ({ meta: [
     { title: "Settings · Clearday" },
     { name: "description", content: "Change your currency, theme and other preferences." },
@@ -27,10 +28,12 @@ export const Route = createFileRoute("/_shell/settings")({
 
 const field = "leaf w-full border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-ring";
 function Settings() {
+  const { edit } = Route.useSearch();
   const profile = useProfile(); const account = useAccount(); const navigate = useNavigate(); const router = useRouter(); const removeAccount = useServerFn(deleteAccount);
   const [name, setName] = useState(""); const [income, setIncome] = useState(""); const [job, setJob] = useState(""); const [skills, setSkills] = useState(""); const [currency, setCurrency] = useState<Currency>("USD"); const [theme, setTheme] = useState<"light" | "dark">("light");
   const [busy, setBusy] = useState(false); const [message, setMessage] = useState(""); const [editing, setEditing] = useState<Loan | null>(null); const [deleting, setDeleting] = useState<Loan | null>(null); const [deleteAll, setDeleteAll] = useState(false);
   useEffect(() => { if (profile) { setName(profile.name); setIncome(String(profile.income)); setJob(profile.job); setSkills(profile.skills ?? ""); setCurrency(profile.currency ?? "USD"); setTheme(profile.theme ?? (document.documentElement.classList.contains("dark") ? "dark" : "light")); } }, [profile]);
+  useEffect(() => { if (edit === "job" && profile) { document.getElementById("setting-job")?.focus(); } }, [edit, profile]);
   if (profile === undefined) return null;
   if (!profile) return <div className="mx-auto max-w-xl py-12 text-center"><Sprout mood="waving" size={100} /><h1 className="page-title mt-4">Make Clearday yours</h1><Button asChild className="btn-main mt-6"><Link to={account.id ? "/setup" : "/auth"}>{account.id ? "Add my details" : "Continue with Google"}</Link></Button></div>;
   const persist = async (next: typeof profile) => { setBusy(true); setMessage(""); try { await saveProfile(next); setMessage("Saved!"); return true; } catch (e) { setMessage(e instanceof Error ? e.message : "Your changes couldn't save. Please try again."); return false; } finally { setBusy(false); } };
@@ -41,7 +44,7 @@ function Settings() {
     <section className="border-y py-6"><h2 className="font-heading text-xl font-semibold">Your details</h2><form onSubmit={saveDetails} className="mt-5 grid gap-4 sm:grid-cols-2">
       <label className="grid gap-2 text-sm font-semibold">Name<input className={field} value={name} onChange={e => setName(e.target.value)} required maxLength={100} /></label>
       <label className="grid gap-2 text-sm font-semibold">Monthly income ({currency})<input className={field} type="number" min="0.01" step="0.01" value={income} onChange={e => setIncome(e.target.value)} required /></label>
-      <label className="grid gap-2 text-sm font-semibold">Job title<input className={field} value={job} onChange={e => setJob(e.target.value)} maxLength={160} /></label>
+      <label className="grid gap-2 text-sm font-semibold">Job title<input id="setting-job" className={field} value={job} onChange={e => setJob(e.target.value)} maxLength={160} /></label>
       <label className="grid gap-2 text-sm font-semibold">Skills or hobbies (optional)<input className={field} value={skills} onChange={e => setSkills(e.target.value)} maxLength={160} placeholder="baking, Excel, French" /><span className="text-xs font-normal text-muted-foreground">Helps Sprout find ideas made for you.</span></label>
       <label className="grid gap-2 text-sm font-semibold">Currency<select className={field} value={currency} onChange={e => setCurrency(e.target.value as Currency)}>{currencies.map(c => <option key={c}>{c}</option>)}</select></label>
       <div className="sm:col-span-2"><p className="mb-2 text-sm font-semibold">Appearance</p><div className="flex gap-2">{(["light", "dark"] as const).map(t => <Button key={t} type="button" variant="outline" aria-pressed={theme === t} className={`btn-secondary !h-11 ${theme === t ? "border-foreground bg-secondary" : ""}`} onClick={() => setTheme(t)}>{t === "light" ? <Sun /> : <Moon />}{t === "light" ? "Light" : "Dark"}</Button>)}</div></div>

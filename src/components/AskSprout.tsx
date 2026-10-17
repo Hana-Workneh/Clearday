@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useServerFn } from "@tanstack/react-start";
-import { X } from "lucide-react";
+import { X, MessageCircle } from "lucide-react";
 import { Sprout } from "./Sprout";
 import { Button } from "./ui/button";
 import { Conversation, ConversationContent } from "./ai-elements/conversation";
@@ -38,6 +38,8 @@ export function AskSprout() {
           className="ask-sprout-launcher fixed bottom-[152px] right-5 z-30 h-16 w-16 rounded-full border-2 bg-card p-0 shadow-lg md:bottom-6"
         >
           <Sprout mood="waving" size={58} />
+          <span className="hidden pr-4 font-heading font-semibold md:inline">Ask Sprout</span>
+          <span className="ask-sprout-badge absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-chip-purple text-chip-purple-text md:hidden"><MessageCircle className="size-3.5" aria-hidden /></span>
         </Button>
       )}
       {open && (
@@ -53,7 +55,7 @@ export function AskSprout() {
               <h2 className="font-heading text-xl font-semibold">Ask Sprout</h2>
               <p className="text-xs text-muted-foreground">
                 {profile.demo
-                  ? "Demo replies use Clearday's calculations, not AI"
+                  ? "Ask anything about this plan. Sprout uses the real numbers."
                   : "A little clarity for your next step"}
               </p>
             </div>

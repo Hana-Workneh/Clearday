@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sprout } from "@/components/Sprout";
@@ -38,8 +38,9 @@ export function IdeaPreview({ idea, profile, now, onClose }: { idea: Idea; profi
       {!saved && <p className="text-xs text-muted-foreground">{options.extra ? `This adds to your current extra, making ${money(extra, profile.currency)} extra each month. ` : ""}Estimates, not guaranteed. Your loan order stays the same.</p>}
       {error && <p role="alert" className="text-sm text-tip">{error}</p>}
       <div className="grid gap-3">
-        <Button className="btn-main w-full" disabled={saving} onClick={saved ? onClose : confirm}>{saved ? <><Check />Done</> : saving ? "Saving…" : "Add to my plan"}</Button>
-        <Button asChild variant="outline" className="btn-secondary w-full" disabled={saving}><Link to="/pay-faster" search={{ extra }}>See it in Pay faster <ArrowRight /></Link></Button>
+        <Button className="btn-main w-full whitespace-normal" disabled={saving} onClick={saved ? onClose : confirm}>{saved ? <><Check />Done</> : saving ? "Saving…" : `Add +${money(idea.monthlyAmount, profile.currency)}/mo to my plan`}</Button>
+        {!saved && <p className="text-center text-xs text-muted-foreground">Adds this as extra each month once you start earning it. You can remove it anytime.</p>}
+        <Button asChild variant="link" className="w-full text-muted-foreground" disabled={saving}><Link to="/pay-faster" search={{ extra }}>Just preview in Pay faster</Link></Button>
       </div>
     </DialogContent>
   </Dialog>;

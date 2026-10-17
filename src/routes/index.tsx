@@ -7,7 +7,8 @@ import { WelcomeNav } from "@/components/WelcomeNav";
 import { TryItCalculator } from "@/components/TryItCalculator";
 import { useMemo, useState } from "react";
 import { simulate } from "@/lib/debt";
-import { ArrowRight, Check, LockKeyhole, Play, Sprout, Timer } from "lucide-react";
+import { ArrowRight, Check, LockKeyhole, Sparkles, Sprout, Timer } from "lucide-react";
+import { QUICK_INTEREST_RATE } from "@/lib/welcome-calculator";
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): { start?: boolean | undefined } => ({
@@ -40,7 +41,7 @@ function Welcome() {
   const result = useMemo(
     () =>
       simulate([
-        { id: "try", name: "Loan", balance: owe, startBalance: owe, rate: 15, payment: pay },
+        { id: "try", name: "Loan", balance: owe, startBalance: owe, rate: QUICK_INTEREST_RATE, payment: pay },
       ]),
     [owe, pay],
   );
@@ -95,10 +96,11 @@ function Welcome() {
                 }}
                 className="btn-secondary"
               >
-                <Play className="size-3.5 fill-current" />
+                <Sparkles className="size-3.5" />
                 Try the demo
               </Button>
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">Demo needs no sign up. Real plan takes 2 minutes. No bank connection.</p>
             <div className="welcome-hero-trust flex flex-wrap gap-2">
               {[
                 { Icon: Check, label: "Free" },
