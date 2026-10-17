@@ -77,6 +77,21 @@ export type Database = {
         }
         Relationships: []
       }
+      sprout_demo_daily_usage: {
+        Row: {
+          count: number
+          day: string
+        }
+        Insert: {
+          count?: number
+          day: string
+        }
+        Update: {
+          count?: number
+          day?: string
+        }
+        Relationships: []
+      }
       sprout_messages: {
         Row: {
           created_at: string

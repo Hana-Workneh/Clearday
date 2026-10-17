@@ -4,7 +4,8 @@ import type { Profile } from "./store";
 import { correctTimeUnits } from "./time-label";
 
 export const SPROUT_USER_LIMIT = 10;
-export const SPROUT_DEMO_LIMIT = 5;
+export const SPROUT_DEMO_LIMIT = 15;
+export const SPROUT_DEMO_TOTAL_LIMIT = 500;
 export const SPROUT_LIMIT_MESSAGE =
   "You've asked your questions for today. Come back tomorrow — Sprout will be here.";
 export const suggestedQuestions = [

@@ -12,7 +12,7 @@
 ## Architecture
 - Pay faster uses pure final-payment interpolation for estimates/bars and tested exact-input parsing; the monthly engine owns dates, interest and persistence — avoids invented daily math.
 - Product tours use client-loaded driver.js with shared Sprout/buttons, session-storage demo dismissal and owner-keyed local account dismissal; pending replay survives navigation and startup waits for visible Home targets — prevents lost starts without writing financial data.
-- Ask Sprout uses owner-scoped rows, verified placeholders and atomic UTC counters; capped demos stream free calculated replies before any paid provider. Tests mock counters/network — prevents anonymous spending and test allowance consumption.
+- Ask Sprout uses owner-scoped rows, verified placeholders and one service-only atomic UTC claim for visitor/global demo counters, separate from account limits; capped demos stream free calculated replies before any paid provider. Tests mock counters/network and run SQL in an isolated database — prevents race-condition overspend, anonymous spending and test allowance consumption.
 - Setup loan-entry validation and automatic commits live in pure `src/lib/loan-entry.ts` with tests — both add-another and continue use the same field rules and stable IDs for edits.
 - Setup's companion preview is presentational and receives live form values; only existing setup actions save loans or calculate the final plan — visual feedback must not change financial or persistence rules.
 - Debt math lives in `src/lib/debt.ts` as pure functions with tests in `debt.test.ts` — keeps the plan instant in the browser and verifiable.
