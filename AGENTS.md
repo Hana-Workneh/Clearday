@@ -21,7 +21,7 @@
 - Account profile documents use shared client/server validation in `src/lib/account-data.ts`, authenticated server-function writes and database validation for direct writes; stable loan/payment IDs keep imports idempotent and prevent bypassing input checks.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
-- Welcome shares a tested quick-rate constant and slider values across its character/flag panel; tested helpers map time to flag travel, gaze is frame-throttled and input stops self-demo — keeps math and labels consistent.
+- Welcome shares tested rate/slider-hint helpers across its character/flag panel; hero-only thumbs isolate hint styling, session claims prevent replay, and input cancels animation — keeps math and app controls unchanged.
 - Header branding uses shared `CleardayLogo` assets — keeps branding consistent.
 - Welcome showcase mini screens use a display-only Hana demo snapshot and the shared debt engine, Sprout and theme tokens; they never read accounts or save payments — keeps previews reliable and separate from user finances.
 - Time labels share a formatter; chat units normalize after verified tokens — preserves checked numbers and grammar.

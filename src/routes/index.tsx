@@ -99,11 +99,10 @@ function Welcome() {
                 <Sparkles className="size-3.5" />
                 Try the demo
               </Button>
-              <p className="w-full text-xs text-muted-foreground">Demo needs no sign up. Real plan takes 2 minutes. No bank connection.</p>
             </div>
             <div className="welcome-hero-trust flex flex-wrap gap-2">
               {[
-                { Icon: Check, label: "Free" },
+                { Icon: Check, label: "Free · no sign up for demo" },
                 { Icon: LockKeyhole, label: "No bank connection" },
                 { Icon: Timer, label: "2 minutes" },
               ].map(({ Icon, label }) => (
@@ -111,20 +110,11 @@ function Welcome() {
                   key={label}
                   className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-2 text-[11px] font-semibold"
                 >
-                  <Icon className="size-3.5 text-muted-foreground" />
+                  <Icon className="size-3.5 shrink-0 text-muted-foreground" />
                   {label}
                 </span>
               ))}
             </div>
-            <p className="welcome-hero-fact flex max-w-sm items-center gap-3 text-left text-xs leading-relaxed text-muted-foreground">
-              <span className="shrink-0 font-heading text-[40px] font-bold leading-none text-stat-purple">
-                65%
-              </span>
-              <span>
-                of US millennials with debt don't know when it will end.
-                <span className="block text-[10px]">CreditCards.com, 2017</span>
-              </span>
-            </p>
           </div>
           <div className="welcome-hero-panel min-w-0">
             <TryItCalculator
