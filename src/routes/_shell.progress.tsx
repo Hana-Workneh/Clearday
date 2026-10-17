@@ -312,7 +312,7 @@ function Progress() {
               <button
                 key={s.id}
                 type="button"
-                onClick={() => setOpenStop(openStop === s.id ? null : s.id)}
+                onClick={(e) => { e.stopPropagation(); setOpenStop(openStop === s.id ? null : s.id); }}
                 className={`leaf flex items-center gap-1.5 border px-3 py-1.5 text-[13px] font-bold ${
                   s.reached ? "border-transparent bg-chip-green text-chip-green-text"
                   : s.id === nextStopId ? "border-transparent bg-chip-yellow text-chip-yellow-text"
