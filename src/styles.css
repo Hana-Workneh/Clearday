@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "driver.js/dist/driver.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -196,5 +197,13 @@
 .idea-shimmer::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--card) 70%, transparent), transparent); animation: idea-shimmer 1.4s ease-in-out infinite; }
 @keyframes idea-shimmer { to { transform: translateX(100%); } }
 .idea-in { opacity: 0; animation: page-arrive .5s ease-out forwards; }
+.driver-popover.sprout-tour { background: var(--card); color: var(--foreground); border: 1px solid var(--border); border-radius: 20px 20px 20px 6px; box-shadow: var(--shadow-product); padding: 18px; min-width: 0; width: min(340px, calc(100vw - 24px)); max-width: min(340px, calc(100vw - 24px)); font-family: var(--font-sans); }
+.sprout-tour .driver-popover-description { margin: 0; }
+.sprout-tour .driver-popover-arrow { border-color: var(--card); }
+.sprout-tour .driver-popover-arrow-side-left { border-top-color: transparent; border-bottom-color: transparent; border-right-color: transparent; }
+.sprout-tour .driver-popover-arrow-side-right { border-top-color: transparent; border-bottom-color: transparent; border-left-color: transparent; }
+.sprout-tour .driver-popover-arrow-side-top { border-bottom-color: transparent; border-left-color: transparent; border-right-color: transparent; }
+.sprout-tour .driver-popover-arrow-side-bottom { border-top-color: transparent; border-left-color: transparent; border-right-color: transparent; }
+@media (prefers-reduced-motion: reduce) { .driver-overlay, .driver-popover { animation: none !important; transition: none !important; } }
 .sprout-think-bob { animation: bob 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .idea-shimmer::after, .sprout-think-bob { animation: none; } .idea-in { opacity: 1; animation: none; } }
