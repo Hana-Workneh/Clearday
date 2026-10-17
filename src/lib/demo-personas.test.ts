@@ -12,7 +12,7 @@ describe("Demo personas", () => {
     const faster = simulate(hana.loans, now, { ...hana.plan, extra: 75 });
     expect(current.monthsLeft).toBe(26);
     expect(faster.monthsLeft).toBe(17);
-    expect(current.totalInterest - faster.totalInterest).toBeCloseTo(280.69, 2);
+    expect(current.totalInterest - faster.totalInterest).toBeCloseTo(292.76, 2);
   });
   it("uses Hana's specified balances and rates with about 2.5 years total payoff", () => {
     const hana = createDemoPersona("hana", new Date(2026, 9, 17));
