@@ -20,7 +20,7 @@
 - Account profile documents use shared client/server validation in `src/lib/account-data.ts`, authenticated server-function writes and database validation for direct writes; stable loan/payment IDs keep imports idempotent and prevent bypassing input checks.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
-- Welcome hero owns shared slider values for the separate calculator and grounded presentational character duo; pure tested helpers govern Stone reactions and pointer gaze is frame-throttled, with no card-to-character motion coupling — preserves supplied geometry and keeps controls unobstructed.
+- Welcome hero owns shared slider values for one calculator/character/flag panel; pure tested presentation helpers map payoff time to flag travel, pointer gaze is frame-throttled and self-demo cancels on input — preserves verified calculations and keeps controls unobstructed.
 - Header branding uses the shared `CleardayLogo` with light/dark assets derived from the same logo; Home estimates reuse the existing debt engine — keeps branding consistent without changing financial rules.
 - Welcome showcase mini screens use a display-only Hana demo snapshot and the shared debt engine, Sprout and theme tokens; they never read accounts or save payments — keeps previews reliable and separate from user finances.
 - Calculated time labels share a browser-safe formatter; chat units are normalized only after verified token replacement — preserves financial checks while keeping singular/plural wording consistent.
