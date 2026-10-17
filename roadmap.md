@@ -1,4 +1,5 @@
 # My plan
+- [ ] Apply exact supplied Stone SVG, debt label/bubble, coordinated slider reactions and opening story; verify motion, phone layout and reduced motion.
 - [x] Improve tech ideas and calculated raise/freelance replies; five tech roles returned specific safe ideas through live AI calls; calculation and server regression tests pass.
 - [x] Add four isolated demo personas; all pages, job ideas, chat history separation, reloads and phone layout verified. Demo replies are covered by server regression tests.
 - [ ] Verify new raise/freelance replies through live Ask Sprout UI — current demo visitor has reached today's five-question limit; requires tomorrow's allowance.
