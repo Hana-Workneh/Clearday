@@ -5,10 +5,17 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { demoIdentity, demoPersonas } from "@/lib/demo-personas";
 import { leaveDemo, switchDemoPersona, useAccount, useProfile } from "@/lib/store";
 import { requestProductTour } from "@/lib/product-tour";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { claimDemoWelcome, DEMO_WELCOME_DURATION } from "@/lib/demo-welcome";
 
 export function DemoBar() {
   const profile = useProfile();
   const account = useAccount();
+  useEffect(() => {
+    if (!profile?.demo || account.id) return;
+    if (claimDemoWelcome(sessionStorage)) toast("You're exploring Hana's sample plan. Switch person below, or tap Start my own to add your loans.", { duration: DEMO_WELCOME_DURATION });
+  }, [profile?.demo, account.id]);
   if (!profile?.demo || account.id) return null;
   const persona = demoPersonas.find((item) => item.id === demoIdentity(profile)) ?? demoPersonas[0];
   return (

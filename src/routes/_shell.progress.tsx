@@ -1,7 +1,8 @@
 import { money } from "@/lib/account-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { Check, Star, Plus, Flag, Leaf, HandCoins, Milestone, Trophy } from "lucide-react";
+import { Check, Circle, Plus, Flag, Leaf, HandCoins, Milestone, Trophy } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { openPayment } from "@/components/PaymentFlow";
 import { Sprout } from "@/components/Sprout";
 import { Stone } from "@/components/Stone";
@@ -207,9 +208,9 @@ function Progress() {
     if (days <= 6) return null;
     if (days < 31) {
       const weeks = Math.max(1, Math.round(days / 7));
-      return `${weeks} ${weeks === 1 ? "week" : "weeks"} sooner`;
+      return `${weeks} ${weeks === 1 ? "week" : "weeks"} ahead of your first plan`;
     }
-    return `${timeLabel(Math.round(days / 30.44), "month")} sooner`;
+    return `${timeLabel(Math.round(days / 30.44), "month")} ahead of your first plan`;
   })();
 
   const nextStopId = stops.find((s) => !s.reached)?.id;
@@ -252,9 +253,9 @@ function Progress() {
               Debt free by {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "—"}
             </p>
             {soonerLabel ? (
-              <span className="rounded-full bg-chip-green px-2.5 py-1 text-[13px] font-bold text-chip-green-text">
+              <Tooltip><TooltipTrigger asChild><span tabIndex={0} className="rounded-full bg-chip-green px-2.5 py-1 text-[13px] font-bold text-chip-green-text">
                 {soonerLabel}
-              </span>
+              </span></TooltipTrigger><TooltipContent>Compared to your debt free date when you first started.</TooltipContent></Tooltip>
             ) : (
               <span className="rounded-full bg-secondary px-2.5 py-1 text-[13px] font-bold text-muted-foreground">
                 Same as your plan
@@ -300,6 +301,7 @@ function Progress() {
             {/* Stops */}
             {stops.map((s) => (
               <div key={s.id} className="road-stop" style={{ "--p": `${s.pct}%` } as CSSProperties}>
+                {!s.reached && s.id === nextStopId && <span className="road-next-label">NEXT</span>}
                 <button
                   type="button"
                   aria-label={`${s.name}: ${s.reached ? `earned${s.date ? ` on ${day(s.date)}` : ""}` : s.toGo != null ? `${usd(s.toGo)} to go` : "not reached yet"}`}
@@ -312,8 +314,6 @@ function Progress() {
                 >
                   {s.reached ? (
                     <Check className="size-3.5" strokeWidth={3.5} />
-                  ) : s.id === nextStopId ? (
-                    <Star className="size-3.5 fill-current" />
                   ) : null}
                 </button>
                 {!crowded.has(s.id) && (
@@ -426,7 +426,7 @@ function Progress() {
                 {s.reached ? (
                   <Check className="size-3.5" strokeWidth={3.5} />
                 ) : s.id === nextStopId ? (
-                  <Star className="size-3.5 fill-current" />
+                  <><Circle className="size-3.5 text-sun" /><span className="text-[10px]">NEXT</span></>
                 ) : null}
                 {s.name}
               </button>
