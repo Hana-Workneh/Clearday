@@ -362,7 +362,11 @@
 .welcome-hero-trust > span { white-space: nowrap; }
 .welcome-hero-fact { margin-top: 24px; }
 .welcome-hero-panel { width: 100%; }
+.welcome-hero-panel { text-align: left; }
 .hero-scene-panel { container-type: inline-size; }
+.duo-close .presenting-stone { left: calc(100% - 90px); width: 70px; }
+.duo-close .stone-stage { width: 70px; }
+.duo-close .stone-label { left: 35px; }
 @media (min-width: 1200px) { .welcome-hero-title { font-size: 52px; } }
 @media (min-width: 900px) and (max-width: 1099px) {
   .welcome-hero-grid { gap: 24px; }
@@ -371,12 +375,12 @@
 }
 @media (max-width: 899px) {
   .welcome-hero-grid { grid-template-columns: minmax(0,1fr); gap: 20px; text-align: center; }
-  .welcome-hero-copy { display: contents; }
+  .welcome-hero-copy { display: contents; text-align: center; }
   .welcome-hero-pill { order: 1; justify-self: center; }
   .welcome-hero-title { order: 2; margin: 0 auto; max-width: 560px; }
   .welcome-hero-subtitle { order: 3; margin: 0 auto; max-width: 560px; }
   .welcome-hero-buttons { order: 4; margin: 4px 0 0; justify-content: center; }
-  .welcome-hero-panel { order: 5; max-width: 600px; margin-inline: auto; }
+  .welcome-hero-panel { order: 5; margin-inline: auto; }
   .welcome-hero-trust { order: 6; margin-top: 0; justify-content: center; }
   .welcome-hero-fact { order: 7; margin: 0 auto; }
 }
