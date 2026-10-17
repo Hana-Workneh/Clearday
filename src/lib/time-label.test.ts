@@ -14,6 +14,8 @@ describe("calculated time units", () => {
     expect(timeLabel(1, "year")).toBe("1 year");
   });
   it("corrects units after verified numeric tokens have been replaced", () => {
-    expect(correctTimeUnits("1 months; 5 month; 1 days; 0.1 day; 1 years")).toBe("1 month; 5 months; 1 day; 0.1 days; 1 year");
+    expect(correctTimeUnits("1 months; 5 month; 1 days; 0.1 day; 1 years")).toBe(
+      "1 month; 5 months; 1 day; 0.1 days; 1 year",
+    );
   });
 });

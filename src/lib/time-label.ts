@@ -5,7 +5,9 @@ export function timeLabel(count: number | string, unit: "month" | "day" | "year"
 
 /** AI templates may supply plural units before checked numbers are inserted. */
 export function correctTimeUnits(text: string) {
-  return text.replace(/\b(\d+(?:\.\d+)?)\s+(months?|days?|years?)\b/g, (_match, count: string, unit: string) =>
-    timeLabel(count, unit.replace(/s$/, "") as "month" | "day" | "year"),
+  return text.replace(
+    /\b(\d+(?:\.\d+)?)\s+(months?|days?|years?)\b/g,
+    (_match, count: string, unit: string) =>
+      timeLabel(count, unit.replace(/s$/, "") as "month" | "day" | "year"),
   );
 }
