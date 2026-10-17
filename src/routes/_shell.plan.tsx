@@ -7,7 +7,7 @@ import { Sprout } from "@/components/Sprout";
 import { Button } from "@/components/ui/button";
 import { useProfile, planOptions, percentPaid } from "@/lib/store";
 import { formatMonth, simulate } from "@/lib/debt";
-import { buildTimeline, ideaImpact, safeIdeas, type Idea } from "@/lib/plan";
+import { buildTimeline, ideaImpact, safeIdeas, displayJob, type Idea } from "@/lib/plan";
 import { IdeaPreview } from "@/components/IdeaPreview";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,6 +39,7 @@ function MyPlan() {
   const abort = useRef<AbortController | null>(null);
   const [step, setStep] = useState(0);
   const [cacheKey, setCacheKey] = useState<string | null>(null);
+  const jobLabel = displayJob(profile?.job ?? "");
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, skills: profile.skills || undefined, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
   useEffect(() => { setIdeas(profile?.demo ? [
@@ -79,10 +80,11 @@ function MyPlan() {
     try {
       const {data: {session}} = await supabase.auth.getSession();
       if (!session) throw new Error("Sign in to find your personal ideas.");
+      const requestCacheKey = `clearday-ideas:${session.user.id}`;
       const response = await fetch("/api/advice", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` }, body: fingerprint, signal: controller.signal });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        if (response.status === 429) { let saved = previous; try { const c = cacheKey ? JSON.parse(localStorage.getItem(cacheKey) ?? "null") : null; if (!saved.length && Array.isArray(c?.ideas)) saved = safeIdeas({ ideas: c.ideas }); } catch { /* ignore */ } setIdeas(saved); setLimited(true); return; }
+        if (response.status === 429) { let saved = previous; try { const c = JSON.parse(localStorage.getItem(requestCacheKey) ?? "null"); if (!saved.length && Array.isArray(c?.ideas)) saved = safeIdeas({ ideas: c.ideas }); } catch { /* ignore */ } setIdeas(saved); setLimited(true); return; }
         if ([401,402,403,404].includes(response.status)) setTerminal(true);
         throw new Error(data.message || "Lovable AI is temporarily unavailable.");
       }
@@ -96,7 +98,7 @@ function MyPlan() {
           if (!line.trim()) continue;
           const event = JSON.parse(line);
           if (event.type === "error") throw new Error(event.message);
-          if (event.type === "result") { const fresh = safeIdeas({ ideas: event.ideas }); const n = event.note === true; setIdeas(fresh); setNote(n); setError(""); received = true; if (cacheKey && fresh.length) localStorage.setItem(cacheKey, JSON.stringify({ fingerprint, ideas: fresh, note: n })); }
+          if (event.type === "result") { const fresh = safeIdeas({ ideas: event.ideas }); const n = event.note === true; setIdeas(fresh); setNote(n); setError(""); received = true; if (fresh.length) localStorage.setItem(requestCacheKey, JSON.stringify({ fingerprint, ideas: fresh, note: n })); }
         }
         if (chunk.done) break;
       }
@@ -112,10 +114,10 @@ function MyPlan() {
     <header><h1 className="page-title">Ideas from Sprout</h1><p className="page-sub mt-1">One month at a time. Every little step counts.</p></header>
       <section aria-label="Ideas for you" className="min-w-0">
         <div className="flex items-center gap-2"><Sparkles className="size-5 text-tip" /><h2 className="font-heading text-xl font-semibold">A little extra, your way</h2></div>
-        <p className="mt-2 text-sm text-muted-foreground">{profile.job ? `Small possibilities for you as a ${profile.job.toLowerCase()}.` : "Small possibilities that fit your budget."}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{jobLabel ? `Small possibilities for you as a ${jobLabel.toLowerCase()}.` : "Small possibilities that fit your budget."}</p>
         {limited && !loading && <div className="leaf mt-6 flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text" role="status"><Sprout mood="calm" size={72} /><p className="font-heading text-lg font-semibold">You've got fresh ideas for today. Come back tomorrow for more.</p></div>}
         {(loading || (ideas.length === 0 && !error && !limited)) && <div className="mt-6" role="status" aria-live="polite">
-          <div className="leaf flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text"><span className="sprout-think-bob shrink-0"><Sprout mood="thinking" size={76} /></span><p key={step} className="idea-in min-w-0 flex-1 font-heading text-lg font-semibold">{["Looking at your loans...", profile.job ? `Thinking about ideas for ${/^[aeiou]/i.test(profile.job) ? "an" : "a"} ${profile.job.toLowerCase()}...` : "Thinking about ideas for you...", "Almost ready..."][step]}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>
+          <div className="leaf flex items-center gap-4 bg-chip-purple p-5 text-chip-purple-text"><span className="sprout-think-bob shrink-0"><Sprout mood="thinking" size={76} /></span><p key={step} className="idea-in min-w-0 flex-1 font-heading text-lg font-semibold">{["Looking at your loans...", jobLabel ? `Thinking about ideas for ${/^[aeiou]/i.test(jobLabel) ? "an" : "a"} ${jobLabel.toLowerCase()}...` : "Thinking about ideas for you...", "Almost ready..."][step]}</p>{loading && <Button variant="ghost" size="icon" aria-label="Stop suggestions" onClick={() => { abort.current?.abort(); setLoading(false); setError("Stopped. Start again whenever you like."); }}><Square /></Button>}</div>
           <div className="mt-5 grid gap-4" aria-hidden="true">{[0,1,2].map(i => <div key={i} className="leaf border bg-card p-5"><div className="idea-shimmer h-3 w-24 rounded-full" /><div className="idea-shimmer mt-4 h-5 w-3/4 rounded-full" /><div className="idea-shimmer mt-3 h-3 w-full rounded-full" /><div className="idea-shimmer mt-2 h-3 w-5/6 rounded-full" /><div className="idea-shimmer mt-5 h-10 w-full rounded-full" /></div>)}</div>
         </div>}
         {error && loading && <p className="mt-3 text-sm text-muted-foreground" role="status">{error}</p>}
