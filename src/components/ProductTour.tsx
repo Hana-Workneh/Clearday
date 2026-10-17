@@ -48,6 +48,7 @@ export function ProductTour() {
         onPopoverRender: (popover, options) => {
           popover.wrapper.setAttribute("aria-label", "Sprout's product tour");
           popover.wrapper.setAttribute("aria-modal", "true");
+          popover.footer.remove();
           popover.description.replaceChildren();
           const host = document.createElement("div");
           popover.description.appendChild(host);
