@@ -40,7 +40,7 @@ export function WelcomeCharacters({ owe, pay, months }: { owe: number; pay: numb
   }, []);
   return <div ref={ref} className={`welcome-duo ${close ? "duo-close" : ""}`} data-reaction={reaction} data-months={months}>
     <div key={beat} className={`presenting-sprout reaction-${reaction}`}>
-      <Sprout mood={reaction === "closer" || close ? "cheering" : reaction === "calm" ? "calm" : "waving"} size={200} interactive worried={reaction === "further"} />
+      <Sprout mood={reaction === "closer" || close ? "cheering" : "waving"} size={200} interactive worried={reaction === "further"} />
       {reaction === "closer" && <svg className="duo-sparkles" viewBox="0 0 200 200" aria-hidden="true"><g className="fill-sun"><path d="M22 35 L25 44 L34 47 L25 50 L22 59 L19 50 L10 47 L19 44 Z" /><path d="M167 18 L170 26 L178 29 L170 32 L167 40 L164 32 L156 29 L164 26 Z" /><path d="M177 94 L179 100 L185 102 L179 104 L177 110 L175 104 L169 102 L175 100 Z" /></g></svg>}
     </div>
     <div className="presenting-stone">
