@@ -13,7 +13,7 @@ export function IdeaPreview({ idea, profile, now, onClose }: { idea: Idea; profi
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
-  const options = planOptions(profile, now);
+  const [options] = useState(() => planOptions(profile, now));
   const impact = ideaImpact(profile.loans, options, idea.monthlyAmount, now);
   const extra = extraFromIdea(options, idea.monthlyAmount);
   const confirm = async () => {
