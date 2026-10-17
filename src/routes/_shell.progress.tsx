@@ -36,8 +36,8 @@ type Stop = {
   icon: "payment" | "leaf" | "milestone" | "trophy";
   meaning: string;
   reached: boolean;
-  date?: string;
-  toGo?: number;
+  date?: string | undefined;
+  toGo?: number | undefined;
 };
 
 function Progress() {
