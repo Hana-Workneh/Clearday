@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Architecture
-- Pay faster uses pure display-only final-payment interpolation in `src/lib/pay-faster.ts` for estimated short-term savings and proportional bars; the shared monthly engine still owns dates, interest and persistence — avoids inventing exact daily interest calculations.
+- Pay faster uses pure final-payment interpolation for estimates/bars and tested exact-input parsing; the monthly engine owns dates, interest and persistence — avoids invented daily math.
 - Product tours use client-loaded driver.js with shared Sprout/buttons, session-storage demo dismissal and owner-keyed local account dismissal; pending replay survives navigation and startup waits for visible Home targets — prevents lost starts without writing financial data.
 - Ask Sprout uses owner-scoped chat rows, a streaming server boundary and verified calculation placeholders; demo requests return deterministic calculation replies before the paid provider, conversations remain session-local and atomic server counters enforce daily limits — prevents anonymous AI spending.
 - Setup loan-entry validation and automatic commits live in pure `src/lib/loan-entry.ts` with tests — both add-another and continue use the same field rules and stable IDs for edits.
@@ -21,7 +21,7 @@
 - Account profile documents use shared client/server validation in `src/lib/account-data.ts`, authenticated server-function writes and database validation for direct writes; stable loan/payment IDs keep imports idempotent and prevent bypassing input checks.
 
 - All mascot appearances use the shared `Sprout` component and semantic SVG color tokens — mood changes stay consistent across pages and themes.
-- Welcome hero owns shared slider values for one calculator/character/flag panel; pure tested presentation helpers map payoff time to flag travel, pointer gaze is frame-throttled and self-demo cancels on input — preserves verified calculations and keeps controls unobstructed.
+- Welcome shares a tested quick-rate constant and slider values across its character/flag panel; tested helpers map time to flag travel, gaze is frame-throttled and input stops self-demo — keeps math and labels consistent.
 - Header branding uses shared `CleardayLogo` assets — keeps branding consistent.
 - Welcome showcase mini screens use a display-only Hana demo snapshot and the shared debt engine, Sprout and theme tokens; they never read accounts or save payments — keeps previews reliable and separate from user finances.
 - Time labels share a formatter; chat units normalize after verified tokens — preserves checked numbers and grammar.
@@ -32,5 +32,5 @@
 - Home greeting uses tested display-only helpers with shared progress/milestone calculations — keeps threshold reactions separate from financial data.
 - Celebration image exports are prepared on a browser canvas using resolved theme colors and the exact visible Sprout before download; new savings goals stay in the existing owner-scoped profile document — avoids CSS export clipping, preserves mobile download activation and completed-loan history.
 - AI idea requests are capped per account per UTC day by a service-only atomic counter (claim_ai_advice) checked in /api/advice before calling the model — demo ideas are fixed and never hit the AI.
-- Demo personas use session-keyed profiles/chat and shell remounts; root `DemoBar` reuses switching/tour/exit actions — prevents leaks and keeps controls on every page.
+- Demo personas use session-keyed profiles/chat and shell remounts; root `DemoBar` reuses actions and a tested session toast claim — prevents leaks and repeated welcome notices.
 - How it works uses display-only scenes with shared characters/hero tokens and once-only scroll animations — separates story examples from account calculations.

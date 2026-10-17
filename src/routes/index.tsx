@@ -99,8 +99,8 @@ function Welcome() {
                 <Sparkles className="size-3.5" />
                 Try the demo
               </Button>
+              <p className="w-full text-xs text-muted-foreground">Demo needs no sign up. Real plan takes 2 minutes. No bank connection.</p>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">Demo needs no sign up. Real plan takes 2 minutes. No bank connection.</p>
             <div className="welcome-hero-trust flex flex-wrap gap-2">
               {[
                 { Icon: Check, label: "Free" },

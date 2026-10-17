@@ -85,6 +85,9 @@ describe("Ask Sprout anonymous spending protection", () => {
     "Can I afford a $300 phone?",
     "When will I be debt free?",
     "What if I pay $100 extra?",
+    "Can you explain how my plan works?",
+    "Help me budget for essentials",
+    "How much do I owe in total?",
   ])("answers demo question without AI: %s", async (question) => {
     const response = await handleSprout(request(question));
     expect(response.status).toBe(200);
