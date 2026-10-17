@@ -139,15 +139,13 @@ export async function handleAdvice(request: Request) {
               .catch(() => null),
           );
           if (response.status === 402 || response.status === 403) {
-            const { error } = await supabaseAdmin
-              .from("ai_advice_gate")
-              .upsert({
-                id: "advice",
-                status: response.status,
-                message,
-                kind: response.status === 402 ? "credits" : "denied",
-                updated_at: new Date().toISOString(),
-              });
+            const { error } = await supabaseAdmin.from("ai_advice_gate").upsert({
+              id: "advice",
+              status: response.status,
+              message,
+              kind: response.status === 402 ? "credits" : "denied",
+              updated_at: new Date().toISOString(),
+            });
             if (error) console.error("Could not persist AI pause state", error.code);
           }
         }

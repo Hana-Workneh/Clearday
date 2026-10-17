@@ -99,24 +99,24 @@ function Shell() {
                   </Link>
                 </Button>
               </div>
-            <div
-              className="flex w-full flex-wrap items-center gap-2 border-t pt-3"
-              role="group"
-              aria-label="Demo persona"
-            >
-              <span className="text-sm font-semibold">Try as:</span>
-              {demoPersonas.map((persona) => (
-                <Button
-                  key={persona.id}
-                  variant={demoIdentity(profile) === persona.id ? "default" : "outline"}
-                  aria-pressed={demoIdentity(profile) === persona.id}
-                  className="h-auto rounded-full px-3 py-2 text-left text-xs"
-                  onClick={() => switchDemoPersona(persona.id)}
-                >
-                  {persona.name} · {persona.job.toLowerCase()}
-                </Button>
-              ))}
-            </div>
+              <div
+                className="flex w-full flex-wrap items-center gap-2 border-t pt-3"
+                role="group"
+                aria-label="Demo persona"
+              >
+                <span className="text-sm font-semibold">Try as:</span>
+                {demoPersonas.map((persona) => (
+                  <Button
+                    key={persona.id}
+                    variant={demoIdentity(profile) === persona.id ? "default" : "outline"}
+                    aria-pressed={demoIdentity(profile) === persona.id}
+                    className="h-auto rounded-full px-3 py-2 text-left text-xs"
+                    onClick={() => switchDemoPersona(persona.id)}
+                  >
+                    {persona.name} · {persona.job.toLowerCase()}
+                  </Button>
+                ))}
+              </div>
             </div>
           )}
           {account.error ? (
