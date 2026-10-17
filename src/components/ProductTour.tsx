@@ -5,7 +5,7 @@ import type { Driver } from "driver.js";
 import { Sprout } from "./Sprout";
 import { Button } from "./ui/button";
 import { useAccount, useProfile } from "@/lib/store";
-import { rememberTour, shouldShowTour, tourKey, tourSteps, TOUR_EVENT } from "@/lib/product-tour";
+import { consumeTourReplay, hasTourReplay, rememberTour, shouldShowTour, tourKey, tourSteps, tourStorage, TOUR_EVENT } from "@/lib/product-tour";
 
 export function ProductTour() {
   const profile = useProfile();
@@ -13,7 +13,6 @@ export function ProductTour() {
   const location = useLocation();
   const instance = useRef<Driver | null>(null);
   const [replay, setReplay] = useState(0);
-  const requested = useRef(false);
   const [bubble, setBubble] = useState<{ host: HTMLElement; index: number } | null>(null);
   const key = tourKey(!!profile?.demo, account.id);
   const eligible =
@@ -21,7 +20,6 @@ export function ProductTour() {
 
   useEffect(() => {
     const replayTour = () => {
-      requested.current = true;
       setReplay((value) => value + 1);
     };
     window.addEventListener(TOUR_EVENT, replayTour);
@@ -29,25 +27,30 @@ export function ProductTour() {
   }, []);
 
   useEffect(() => {
-    if (location.pathname !== "/home" || !eligible || !account.ready) return;
+    if (location.pathname !== "/home" || !eligible || !account.ready || account.error) return;
     let cancelled = false;
     let tour: Driver | null = null;
     let previousFocus: HTMLElement | null = null;
+    let observer: MutationObserver | null = null;
+    const storage = () => tourStorage(!!profile?.demo, window);
     const timer = window.setTimeout(async () => {
       try {
-        if (!requested.current && !shouldShowTour(localStorage, key)) return;
+        if (!hasTourReplay() && !shouldShowTour(storage(), key)) return;
       } catch {
         /* Tour can still run when browser storage is unavailable. */
       }
       const { driver } = await import("driver.js");
       if (cancelled) return;
+      const start = () => {
+      if (cancelled || tour) return;
       const targets = tourSteps.map((step) =>
         Array.from(document.querySelectorAll<HTMLElement>(`[data-tour="${step.target}"]`)).find(
           (element) => element.getClientRects().length > 0,
         ),
       );
       if (targets.some((target) => !target)) return;
-      requested.current = false;
+      observer?.disconnect();
+      consumeTourReplay();
       previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       tour = driver({
@@ -81,7 +84,7 @@ export function ProductTour() {
         onDestroyed: (_element, _step, options) => {
           if (!cancelled && options.reason !== "api") {
             try {
-              rememberTour(localStorage, key, options.reason === "done" ? "finished" : "skipped");
+              rememberTour(storage(), key, options.reason === "done" ? "finished" : "skipped");
             } catch {
               /* Storage is optional. */
             }
@@ -93,15 +96,21 @@ export function ProductTour() {
       });
       instance.current = tour;
       tour.drive();
+      };
+      // Home can finish rendering after the account and shell are ready.
+      observer = new MutationObserver(start);
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "data-tour"] });
+      start();
     }, 650);
     return () => {
       cancelled = true;
       clearTimeout(timer);
+      observer?.disconnect();
       tour?.destroy();
       instance.current = null;
       setBubble(null);
     };
-  }, [location.pathname, eligible, account.ready, key, replay]);
+  }, [location.pathname, eligible, account.ready, account.error, key, replay, profile?.demo]);
 
   useEffect(() => {
     if (!bubble) return;
@@ -114,7 +123,7 @@ export function ProductTour() {
 
   const close = (result: "finished" | "skipped") => {
     try {
-      rememberTour(localStorage, key, result);
+      rememberTour(tourStorage(!!profile?.demo, window), key, result);
     } catch {
       /* Storage is optional. */
     }
