@@ -7,6 +7,7 @@ export function useCalculatorMoment() {
   const moverRef = useRef<HTMLDivElement>(null);
   const [holding, setHolding] = useState(false);
   const [bounce, setBounce] = useState(0);
+  const [bouncing, setBouncing] = useState(false);
   useEffect(() => {
     const card = cardRef.current;
     const home = homeRef.current;
@@ -32,7 +33,8 @@ export function useCalculatorMoment() {
     };
     const settle = () => {
       setHolding(false);
-      card.dataset.lifted = "false";
+      setBouncing(false);
+      card.dataset['lifted'] = "false";
       card.style.setProperty("--tilt-x", "0deg");
       card.style.setProperty("--tilt-y", "0deg");
     };
@@ -40,7 +42,7 @@ export function useCalculatorMoment() {
       if (reduced.matches) return;
       position();
       setHolding(true);
-      card.dataset.lifted = "true";
+      card.dataset['lifted'] = "true";
       const now = performance.now();
       if (!canReplay(now, last)) {
         if (!hovered) settle();
@@ -48,10 +50,12 @@ export function useCalculatorMoment() {
       }
       last = now;
       playing = true;
+      setBouncing(true);
       setBounce((n) => n + 1);
       clearTimeout(timer);
       timer = setTimeout(() => {
         playing = false;
+        setBouncing(false);
         if (!hovered) settle();
       }, 450 + BOUNCE_COUNT * BOUNCE_MS);
     };
@@ -101,5 +105,5 @@ export function useCalculatorMoment() {
       reduced.removeEventListener("change", motionChange);
     };
   }, []);
-  return { cardRef, homeRef, moverRef, holding, bounce };
+  return { cardRef, homeRef, moverRef, holding, bounce, bouncing };
 }

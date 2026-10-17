@@ -66,7 +66,7 @@ export function WelcomeCharacters({
       <div ref={moment.homeRef} className="sprout-home-slot">
       <div ref={moment.moverRef} className={`sprout-mover ${moment.holding ? "sprout-holding" : ""}`} data-holding={moment.holding}>
       <div className={`presenting-sprout reaction-${reaction}`}>
-      <div key={moment.bounce} className={moment.holding ? "sprout-edge-bounce" : "sprout-idle"}>
+      <div key={moment.bounce} className={moment.holding ? (moment.bouncing ? "sprout-edge-bounce" : "") : "sprout-idle"}>
         <Sprout
           mood={reaction === "closer" || close ? "cheering" : "waving"}
           size={200}
