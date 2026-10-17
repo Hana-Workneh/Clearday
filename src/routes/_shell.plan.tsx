@@ -38,7 +38,6 @@ function MyPlan() {
   const [note, setNote] = useState(false);
   const abort = useRef<AbortController | null>(null);
   const [step, setStep] = useState(0);
-  const [cacheKey, setCacheKey] = useState<string | null>(null);
   const jobLabel = displayJob(profile?.job ?? "");
   const options = profile ? planOptions(profile, now) : {};
   const fingerprint = JSON.stringify(profile ? { job: profile.job, skills: profile.skills || undefined, income: profile.income, loans: profile.loans, plan: options, currency: profile.currency ?? "USD" } : null);
@@ -54,7 +53,6 @@ function MyPlan() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!live) return;
       const key = session ? `clearday-ideas:${session.user.id}` : null;
-      setCacheKey(key);
       try {
         const saved = key ? JSON.parse(localStorage.getItem(key) ?? "null") : null;
         if (saved && saved.fingerprint === fingerprint && Array.isArray(saved.ideas) && saved.ideas.length) { setIdeas(safeIdeas({ ideas: saved.ideas })); setNote(saved.note === true); return; }
