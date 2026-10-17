@@ -9,9 +9,9 @@ describe("Welcome Stone presentation rules", () => {
     expect(stoneIsPebbles(12)).toBe(true);
     expect(stoneIsPebbles(13)).toBe(false);
   });
-  it("celebrates a higher payment only when the date gets closer", () => {
+  it("celebrates every higher payment, including within the same payoff month", () => {
     expect(stoneReaction({ pay: 155, months: 32 }, { pay: 200, months: 24 })).toBe("closer");
-    expect(stoneReaction({ pay: 155, months: 32 }, { pay: 160, months: 32 })).toBe("calm");
+    expect(stoneReaction({ pay: 155, months: 32 }, { pay: 160, months: 32 })).toBe("closer");
   });
   it("reacts smugly when the payment goes down", () => {
     expect(stoneReaction({ pay: 200, months: 24 }, { pay: 155, months: 32 })).toBe("further");

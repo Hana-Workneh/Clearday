@@ -5,7 +5,7 @@ export function stoneReaction(
   previous: { pay: number; months: number },
   current: { pay: number; months: number },
 ) {
-  if (current.pay > previous.pay && current.months < previous.months) return "closer";
+  if (current.pay > previous.pay) return "closer";
   if (current.pay < previous.pay) return "further";
   return "calm";
 }

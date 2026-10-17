@@ -5,14 +5,24 @@ import { profileSchema } from "./account-data";
 import { simulate } from "./debt";
 
 describe("Demo personas", () => {
-  it("calculates the truthful effect of $75 extra from Hana's unchanged demo loans", () => {
+  it("calculates meaningful $75 extra savings from Hana's real demo loans", () => {
     const now = new Date(2026, 9, 17);
     const hana = createDemoPersona("hana", now);
     const current = simulate(hana.loans, now, hana.plan);
     const faster = simulate(hana.loans, now, { ...hana.plan, extra: 75 });
-    expect(current.monthsLeft).toBe(3);
-    expect(faster.monthsLeft).toBe(2);
-    expect(current.totalInterest - faster.totalInterest).toBeCloseTo(2.08, 2);
+    expect(current.monthsLeft).toBe(26);
+    expect(faster.monthsLeft).toBe(17);
+    expect(current.totalInterest - faster.totalInterest).toBeCloseTo(292.76, 2);
+  });
+  it("uses Hana's specified balances and rates with about 2.5 years total payoff", () => {
+    const hana = createDemoPersona("hana", new Date(2026, 9, 17));
+    expect(hana.loans.map(l => [l.name, l.startBalance, l.rate, l.payment])).toEqual([
+      ["Phone loan", 650, 24, 30],
+      ["Personal loan", 2800, 18, 100],
+      ["Salary advance", 400, 30, 35],
+    ]);
+    const original = hana.loans.map(l => ({ ...l, balance: l.startBalance }));
+    expect(simulate(original).monthsLeft).toBe(30);
   });
   it("offers Hana, Kofi, Maya and Grace with Hana first", () => {
     expect(demoPersonas.map((p) => p.name)).toEqual(["Hana", "Kofi", "Maya", "Grace"]);
