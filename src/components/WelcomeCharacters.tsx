@@ -3,18 +3,15 @@ import { Sprout } from "./Sprout";
 import { Stone } from "./Stone";
 import { usd } from "@/lib/debt";
 import { stoneSize, stoneReaction, stoneIsPebbles } from "@/lib/welcome-stone";
-import type { useCalculatorMoment } from "./useCalculatorMoment";
 
 export function WelcomeCharacters({
   owe,
   pay,
   months,
-  moment,
 }: {
   owe: number;
   pay: number;
   months: number;
-  moment: ReturnType<typeof useCalculatorMoment>;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const previous = useRef({ pay, months });
@@ -63,16 +60,15 @@ export function WelcomeCharacters({
       data-months={months}
       data-stone-size={size}
     >
-      <div ref={moment.homeRef} className="sprout-home-slot">
-      <div ref={moment.moverRef} className={`sprout-mover ${moment.holding ? "sprout-holding" : ""}`} data-holding={moment.holding}>
-      <div className={`presenting-sprout reaction-${reaction}`}>
-      <div key={moment.bounce} className={moment.holding ? (moment.bouncing ? "sprout-edge-bounce" : "") : "sprout-idle"}>
+      <div className="duo-ground" aria-hidden="true" />
+      <div className="sprout-home-slot">
+      <div key={beat} className={`presenting-sprout reaction-${reaction}`}>
+      <div className="sprout-idle">
         <Sprout
           mood={reaction === "closer" || close ? "cheering" : "waving"}
-          size={200}
+          size={180}
           interactive
           worried={reaction === "further"}
-          holding={moment.holding}
         />
       </div>
         {(reaction === "closer" || close) && (
@@ -86,8 +82,7 @@ export function WelcomeCharacters({
         )}
       </div>
       </div>
-      </div>
-      <div className={`presenting-stone stone-reaction-${reaction}`} style={{ "--stone-height": `${size * 110 / 120}px` } as React.CSSProperties}>
+      <div className={`presenting-stone stone-reaction-${reaction}`} style={{ "--stone-size": `${size}px`, "--stone-height": `${size * 110 / 120}px` } as React.CSSProperties}>
         {!close && (
           <p className="stone-bubble" aria-live="polite">
             {reaction === "closer"
@@ -113,7 +108,7 @@ export function WelcomeCharacters({
               <path d="M58 59 L72 64 L65 72 L49 75 Z" className="fill-stone-shade" />
             </svg>
           ) : (
-            <div className="stone-size" style={{ width: size, height: (size * 110) / 120 }}>
+            <div className="stone-size">
               <div className="stone-impact" key={beat}>
                 <div className="stone-breathe">
                   <div className="stone-grumble">

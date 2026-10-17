@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { WelcomeSections } from "@/components/WelcomeSections";
 import { WelcomeNav } from "@/components/WelcomeNav";
 import { TryItCalculator } from "@/components/TryItCalculator";
+import { WelcomeCharacters } from "@/components/WelcomeCharacters";
+import { useMemo, useState } from "react";
+import { simulate } from "@/lib/debt";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,11 +30,16 @@ export const Route = createFileRoute("/")({
 
 function Welcome() {
   const navigate = useNavigate();
+  const [owe, setOwe] = useState(4000);
+  const [pay, setPay] = useState(155);
+  const result = useMemo(() => simulate([
+    { id: "try", name: "Loan", balance: owe, startBalance: owe, rate: 15, payment: pay },
+  ]), [owe, pay]);
   return (
     <div className="min-h-screen" id="top">
       <WelcomeNav />
       <section className="relative mx-auto max-w-6xl px-5 pb-10 pt-24 md:pt-28">
-        <div className="relative grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="relative grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="relative min-w-0 text-center md:text-left">
             <p className="text-sm font-semibold text-green-text lg:absolute lg:-top-7">See the day you'll be free.</p>
             <h1 className="mt-3 text-[30px] font-semibold leading-tight sm:text-[34px] md:text-5xl lg:mt-0">
@@ -56,9 +64,10 @@ function Welcome() {
                 Try the demo
               </Button>
             </div>
+            <WelcomeCharacters owe={owe} pay={pay} months={result.monthsLeft ?? 600} />
           </div>
           <div className="relative flex justify-center lg:justify-end">
-            <TryItCalculator />
+            <TryItCalculator owe={owe} pay={pay} result={result} onOweChange={setOwe} onPayChange={setPay} />
           </div>
         </div>
       </section>

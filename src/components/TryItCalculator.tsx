@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { WelcomeCharacters } from "./WelcomeCharacters";
-import { useCalculatorMoment } from "./useCalculatorMoment";
 import { Slider } from "./ui/slider";
 import { simulate, addMonths, formatMonth, usd, workDaysLabel } from "@/lib/debt";
 
-const RATE = 15;
 const INCOME = 1000;
 
 /** Gently counts a number toward its target. */
@@ -34,59 +31,26 @@ function useCountUp(target: number, duration = 450) {
   return value;
 }
 
-export function TryItCalculator() {
-  const moment = useCalculatorMoment();
-  const [owe, setOwe] = useState(4000);
-  const [pay, setPay] = useState(155);
-  const userTouched = useRef(false);
-  const [selfDemo, setSelfDemo] = useState(false);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let frame = 0;
-    const timer = setTimeout(() => {
-      if (userTouched.current) return;
-      setSelfDemo(true);
-      const start = performance.now();
-      const glide = (time: number) => {
-        if (userTouched.current) {
-          setSelfDemo(false);
-          return;
-        }
-        const progress = Math.min(1, (time - start) / 500);
-        setPay(Math.round((155 + 65 * (1 - Math.pow(1 - progress, 3))) / 5) * 5);
-        if (progress < 1) frame = requestAnimationFrame(glide);
-        else setSelfDemo(false);
-      };
-      frame = requestAnimationFrame(glide);
-    }, 1300);
-    return () => {
-      clearTimeout(timer);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  const result = useMemo(
-    () =>
-      simulate([
-        { id: "try", name: "Loan", balance: owe, startBalance: owe, rate: RATE, payment: pay },
-      ]),
-    [owe, pay],
-  );
+export function TryItCalculator({ owe, pay, result, onOweChange, onPayChange }: {
+  owe: number;
+  pay: number;
+  result: ReturnType<typeof simulate>;
+  onOweChange: (value: number) => void;
+  onPayChange: (value: number) => void;
+}) {
   const months = result.monthsLeft ?? 600;
   const animatedMonths = useCountUp(months);
   const date = addMonths(new Date(), Math.max(1, Math.round(animatedMonths)));
 
   const onSlide = (setter: (n: number) => void) => (v: number[]) => {
-    userTouched.current = true;
-    setSelfDemo(false);
     setter(v[0] ?? 0);
   };
 
   return (
-    <div className="welcome-calculator-scene relative w-full" data-self-demo={selfDemo}>
+    <div className="welcome-calculator-scene relative w-full">
       <div className="relative w-full max-w-md">
         <div className="calculator-card-anchor">
-        <div ref={moment.cardRef} className="calculator-moment-card leaf-lg relative border bg-card p-6 sm:p-7">
+        <div className="calculator-moment-card leaf-lg relative border bg-card p-6 sm:p-7">
           <p className="font-heading text-lg font-semibold">Try it in 10 seconds</p>
           <p className="mt-1 text-xs text-muted-foreground">Move the sliders to see your date.</p>
           <div className="mt-5">
@@ -103,7 +67,7 @@ export function TryItCalculator() {
               max={20000}
               step={100}
               value={[owe]}
-              onValueChange={onSlide(setOwe)}
+              onValueChange={onSlide(onOweChange)}
               aria-label="How much you owe"
             />
           </div>
@@ -121,7 +85,7 @@ export function TryItCalculator() {
               max={1000}
               step={5}
               value={[pay]}
-              onValueChange={onSlide(setPay)}
+              onValueChange={onSlide(onPayChange)}
               aria-label="What you pay each month"
             />
           </div>
@@ -151,7 +115,6 @@ export function TryItCalculator() {
             </div>
           </div>
         </div>
-        <WelcomeCharacters owe={owe} pay={pay} months={months} moment={moment} />
         </div>
         <p className="calculator-real-date text-center text-sm text-muted-foreground">
           Want your real date?{" "}
