@@ -280,7 +280,7 @@ function Progress() {
               Log your first payment to start moving.
             </p>
           )}
-          <div className="road-scene" style={{ "--vertical-height": `${vertical.height}px`, "--vertical-end": `${vertical.end}px`, "--vertical-fill": `${(vertical.positions.sprout ?? 16) - vertical.start}px` } as CSSProperties}>
+          <div className="road-scene" style={{ "--vertical-height": `${vertical.height}px`, "--vertical-end": `${vertical.end}px`, "--vertical-fill": `${(vertical.positions["sprout"] ?? 16) - vertical.start}px` } as CSSProperties}>
             {/* The road */}
             <div className="road-track" aria-hidden="true">
               <div className="road-fill" style={{ "--p": `${pct}%` } as CSSProperties} />
@@ -353,7 +353,7 @@ function Progress() {
             {/* Sprout at the end of the green fill */}
             <div
               className="road-sprout"
-              style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%`, "--vertical-y": `${vertical.positions.sprout}px` } as CSSProperties}
+              style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%`, "--vertical-y": `${vertical.positions["sprout"]}px` } as CSSProperties}
             >
               <p className="road-you leaf border bg-card font-bold">
                 {allDone
@@ -369,7 +369,7 @@ function Progress() {
             {!allDone && (
               <div
                 className="road-stone"
-                style={{ "--p": `${Math.min(pct + 9, 88)}%`, "--vertical-y": `${vertical.positions.stone}px` } as CSSProperties}
+                style={{ "--p": `${Math.min(pct + 9, 88)}%`, "--vertical-y": `${vertical.positions["stone"]}px` } as CSSProperties}
               >
                 <p className="road-stone-label">{usd(leftNow)} to go</p>
                 <Stone size={pct > 90 ? 51 : 78} />

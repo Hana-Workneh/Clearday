@@ -16,5 +16,5 @@ export function verticalRoadLayout(stops: { id: string; pct: number }[], percent
     previousPercent = event.pct;
     previousGap = event.gap;
   }
-  return { positions, start: 16, end: positions.flag ?? y, height: y + 48 };
+  return { positions, start: 16, end: positions["flag"] ?? y, height: y + 48 };
 }
