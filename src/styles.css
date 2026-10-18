@@ -689,7 +689,8 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
   .road-stone svg { width: 52px; height: 52px; }
   .road-stop-stagger .road-marker { transform: translateY(6px); }
   .road-stop-label, .road-stop-stagger .road-stop-label { top: 40px; max-width: 90px; }
-  .road-stop-alternate .road-stop-label { top: auto; bottom: 104px; }
+  .road-stop-alternate .road-stop-label { top: auto; bottom: 32px; }
+  .road-stop-alternate:has([aria-label^="10% paid"]) .road-stop-label { top: 68px; bottom: auto; }
   .road-stop-name, .road-stop-sub { font-size: 10px; }
   .road-flag-banner { max-width: 128px; }
 }
