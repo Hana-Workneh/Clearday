@@ -610,7 +610,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 }
 .road-marker-won, .road-marker-won:hover { background: var(--green); color: var(--shine); }
 .road-marker-next { background: var(--card); border-color: var(--sun); }
-.road-next-label { position: absolute; top: -2px; transform: translateY(-100%); font-size: 9px; font-weight: 800; color: var(--chip-yellow-text); background: var(--chip-yellow); padding: 2px 4px; border-radius: 4px; }
+.road-next-label { display: inline-block; margin-left: 4px; vertical-align: middle; font-size: 9px; font-weight: 800; color: var(--chip-yellow-text); background: var(--chip-yellow); padding: 2px 4px; border-radius: 4px; }
 .road-marker-later { background: var(--card); border-color: var(--border); }
 .road-stop-label {
   position: absolute;
@@ -679,7 +679,6 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-stop-label { max-width: 116px; text-align: center; white-space: normal; width: max-content; }
 .road-stop:first-of-type .road-stop-label { align-items: flex-start; }
 .road-stop:has([aria-label^="First payment"]) .road-stop-label { left: -14px; text-align: left; align-items: flex-start; }
-.road-next-label { top: 0; }
 @media (max-width: 1100px) {
   .road-panel { padding: 16px; }
   .road-scene { height: 490px; margin-top: 0; }
@@ -692,7 +691,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 
   .road-stop-label, .road-stop-stagger .road-stop-label { position: static; margin-left: 0; align-items: flex-start; text-align: left; max-width: 160px; }
   .road-stop-stagger .road-stop-label { position: absolute; left: 96px; top: -10px; margin: 0; width: 110px; }
-  .road-next-label { left: 160px; top: 2px; font-size: 8px; }
+  .road-next-label { font-size: 8px; }
   .road-popover { left: 12px; bottom: auto; top: 24px; transform: none; width: min(210px, calc(100vw - 128px)); }
   .road-sprout { left: 48px; top: 0; bottom: auto; transform: none; }
   .road-sprout svg { width: 96px; height: 96px; }
