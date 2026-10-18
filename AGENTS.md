@@ -29,7 +29,7 @@
 - AI runs in a bearer-verified streaming TanStack server route at `/api/advice` with server-only helpers and a service-only durable pause table — prevents anonymous paid requests and keeps prompts/keys private.
 - Suggested extras are previewed in the shared IdeaPreview dialog and confirmed through planFromIdea, or passed through validated Pay faster search state without saving — both paths reuse the debt engine and preserve the user's chosen loan order.
 - Completed-loan stats and nonmutating demo previews live in pure `src/lib/celebration.ts` with tests; all completion screens use `DebtFreeMoment` — keeps earned milestones separate from sample previews.
-- Home greeting uses tested display-only helpers with shared progress/milestone calculations — keeps threshold reactions separate from financial data.
+- All progress uses pure debtProgress principal totals/percentages and principal-weighted history dates, not gross payments — prevents interest inflating progress on Home, roads and accounts.
 - Celebration image exports are prepared on a browser canvas using resolved theme colors and the exact visible Sprout before download; new savings goals stay in the existing owner-scoped profile document — avoids CSS export clipping, preserves mobile download activation and completed-loan history.
 - AI idea requests are capped per account per UTC day by a service-only atomic counter (claim_ai_advice) checked in /api/advice before calling the model — demo ideas are fixed and never hit the AI.
 - Demo personas use session-keyed profiles/chat and shell remounts; root `DemoBar` reuses actions and a tested session toast claim — prevents leaks and repeated welcome notices.

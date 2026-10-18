@@ -10,7 +10,8 @@ import { Confetti } from "@/components/Confetti";
 import { Button } from "@/components/ui/button";
 import { simulate, formatMonth } from "@/lib/debt";
 import { timeLabel } from "@/lib/time-label";
-import { useProfile, planOptions, today } from "@/lib/store";
+import { debtProgress, principalHistory } from "@/lib/progress";
+import { useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/progress")({
   head: () => ({
@@ -61,24 +62,14 @@ function Progress() {
     const now = new Date();
     const plan = simulate(profile.loans, now, planOptions(profile));
     const payments = [...(profile.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date));
-    const leftNow = profile.loans.reduce((s, l) => s + l.balance, 0);
-    const paidLogged = payments.reduce((s, p) => s + p.amount, 0);
-    const total = leftNow + paidLogged;
-    const pct = total > 0 ? Math.min(100, Math.round((paidLogged / total) * 100)) : 100;
-
-    // Per-loan original balance = what's left plus what was paid toward it.
-    const paidByLoan = new Map<string, number>();
-    for (const p of payments) paidByLoan.set(p.loanId, (paidByLoan.get(p.loanId) ?? 0) + p.amount);
+    const { left: leftNow, paid: paidLogged, total, percent: pct } = debtProgress(profile.loans);
     const loans = profile.loans.map((l) => {
-      const original = l.balance + (paidByLoan.get(l.id) ?? 0);
+      const progress = debtProgress([l]);
       const loanPlan = simulate([l], now, planOptions(profile));
-      return { ...l, original, paid: original - l.balance, paidOffBy: loanPlan.debtFreeDate };
+      return { ...l, original: progress.total, paid: progress.paid, percent: progress.percent, paidOffBy: loanPlan.debtFreeDate };
     });
-
-    // Cumulative paid after each payment, to date the percent stops.
-    let cum = 0;
-    const cumPoints = payments.map((p) => ({ date: p.date, cum: (cum += p.amount) }));
-    const dateAt = (amount: number) => cumPoints.find((c) => c.cum >= amount)?.date;
+    const cumPoints = principalHistory(profile.loans, payments);
+    const dateAt = (amount: number) => cumPoints.find(c => c.cumulative >= amount)?.date;
 
     const firstPayment = payments[0];
     const paidOffLoan = loans.find((l) => l.balance <= 0 && l.original > 0);
@@ -94,7 +85,7 @@ function Progress() {
         id: "first",
         name: "First payment",
         icon: "payment",
-        pct: Math.max(2, Math.round((firstPayment.amount / total) * 100)),
+        pct: Math.max(2, Math.round(((cumPoints[0]?.cumulative ?? 0) / total) * 100)),
         meaning: "You made your first payment in Clearday. Every journey starts here.",
         reached: true,
         date: firstPayment.date,
@@ -143,19 +134,13 @@ function Progress() {
       toGo: paidOffLoan ? undefined : undefined,
     });
 
-    // Stops too close to each other (or to Sprout/Stone) show a marker only;
-    // their full info lives in the popover.
-    const allDoneNow = leftNow <= 0 && total > 0;
-    const sproutPct = allDoneNow ? 88 : Math.min(pct, 86);
-    const stonePct = allDoneNow ? -1 : Math.min(pct + 9, 88);
-    const ordered = [...stops].sort((a, b) => a.pct - b.pct);
+    // Close markers occupy alternate lanes so checks and reached labels stay visible.
+    const ordered = stops.filter(s => s.id !== "loan" || s.reached).sort((a, b) => a.pct - b.pct);
     const crowded = new Set<string>();
     for (let i = 1; i < ordered.length; i++) {
-      if (ordered[i]!.pct - ordered[i - 1]!.pct < 11) crowded.add(ordered[i]!.id);
-    }
-    for (const s of stops) {
-      if (Math.abs(s.pct - sproutPct) < 11 || (stonePct >= 0 && Math.abs(s.pct - stonePct) < 11))
-        crowded.add(s.id);
+      const previous = ordered[i - 1];
+      const current = ordered[i];
+      if (previous && current && current.pct - previous.pct < 12 && !crowded.has(previous.id)) crowded.add(current.id);
     }
 
     return {
@@ -299,10 +284,11 @@ function Progress() {
             </div>
 
             {/* Stops */}
-            {stops.map((s) => (
-              <div key={s.id} className="road-stop" style={{ "--p": `${s.pct}%` } as CSSProperties}>
+            {stops.filter(s => s.id !== "loan" || s.reached).map((s) => (
+              <div key={s.id} className={`road-stop ${crowded.has(s.id) ? "road-stop-stagger" : ""}`} style={{ "--p": `${s.pct}%` } as CSSProperties}>
                 {!s.reached && s.id === nextStopId && <span className="road-next-label">NEXT</span>}
-                <button
+                <Button
+                  variant="ghost"
                   type="button"
                   aria-label={`${s.name}: ${s.reached ? `earned${s.date ? ` on ${day(s.date)}` : ""}` : s.toGo != null ? `${usd(s.toGo)} to go` : "not reached yet"}`}
                   aria-expanded={openStop === s.id}
@@ -315,8 +301,8 @@ function Progress() {
                   {s.reached ? (
                     <Check className="size-3.5" strokeWidth={3.5} />
                   ) : null}
-                </button>
-                {!crowded.has(s.id) && (
+                </Button>
+                {(s.reached || !crowded.has(s.id)) && (
                   <div className="road-stop-label">
                     <span className="road-stop-name">{s.name}</span>
                     {s.reached && s.date && <span className="road-stop-sub">{day(s.date)}</span>}
@@ -371,7 +357,7 @@ function Progress() {
                     ? "You are here · Start"
                     : `You are here · ${pct}% · ${usd(leftNow)} left`}
               </p>
-              <Sprout mood={allDone ? "crowned" : "happy"} size={64} />
+              <Sprout mood={allDone ? "crowned" : "happy"} size={96} />
             </div>
 
             {/* Stone a little ahead, gone at 100% */}
@@ -381,7 +367,7 @@ function Progress() {
                 style={{ "--p": `${Math.min(pct + 9, 88)}%` } as CSSProperties}
               >
                 <p className="road-stone-label">{usd(leftNow)} to go</p>
-                <Stone size={pct > 90 ? 34 : 52} />
+                <Stone size={pct > 90 ? 51 : 78} />
               </div>
             )}
 
@@ -440,7 +426,7 @@ function Progress() {
         <ul className="mt-4 grid gap-4">
           {sortedLoans.map((l) => {
             const loanPct =
-              l.original > 0 ? Math.min(100, Math.round((l.paid / l.original) * 100)) : 100;
+              l.percent;
             const done = l.balance <= 0;
             return (
               <li key={l.id}>

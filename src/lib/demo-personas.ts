@@ -47,7 +47,6 @@ export function createDemoPersona(id: DemoPersonaId, now = new Date()): Profile 
     payment,
   }));
   const started = addMonths(now, -4);
-  const initial = simulate(loans, started);
   const payments: NonNullable<Profile["payments"]> = [];
   for (let month = 0; month < 4; month++) {
     const date = addMonths(now, month - 3);
@@ -75,9 +74,20 @@ export function createDemoPersona(id: DemoPersonaId, now = new Date()): Profile 
     loans,
     payments,
     startedAt: started.toISOString(),
-    startDebtFree: initial.debtFreeDate?.toISOString(),
+    startDebtFree: (() => {
+      const current = simulate(loans, now).debtFreeDate;
+      return current ? addMonths(current, 1).toISOString() : undefined;
+    })(),
     plan: { strategy: "avalanche", extra: 0 },
   };
+}
+/** Upgrade only the obsolete sample baseline, preserving session edits and real accounts. */
+export function refreshDemoBaseline(profile: Profile, now = new Date()): Profile {
+  if (!profile.demo) return profile;
+  const current = simulate(profile.loans, now, profile.plan).debtFreeDate;
+  const original = profile.startDebtFree ? new Date(profile.startDebtFree) : null;
+  if (!current || (original && original.getTime() > current.getTime())) return profile;
+  return { ...profile, startDebtFree: addMonths(current, 1).toISOString() };
 }
 export function demoIdeas(profile: Profile): Idea[] {
   const job = profile.job.toLowerCase();

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { ArrowRight, Check, Sparkles, CircleDollarSign, BriefcaseBusiness, Plus } from "lucide-react";
 import { Sprout } from "@/components/Sprout";
 import { simulate, formatMonth, workDaysLabel } from "@/lib/debt";
-import { useProfile, planOptions, percentPaid } from "@/lib/store";
+import { useProfile, planOptions } from "@/lib/store";
 import { QuietCard } from "@/components/QuietCard";
 import { DebtFreeMoment } from "@/components/DebtFreeMoment";
 import { isDebtFree } from "@/lib/celebration";
@@ -13,6 +13,7 @@ import { ideaImpact, extraFromIdea } from "@/lib/plan";
 import { homeGreeting } from "@/lib/home-greeting";
 import { StartHere } from "@/components/StartHere";
 import { Button } from "@/components/ui/button";
+import { debtProgress } from "@/lib/progress";
 import { timeLabel } from "@/lib/time-label";
 
 export const Route = createFileRoute("/_shell/home")({
@@ -49,7 +50,7 @@ function Home() {
     );
   }
 
-  const pct = percentPaid(profile.loans);
+  const { percent: pct, total: initialDebt, paid: paidDebt } = debtProgress(profile.loans);
   if (isDebtFree(profile)) return <DebtFreeMoment profile={profile} />;
   const filled = Math.round(pct / 10);
   const options = planOptions(profile);
@@ -57,11 +58,9 @@ function Home() {
   const impact = ideaImpact(profile.loans, options, tipAmount, new Date());
   const closest = profile.loans.filter(l => l.balance > 0 && l.startBalance > 0).reduce<typeof profile.loans[number] | undefined>((best, loan) => !best || loan.balance / loan.startBalance < best.balance / best.startBalance ? loan : best, undefined);
   const greeting = homeGreeting(profile);
-  const initialDebt = profile.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
-  const paidDebt = Math.max(0, initialDebt - profile.loans.reduce((sum, loan) => sum + loan.balance, 0));
 
   return (
-    <div className={`mx-auto grid max-w-6xl gap-[22px] ${profile.demo ? "home-demo-content" : ""}`}>
+    <div className="mx-auto grid max-w-6xl gap-[22px]">
       <section className="home-greeting leaf-lg" aria-label="Your progress greeting">
         <Sprout mood={greeting.cheering ? "cheering" : "happy"} size={96} className="home-greeting-sprout" />
         <div className="home-greeting-copy">
@@ -111,7 +110,7 @@ function Home() {
           </div>
           <ul className="mt-6 divide-y">
             {profile.loans.map((l) => {
-              const p = l.startBalance > 0 ? Math.max(0, Math.min(100, Math.round(((l.startBalance - l.balance) / l.startBalance) * 100))) : 0;
+              const p = debtProgress([l]).percent;
               const highlighted = l.id === closest?.id;
               const uw = plan.underwater.find((u) => u.id === l.id);
               return (

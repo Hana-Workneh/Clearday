@@ -1,4 +1,5 @@
 import type { Profile } from "./store";
+import { debtProgress } from "./progress";
 
 export function isDebtFree(profile: Pick<Profile, "loans">) {
   return profile.loans.length > 0 && profile.loans.every(loan => loan.balance <= 0);
@@ -6,10 +7,8 @@ export function isDebtFree(profile: Pick<Profile, "loans">) {
 
 /** Display-only milestones; never changes a balance or a saved plan. */
 export function nextWin(profile: Pick<Profile, "loans" | "payments">) {
-  const initial = profile.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
+  const { total: initial, paid } = debtProgress(profile.loans);
   if (initial <= 0) return null;
-  const left = profile.loans.reduce((sum, loan) => sum + loan.balance, 0);
-  const paid = Math.max(0, initial - left);
   const latest = [...(profile.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
   const before = Math.max(0, paid - (latest?.amount ?? 0));
   const milestones = [{ fraction: .1, name: "10% paid" }, { fraction: .25, name: "25% paid" }, { fraction: .5, name: "Halfway there" }, { fraction: 1, name: "Debt free" }];

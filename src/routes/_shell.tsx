@@ -30,11 +30,11 @@ function Shell() {
   const location = useLocation();
   return (
     <div className={`app-shell flex min-h-screen w-full ${profile?.demo && !account.id ? "demo-shell" : ""}`}>
-      <aside className="sticky top-0 hidden h-screen w-[230px] shrink-0 flex-col border-r bg-card p-5 md:flex">
+      <aside className="app-sidebar hidden w-[230px] shrink-0 flex-col border-r bg-card md:flex">
         <Link to="/" className="mb-8 flex items-center gap-2">
           <CleardayLogo />
         </Link>
-        <nav className="flex flex-col gap-1">
+        <nav className="sidebar-menu flex flex-col gap-1">
           {nav.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
@@ -47,14 +47,16 @@ function Shell() {
             </Link>
           ))}
         </nav>
+        <div className="sidebar-payment">
         <Button
           data-tour="payment"
           disabled={!!profile && isDebtFree(profile)}
           onClick={() => openPayment()}
-          className="btn-main mt-auto whitespace-nowrap !px-4 text-sm"
+          className="btn-main w-full whitespace-nowrap !px-4 text-sm"
         >
           <Plus className="h-4 w-4" /> I made a payment
         </Button>
+        </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-4 sm:flex sm:justify-between md:justify-end md:px-10 ${location.pathname === "/home" ? "home-top-row" : ""}`}>

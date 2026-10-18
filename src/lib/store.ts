@@ -3,7 +3,8 @@ import { simulate, type Loan, type PlanOptions } from "./debt";
 import { supabase } from "@/integrations/supabase/client";
 import { profileSchema, mergeLocalData, type Currency } from "./account-data";
 import { saveAccountProfile } from "./account.functions";
-import { createDemoPersona, demoIdentity, type DemoPersonaId } from "./demo-personas";
+import { createDemoPersona, demoIdentity, refreshDemoBaseline, type DemoPersonaId } from "./demo-personas";
+import { debtProgress } from "./progress";
 
 export type Payment = { id: string; loanId: string; amount: number; date: string }; // date: yyyy-mm-dd
 export type CatchUp = { amount: number; months: number; from: string };
@@ -157,7 +158,7 @@ export function loadProfile(): Profile | null {
       try {
         const parsed = JSON.parse(demo);
         const valid = profileSchema.parse(parsed);
-        return { ...valid, demo: true, demoPersona: demoIdentity(parsed) };
+        return refreshDemoBaseline({ ...valid, demo: true, demoPersona: demoIdentity(parsed) });
       } catch {
         // A stale or damaged demo is disposable; never replace real account data.
         const hana = createDemoPersona("hana");
@@ -244,41 +245,7 @@ export function planOptions(p: Profile, now = new Date()): PlanOptions {
 }
 
 export function percentPaid(loans: Loan[]) {
-  const start = loans.reduce((s, l) => s + l.startBalance, 0);
-  const left = loans.reduce((s, l) => s + l.balance, 0);
-  return start > 0 ? Math.round(((start - left) / start) * 100) : 0;
+  return debtProgress(loans).percent;
 }
 
-const daysAgo = (n: number) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
-
-export const demoProfile: Profile = {
-  name: "Hana",
-  income: 500,
-  job: "Marketing officer",
-  currency: "USD",
-  demo: true,
-  loans: [
-    { id: "d1", name: "Phone loan", balance: 580, startBalance: 650, rate: 24, payment: 30 },
-    { id: "d2", name: "Personal loan", balance: 2563, startBalance: 2800, rate: 18, payment: 100 },
-    { id: "d3", name: "Salary advance", balance: 296, startBalance: 400, rate: 30, payment: 35 },
-  ],
-  startedAt: daysAgo(120),
-  startDebtFree: simulate(
-    [
-      {
-        id: "start",
-        name: "Starting loans",
-        balance: 1100,
-        startBalance: 1100,
-        rate: 12,
-        payment: 170,
-      },
-    ],
-    new Date(Date.now() - 120 * 86400000),
-  ).debtFreeDate?.toISOString(),
-  payments: [98, 68, 38, 8].flatMap((days, i) => [
-    { id: `hana-${i}-phone`, loanId: "d1", amount: 40, date: daysAgo(days) },
-    { id: `hana-${i}-personal`, loanId: "d2", amount: 80, date: daysAgo(days) },
-    { id: `hana-${i}-salary`, loanId: "d3", amount: 50, date: daysAgo(days) },
-  ]),
-};
+export const demoProfile: Profile = createDemoPersona("hana");

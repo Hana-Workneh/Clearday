@@ -1,6 +1,7 @@
 import { simulate, formatMonth, type PlanOptions } from "./debt";
 import { money } from "./account-data";
 import type { Profile } from "./store";
+import { debtProgress } from "./progress";
 import { correctTimeUnits } from "./time-label";
 
 export const SPROUT_USER_LIMIT = 10;
@@ -52,7 +53,7 @@ export function chatFacts(profile: Profile, question: string, now = new Date()) 
   const cleanLoan =
     priority?.name.replace(/[^\p{L}\p{N} '-]/gu, "").slice(0, 120) || "your next loan";
   const facts: Record<string, string> = {
-    balance: money(active.reduce((sum, loan) => sum + loan.balance, 0), profile.currency),
+    balance: money(debtProgress(profile.loans).left, profile.currency),
     date: current.debtFreeDate
       ? formatMonth(current.debtFreeDate)
       : "not yet within the calculation range",

@@ -1,12 +1,10 @@
 import { nextWin } from "./celebration";
-import { percentPaid, type Profile } from "./store";
+import type { Profile } from "./store";
+import { debtProgress } from "./progress";
 
 /** Display only: reuse shared progress and milestone calculations. */
 export function homeGreeting(profile: Profile, now = new Date()) {
-  const initial = profile.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
-  const remaining = profile.loans.reduce((sum, loan) => sum + loan.balance, 0);
-  const rawPercent = initial > 0 ? (initial - remaining) / initial * 100 : 0;
-  const percent = Math.max(0, Math.min(100, percentPaid(profile.loans)));
+  const { exactPercent: rawPercent, percent } = debtProgress(profile.loans);
   const last = [...(profile.payments ?? [])].sort((a, b) => b.date.localeCompare(a.date))[0];
   const midnight = new Date(now);
   midnight.setHours(0, 0, 0, 0);
