@@ -34,6 +34,7 @@
   --color-tip: var(--tip);
   --color-tip-solid: var(--tip-solid);
   --color-tip-foreground: var(--tip-foreground);
+  --color-home-tip: var(--home-tip);
   --color-sun: var(--sun);
   --color-cheek: var(--cheek);
   --color-ink: var(--ink);
@@ -95,6 +96,7 @@
   --tip: #6B4EFF;
   --tip-solid: oklch(0.552 0.248 285.5);
   --tip-foreground: oklch(1 0 0);
+  --home-tip: #F1EEFF;
   --sun: #FFC93C;
   --logo-ring-a: #6B4EFF;
   --logo-ring-b: #00C875;
@@ -137,6 +139,7 @@
   --green: #00DF81;
   --green-text: #00DF81;
   --tip: #8B74FF;
+  --home-tip: color-mix(in srgb, var(--tip) 12%, var(--card));
   --chip-green: #0F2A1E;
   --setup-panel: #12201A;
   --chip-green-text: #00DF81;
@@ -186,6 +189,8 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .home-greeting h1 { font-size: 34px; font-weight: 700; line-height: 1.18; overflow-wrap: anywhere; }
 .home-ideas { height: 50px; padding: 12px 18px; border: 0; border-radius: 14px 14px 14px 4px; background: var(--card); box-shadow: var(--shadow-lift); color: var(--foreground); }
 .home-ideas strong, .home-ideas > svg:first-child { color: var(--tip); }
+.home-demo-content { padding-bottom: 40px; }
+@media (max-width: 767px) { .home-demo-content { padding-bottom: 80px; } }
 @keyframes demo-arrive { from { opacity: 0; transform: translate(-50%,12px); } to { opacity: 1; transform: translate(-50%,0); } }
 @media (max-width: 1100px) {
   .home-greeting { grid-template-columns: 96px minmax(0,1fr); }
