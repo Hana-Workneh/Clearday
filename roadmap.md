@@ -1,5 +1,5 @@
 # My plan
-- [ ] Adjust only medium/phone Progress road; verify seven widths in both themes and tablet/phone preview.
+- [x] Adjust only medium/phone Progress road; container-width breakpoint, on-line characters and collision-spaced vertical rows verified at 1400/1100/900/768/640/390/360px plus 1088/834/375px in both themes; 15 tests passed and preview clean. Desktop road unchanged.
 - [x] Unified principal progress; fixed road checks/staggered labels and compact larger characters; later original demo dates, shared 160/320px demo clearance and sidebar payment 24px from bottom. All four demos and a real signed-in account passed 1400/768/390px in both themes; 160 tests passed, preview clean, no account writes or real AI allowance consumed.
 - [x] Polish Home only: progress exactly 32px below months remaining, $411 paid of $3,850 for Hana, softer tip and demo bottom clearance; 1400/390px passed both themes with matching desktop card heights, no overflow or page errors, and 26 regression tests passed.
 - [x] Update demo Ask Sprout to 15 per visitor / 500 total per UTC day; atomic counters, UTC midnight renewal, unchanged account limits and friendly calculated fallbacks passed 37 isolated tests and intercepted browser check, with no real allowance consumed.
