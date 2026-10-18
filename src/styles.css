@@ -189,7 +189,7 @@ body:has(.demo-bar) main { padding-bottom: 130px; }
 body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 @media (min-width: 768px) { .ask-sprout-launcher { width: auto; min-width: 166px; padding-left: 4px; gap: 4px; } }
 @media (max-width: 1100px) and (min-width: 768px) { body:has(.demo-bar) [data-sonner-toaster] { bottom: 180px; } }
-@media (max-width: 767px) { body:has(.demo-bar) [data-sonner-toaster] { bottom: 244px; } }
+@media (max-width: 767px) { body:has(.demo-bar) [data-sonner-toaster] { bottom: 224px; } }
 .home-greeting { display: grid; grid-template-columns: 96px minmax(0,1fr) auto; align-items: center; gap: 20px; padding: 22px 28px; background: linear-gradient(120deg,var(--greeting-start),var(--greeting-end)); }
 .home-greeting-sprout { width: 96px; height: 96px; }
 .home-greeting h1 { font-size: 34px; font-weight: 700; line-height: 1.18; overflow-wrap: anywhere; }
@@ -215,10 +215,9 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
   .home-greeting-sprout { width: 80px; height: 96px; }
   .home-greeting h1 { font-size: 28px; }
   .home-greeting-copy .page-sub { font-size: 13px; line-height: 1.6; }
-  .demo-shell > nav { bottom: 94px; }
-  .demo-shell > .fixed:not(nav) { bottom: 162px; }
-  body:has(.demo-bar) .ask-sprout-launcher { bottom: 232px; }
-  body:has(.demo-bar) .ask-sprout-panel { bottom: 174px; height: min(620px,calc(100dvh - 190px)); }
+  .demo-shell > .fixed:not(nav) { bottom: 142px; }
+  body:has(.demo-bar) .ask-sprout-launcher { bottom: 212px; }
+  body:has(.demo-bar) .ask-sprout-panel { bottom: 146px; height: min(620px,calc(100dvh - 162px)); }
   body:has(.demo-bar) main, .demo-shell main { padding-bottom: 320px; }
 }
 @media (prefers-reduced-motion: reduce) { .demo-bar, .demo-persona-menu { animation: none; } }
