@@ -1,11 +1,10 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { Home, Zap, Map, TrendingUp, Settings, Plus } from "lucide-react";
-import { Sprout } from "@/components/Sprout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaymentFlow, openPayment } from "@/components/PaymentFlow";
-import { useAccount, useProfile, refreshAccount } from "@/lib/store";
+import { useAccount, useProfile } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { PageLoading } from "@/components/PageLoading";
+import { LoadingTrouble, PageLoading } from "@/components/PageLoading";
 import { isDebtFree } from "@/lib/celebration";
 import { CleardayLogo } from "@/components/CleardayLogo";
 import { AskSprout } from "@/components/AskSprout";
@@ -81,15 +80,9 @@ function Shell() {
         <main
           className={`flex-1 px-5 md:px-10 md:pb-10 ${location.pathname === "/home" ? "pb-44" : "pb-28"}`}
         >
-          {account.error ? (
-            <div role="alert" className="mx-auto max-w-xl py-12 text-center">
-              <Sprout mood="calm" size={90} />
-              <p>{account.error}</p>
-              <Button onClick={() => refreshAccount()} className="btn-main mt-5">
-                Reload my account
-              </Button>
-            </div>
-          ) : !account.ready ? (
+          {account.error && !profile?.demo ? (
+            <LoadingTrouble />
+          ) : !account.ready && !profile?.demo ? (
             <PageLoading />
           ) : (
             <div

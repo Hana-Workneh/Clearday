@@ -50,6 +50,21 @@ export function useAccount() {
   }, []);
   return state;
 }
+export function hasDemoSession() {
+  try {
+    return !!sessionStorage.getItem(DEMO_KEY);
+  } catch {
+    return false;
+  }
+}
+const ACCOUNT_TIMEOUT_MS = 8000;
+/** Every account step must settle, so loading screens can never wait forever. */
+function withTimeout<T>(promise: PromiseLike<T>): Promise<T> {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("timeout")), ACCOUNT_TIMEOUT_MS)),
+  ]);
+}
 export async function refreshAccount() {
   const version = ++generation;
   ready = false;
@@ -58,7 +73,7 @@ export async function refreshAccount() {
   notify();
   let user;
   try {
-    const result = await supabase.auth.getUser();
+    const result = await withTimeout(supabase.auth.getUser());
     // Missing session is expected for visitors. Other failures must not erase saved data.
     if (result.error && result.error.name !== "AuthSessionMissingError") throw result.error;
     user = result.data.user;
@@ -73,11 +88,9 @@ export async function refreshAccount() {
   accountId = user?.id ?? null;
   if (user) {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("data")
-        .eq("id", user.id)
-        .maybeSingle();
+      const { data, error } = await withTimeout(
+        supabase.from("profiles").select("data").eq("id", user.id).maybeSingle(),
+      );
       if (error) throw error;
       let profile = data?.data ? profileSchema.parse(data.data) : null;
       const raw = localStorage.getItem(KEY);
@@ -208,7 +221,8 @@ export async function saveProfile(p: Profile) {
 export function useProfile() {
   const [p, setP] = useState<Profile | null | undefined>(undefined);
   useEffect(() => {
-    const load = () => setP(ready ? loadProfile() : undefined);
+    // A demo lives only in this tab, so it never waits for the account check.
+    const load = () => setP(ready || hasDemoSession() ? loadProfile() : undefined);
     load();
     window.addEventListener(EVENT, load);
     return () => window.removeEventListener(EVENT, load);
