@@ -178,7 +178,13 @@
 .demo-persona-menu [role=menuitem] { padding: 10px; }
 .demo-persona-menu [role=menuitem]:focus { background: var(--demo-surface); color: var(--demo-foreground); }
 body:has(.demo-bar) main { padding-bottom: 130px; }
-.demo-shell > aside { padding-bottom: 108px; }
+/* Shared app clearance and stationary sidebar, identical for demos and accounts. */
+.demo-shell main { padding-bottom: 160px; }
+.app-sidebar { position: sticky; top: 0; height: 100dvh; padding: 20px 20px 24px; }
+.sidebar-menu { min-height: 0; overflow-y: auto; }
+.sidebar-payment { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.app-sidebar > a { flex-shrink: 0; }
+@media (max-height: 480px) { .app-sidebar > a { margin-bottom: 12px; } .sidebar-payment { padding-top: 12px; } }
 .home-top-row { padding-bottom: 22px; }
 body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 @media (min-width: 768px) { .ask-sprout-launcher { width: auto; min-width: 166px; padding-left: 4px; gap: 4px; } }
@@ -189,8 +195,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .home-greeting h1 { font-size: 34px; font-weight: 700; line-height: 1.18; overflow-wrap: anywhere; }
 .home-ideas { height: 50px; padding: 12px 18px; border: 0; border-radius: 14px 14px 14px 4px; background: var(--card); box-shadow: var(--shadow-lift); color: var(--foreground); }
 .home-ideas strong, .home-ideas > svg:first-child { color: var(--tip); }
-.home-demo-content { padding-bottom: 40px; }
-@media (max-width: 767px) { .home-demo-content { padding-bottom: 80px; } }
+
 @keyframes demo-arrive { from { opacity: 0; transform: translate(-50%,12px); } to { opacity: 1; transform: translate(-50%,0); } }
 @media (max-width: 1100px) {
   .home-greeting { grid-template-columns: 96px minmax(0,1fr); }
@@ -213,7 +218,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
   .demo-shell > .fixed:not(nav) { bottom: 162px; }
   body:has(.demo-bar) .ask-sprout-launcher { bottom: 232px; }
   body:has(.demo-bar) .ask-sprout-panel { bottom: 174px; height: min(620px,calc(100dvh - 190px)); }
-  body:has(.demo-bar) main { padding-bottom: 260px; }
+  body:has(.demo-bar) main, .demo-shell main { padding-bottom: 320px; }
 }
 @media (prefers-reduced-motion: reduce) { .demo-bar, .demo-persona-menu { animation: none; } }
 @utility section-pad { padding-block: 56px; @media (min-width: 768px) { padding-block: 96px } }
@@ -556,14 +561,14 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 }
 .road-scene {
   position: relative;
-  height: 240px;
-  margin-top: 8px;
+  height: 210px;
+  margin-top: 0;
 }
 .road-track {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 56px;
+  bottom: 76px;
   height: 14px;
   border-radius: 9999px;
   background: var(--border);
@@ -583,7 +588,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-stop {
   position: absolute;
   left: var(--p);
-  bottom: 56px;
+  bottom: 76px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -597,17 +602,19 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
   width: 26px;
   height: 26px;
   border-radius: 9999px;
-  transform: translateY(19px);
+  transform: translateY(6px);
+  padding: 0;
+  min-height: 26px;
   cursor: pointer;
   border: 2px solid transparent;
 }
-.road-marker-won { background: var(--green); color: #fff; }
+.road-marker-won, .road-marker-won:hover { background: var(--green); color: var(--shine); }
 .road-marker-next { background: var(--card); border-color: var(--sun); }
 .road-next-label { position: absolute; top: -2px; transform: translateY(-100%); font-size: 9px; font-weight: 800; color: var(--chip-yellow-text); background: var(--chip-yellow); padding: 2px 4px; border-radius: 4px; }
 .road-marker-later { background: var(--card); border-color: var(--border); }
 .road-stop-label {
   position: absolute;
-  bottom: 34px;
+  top: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -626,8 +633,8 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 }
 .road-sprout {
   position: absolute;
-  left: var(--p);
-  bottom: 70px;
+  left: clamp(96px, var(--p), calc(100% - 100px));
+  bottom: 100px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -637,13 +644,15 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-you {
   padding: 4px 10px;
   font-size: 11px;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  width: 190px;
   margin-bottom: 4px;
 }
 .road-stone {
   position: absolute;
-  left: var(--p);
-  bottom: 70px;
+  left: clamp(216px, var(--p), calc(100% - 190px));
+  bottom: 100px;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -654,7 +663,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-flag {
   position: absolute;
   right: 0;
-  bottom: 70px;
+  bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -665,77 +674,32 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-flag-icon { width: 26px; height: 26px; }
 .road-hint-top { text-align: center; }
 
-@media (max-width: 767px) {
-  .road-scene {
-    height: auto;
-    min-height: 460px;
-    display: block;
-  }
-  .road-track {
-    left: 20px;
-    right: auto;
-    top: 8px;
-    bottom: 70px;
-    width: 14px;
-    height: auto;
-  }
-  .road-fill {
-    width: 100%;
-    height: var(--p);
-    position: absolute;
-    top: 0;
-    animation-name: road-grow-v;
-  }
-  @keyframes road-grow-v {
-    from { height: 0; }
-    to { height: var(--p); }
-  }
-  .road-stop {
-    left: 27px;
-    top: var(--p);
-    bottom: auto;
-    transform: translateY(-50%);
-    flex-direction: row;
-  }
-  .road-marker { transform: translateX(-6px); }
-  .road-stop-label {
-    position: static;
-    margin-left: 16px;
-    align-items: flex-start;
-  }
-  .road-popover {
-    left: 40px;
-    bottom: auto;
-    top: 20px;
-    transform: none;
-  }
-  .road-sprout {
-    left: 27px;
-    top: var(--p);
-    bottom: auto;
-    transform: translateY(-50%);
-    flex-direction: row;
-    gap: 6px;
-  }
-  .road-sprout svg { width: 44px; height: 44px; }
-  .road-you { margin-bottom: 0; margin-left: 14px; order: 2; }
-  .road-stone {
-    left: 27px;
-    top: calc(var(--p) + 40px);
-    bottom: auto;
-    transform: translateY(-50%);
-    flex-direction: row;
-    gap: 6px;
-  }
-  .road-stone-label { margin-left: 14px; order: 2; }
-  .road-flag {
-    right: auto;
-    left: 27px;
-    bottom: 0;
-    top: auto;
-    transform: translateX(-50%);
-    align-items: center;
-  }
+.road-stop-stagger .road-marker { transform: translateY(34px); }
+.road-stop-stagger .road-stop-label { top: 68px; }
+.road-stop-label { max-width: 116px; text-align: center; white-space: normal; width: max-content; }
+.road-stop:first-of-type .road-stop-label { align-items: flex-start; }
+.road-stop:has([aria-label^="First payment"]) .road-stop-label { left: -14px; text-align: left; align-items: flex-start; }
+.road-next-label { top: 0; }
+@media (max-width: 1100px) {
+  .road-panel { padding: 16px; }
+  .road-scene { height: 490px; margin-top: 0; }
+  .road-track { left: 12px; right: auto; top: 156px; bottom: 46px; width: 14px; height: auto; }
+  .road-fill { width: 100%; height: var(--p); position: absolute; top: 0; animation-name: road-grow-v; }
+  @keyframes road-grow-v { from { height: 0; } to { height: var(--p); } }
+  .road-stop { left: 19px; top: calc(156px + var(--p) * .588); bottom: auto; transform: translateY(-50%); flex-direction: row; }
+  .road-marker, .road-stop-stagger .road-marker { transform: translateX(-13px); }
+  .road-stop-stagger { margin-top: 0; }
+
+  .road-stop-label, .road-stop-stagger .road-stop-label { position: static; margin-left: 0; align-items: flex-start; text-align: left; max-width: 160px; }
+  .road-stop-stagger .road-stop-label { position: absolute; left: 96px; top: -10px; margin: 0; width: 110px; }
+  .road-next-label { left: 160px; top: 2px; font-size: 8px; }
+  .road-popover { left: 12px; bottom: auto; top: 24px; transform: none; width: min(210px, calc(100vw - 128px)); }
+  .road-sprout { left: 48px; top: 0; bottom: auto; transform: none; }
+  .road-sprout svg { width: 96px; height: 96px; }
+  .road-you { position: absolute; top: 106px; left: -40px; width: 230px; margin: 0; }
+  .road-stone { left: auto; right: 4px; top: 16px; bottom: auto; transform: none; }
+  .road-stone-label { font-size: 10px; }
+  .road-flag { right: 0; bottom: 0; align-items: flex-end; }
 }
 
 @media (prefers-reduced-motion: reduce) {
