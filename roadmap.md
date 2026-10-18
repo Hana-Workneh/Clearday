@@ -1,5 +1,5 @@
 # My plan
-- [ ] Polish Home only: compact date progress with real paid totals, softer tip and demo bottom clearance; verify 1400/390px in both themes.
+- [x] Polish Home only: progress exactly 32px below months remaining, $411 paid of $3,850 for Hana, softer tip and demo bottom clearance; 1400/390px passed both themes with matching desktop card heights, no overflow or page errors, and 26 regression tests passed.
 - [x] Update demo Ask Sprout to 15 per visitor / 500 total per UTC day; atomic counters, UTC midnight renewal, unchanged account limits and friendly calculated fallbacks passed 37 isolated tests and intercepted browser check, with no real allowance consumed.
 - [x] Verified live five-per-demo/ten-per-account UTC counters (no 15/500 rule); date-key renewal at midnight UTC confirmed. Capped/unavailable demo counters stream verified quick replies with a friendly note; 30 tests passed with forbidden real fetch, browser display checked with all chat requests intercepted.
 - [x] Clean only landing hero copy/chips/interest placement and one-time slider hint; 1400/768/390px passed both themes, desktop hover/drag and no session replay, reduced-motion static ring; nine regression tests passed.
