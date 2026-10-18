@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { simulate, formatMonth } from "@/lib/debt";
 import { timeLabel } from "@/lib/time-label";
 import { debtProgress, principalHistory } from "@/lib/progress";
+import { verticalRoadLayout } from "@/lib/road-layout";
 import { useProfile, planOptions } from "@/lib/store";
 
 export const Route = createFileRoute("/_shell/progress")({
@@ -184,6 +185,8 @@ function Progress() {
 
   const { plan, payments, pct, total, paidLogged, leftNow, loans, stops, crowded } = data;
   const allDone = leftNow <= 0 && total > 0;
+  const visibleStops = stops.filter(s => s.id !== "loan" || s.reached);
+  const vertical = verticalRoadLayout(visibleStops, pct, allDone);
   const startDate = profile.startDebtFree ? new Date(profile.startDebtFree) : null;
   const loanName = (id: string) => profile.loans.find((l) => l.id === id)?.name ?? "Loan";
 
@@ -277,15 +280,15 @@ function Progress() {
               Log your first payment to start moving.
             </p>
           )}
-          <div className="road-scene">
+          <div className="road-scene" style={{ "--vertical-height": `${vertical.height}px`, "--vertical-end": `${vertical.end}px`, "--vertical-fill": `${(vertical.positions.sprout ?? 16) - vertical.start}px` } as CSSProperties}>
             {/* The road */}
             <div className="road-track" aria-hidden="true">
               <div className="road-fill" style={{ "--p": `${pct}%` } as CSSProperties} />
             </div>
 
             {/* Stops */}
-            {stops.filter(s => s.id !== "loan" || s.reached).map((s) => (
-              <div key={s.id} className={`road-stop ${crowded.has(s.id) ? "road-stop-stagger" : ""}`} style={{ "--p": `${s.pct}%` } as CSSProperties}>
+            {visibleStops.map((s, index) => (
+              <div key={s.id} className={`road-stop ${crowded.has(s.id) ? "road-stop-stagger" : ""} ${index % 2 ? "road-stop-alternate" : ""}`} style={{ "--p": `${s.pct}%`, "--vertical-y": `${vertical.positions[s.id]}px` } as CSSProperties}>
                 <Button
                   variant="ghost"
                   type="button"
@@ -350,7 +353,7 @@ function Progress() {
             {/* Sprout at the end of the green fill */}
             <div
               className="road-sprout"
-              style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%` } as CSSProperties}
+              style={{ "--p": `${allDone ? 88 : Math.min(pct, 86)}%`, "--vertical-y": `${vertical.positions.sprout}px` } as CSSProperties}
             >
               <p className="road-you leaf border bg-card font-bold">
                 {allDone
@@ -366,7 +369,7 @@ function Progress() {
             {!allDone && (
               <div
                 className="road-stone"
-                style={{ "--p": `${Math.min(pct + 9, 88)}%` } as CSSProperties}
+                style={{ "--p": `${Math.min(pct + 9, 88)}%`, "--vertical-y": `${vertical.positions.stone}px` } as CSSProperties}
               >
                 <p className="road-stone-label">{usd(leftNow)} to go</p>
                 <Stone size={pct > 90 ? 51 : 78} />

@@ -552,6 +552,7 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 
 /* ===== Progress road ===== */
 .road-panel {
+  container-type: inline-size;
   border-radius: 28px 28px 28px 8px;
   background: linear-gradient(120deg, #f3efff 0%, #eafaf1 100%);
   padding: 24px;
@@ -679,26 +680,39 @@ body:has(.demo-bar) [data-sonner-toaster] { bottom: 108px; }
 .road-stop-label { max-width: 116px; text-align: center; white-space: normal; width: max-content; }
 .road-stop:first-of-type .road-stop-label { align-items: flex-start; }
 .road-stop:has([aria-label^="First payment"]) .road-stop-label { left: -14px; text-align: left; align-items: flex-start; }
-@media (max-width: 1100px) {
-  .road-panel { padding: 16px; }
-  .road-scene { height: 490px; margin-top: 0; }
-  .road-track { left: 12px; right: auto; top: 156px; bottom: 46px; width: 14px; height: auto; }
-  .road-fill { width: 100%; height: var(--p); position: absolute; top: 0; animation-name: road-grow-v; }
-  @keyframes road-grow-v { from { height: 0; } to { height: var(--p); } }
-  .road-stop { left: 19px; top: calc(156px + var(--p) * .588); bottom: auto; transform: translateY(-50%); flex-direction: row; }
-  .road-marker, .road-stop-stagger .road-marker { transform: translateX(-13px); }
-  .road-stop-stagger { margin-top: 0; }
-
-  .road-stop-label, .road-stop-stagger .road-stop-label { position: static; margin-left: 0; align-items: flex-start; text-align: left; max-width: 160px; }
-  .road-stop-stagger .road-stop-label { position: absolute; left: 96px; top: -10px; margin: 0; width: 110px; }
+@container (min-width: 640px) and (max-width: 850px) {
+  .road-scene { height: 250px; }
+  .road-sprout { left: clamp(60px, var(--p), calc(100% - 80px)); }
+  .road-sprout svg { width: 64px; height: 64px; }
+  .road-you { width: 140px; font-size: 10px; }
+  .road-stone { left: clamp(166px, var(--p), calc(100% - 140px)); }
+  .road-stone svg { width: 52px; height: 52px; }
+  .road-stop-stagger .road-marker { transform: translateY(6px); }
+  .road-stop-label, .road-stop-stagger .road-stop-label { top: 40px; max-width: 90px; }
+  .road-stop-alternate .road-stop-label { top: auto; bottom: 32px; }
+  .road-stop-name, .road-stop-sub { font-size: 10px; }
+  .road-flag-banner { max-width: 128px; }
+}
+@container (max-width: 639.99px) {
+  .road-scene { height: var(--vertical-height); }
+  .road-track { left: 17px; right: auto; top: 16px; bottom: auto; width: 14px; height: calc(var(--vertical-end) - 16px); }
+  .road-fill { width: 100%; height: var(--vertical-fill); animation: none; }
+  .road-stop, .road-stop-stagger { left: 24px; top: var(--vertical-y); bottom: auto; transform: translate(-50%, -50%); margin: 0; }
+  .road-marker, .road-stop-stagger .road-marker { transform: none; }
+  .road-stop-label, .road-stop-stagger .road-stop-label,
+  .road-stop:has([aria-label^="First payment"]) .road-stop-label {
+    position: absolute; left: 49px; top: 50%; transform: translateY(-50%);
+    align-items: flex-start; text-align: left; width: max-content; max-width: calc(100cqw - 76px); margin: 0;
+  }
   .road-next-label { font-size: 8px; }
-  .road-popover { left: 12px; bottom: auto; top: 24px; transform: none; width: min(210px, calc(100vw - 128px)); }
-  .road-sprout { left: 48px; top: 0; bottom: auto; transform: none; }
-  .road-sprout svg { width: 96px; height: 96px; }
-  .road-you { position: absolute; top: 106px; left: -40px; width: 230px; margin: 0; }
-  .road-stone { left: auto; right: 4px; top: 16px; bottom: auto; transform: none; }
-  .road-stone-label { font-size: 10px; }
-  .road-flag { right: 0; bottom: 0; align-items: flex-end; }
+  .road-popover { left: 36px; bottom: auto; top: 24px; transform: none; width: min(210px, calc(100cqw - 64px)); }
+  .road-sprout, .road-stone { left: 24px; right: auto; top: var(--vertical-y); bottom: auto; transform: translate(-50%, -50%); }
+  .road-sprout svg { width: 64px; height: 64px; }
+  .road-stone svg { width: 48px; height: 48px; }
+  .road-you { position: absolute; left: 68px; top: 50%; transform: translateY(-50%); width: calc(100cqw - 76px); margin: 0; text-align: left; }
+  .road-stone-label { position: absolute; left: 60px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+  .road-flag { left: 24px; right: auto; top: var(--vertical-end); bottom: auto; transform: translate(-50%, -50%); }
+  .road-flag-banner { position: absolute; left: 49px; top: 50%; transform: translateY(-50%); width: max-content; max-width: calc(100cqw - 76px); text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {
