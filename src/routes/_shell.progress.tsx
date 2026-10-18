@@ -286,7 +286,6 @@ function Progress() {
             {/* Stops */}
             {stops.filter(s => s.id !== "loan" || s.reached).map((s) => (
               <div key={s.id} className={`road-stop ${crowded.has(s.id) ? "road-stop-stagger" : ""}`} style={{ "--p": `${s.pct}%` } as CSSProperties}>
-                {!s.reached && s.id === nextStopId && <span className="road-next-label">NEXT</span>}
                 <Button
                   variant="ghost"
                   type="button"
@@ -302,9 +301,12 @@ function Progress() {
                     <Check className="size-3.5" strokeWidth={3.5} />
                   ) : null}
                 </Button>
-                {(s.reached || !crowded.has(s.id)) && (
+                {(s.reached || !crowded.has(s.id) || s.id === nextStopId) && (
                   <div className="road-stop-label">
-                    <span className="road-stop-name">{s.name}</span>
+                    <span className="road-stop-name">
+                      {s.name}
+                      {!s.reached && s.id === nextStopId && <span className="road-next-label">NEXT</span>}
+                    </span>
                     {s.reached && s.date && <span className="road-stop-sub">{day(s.date)}</span>}
                     {!s.reached && s.id === nextStopId && s.toGo != null && (
                       <span className="road-stop-sub">{usd(s.toGo)} to go</span>
