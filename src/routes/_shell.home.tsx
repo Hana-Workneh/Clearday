@@ -57,9 +57,11 @@ function Home() {
   const impact = ideaImpact(profile.loans, options, tipAmount, new Date());
   const closest = profile.loans.filter(l => l.balance > 0 && l.startBalance > 0).reduce<typeof profile.loans[number] | undefined>((best, loan) => !best || loan.balance / loan.startBalance < best.balance / best.startBalance ? loan : best, undefined);
   const greeting = homeGreeting(profile);
+  const initialDebt = profile.loans.reduce((sum, loan) => sum + loan.startBalance, 0);
+  const paidDebt = Math.max(0, initialDebt - profile.loans.reduce((sum, loan) => sum + loan.balance, 0));
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-[22px]">
+    <div className={`mx-auto grid max-w-6xl gap-[22px] ${profile.demo ? "home-demo-content" : ""}`}>
       <section className="home-greeting leaf-lg" aria-label="Your progress greeting">
         <Sprout mood={greeting.cheering ? "cheering" : "happy"} size={96} className="home-greeting-sprout" />
         <div className="home-greeting-copy">
@@ -74,17 +76,18 @@ function Home() {
       <QuietCard profile={profile} />
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <section data-tour="date" className={`${card} flex min-h-64 min-w-0 flex-col justify-between md:p-8`} aria-label="Your debt free date">
+        <section data-tour="date" className={`${card} flex min-h-64 min-w-0 flex-col md:p-8`} aria-label="Your debt free date">
           <div><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-muted-foreground">Debt free by</p><Sparkles className="size-5 text-sun" /></div>
           <p className="big-date mt-4 break-words animate-in fade-in zoom-in-95 duration-700">
             {plan.debtFreeDate ? formatMonth(plan.debtFreeDate) : "Not yet — let's tweak"}
           </p>
           {plan.monthsLeft && <p className="mt-3 text-sm text-muted-foreground">{timeLabel(plan.monthsLeft, "month")} to go</p>}</div>
-          <div className="mt-7"><div className="flex gap-1.5 sm:gap-2" role="progressbar" aria-label="Debt paid" aria-valuenow={Math.max(0, Math.min(100, pct))} aria-valuemin={0} aria-valuemax={100}>
+          <div className="mt-8"><div className="flex gap-1.5 sm:gap-2" role="progressbar" aria-label="Debt paid" aria-valuenow={Math.max(0, Math.min(100, pct))} aria-valuemin={0} aria-valuemax={100}>
             {Array.from({ length: 10 }, (_, i) => (
               <span key={i} className={`h-3.5 min-w-0 flex-1 rounded-full ${i < filled ? "bg-green" : pct === 0 && i === 0 ? "bg-green/40 animate-pulse" : "bg-track"}`} />
             ))}
-          </div><p className="mt-3 text-sm font-semibold">{pct === 0 ? "Day 1. Your first payment fills the first pill." : `${pct}% of the way there`}</p></div>
+          </div><p className="mt-3 text-sm font-semibold">{pct === 0 ? "Day 1. Your first payment fills the first pill." : `${pct}% of the way there`}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{usd(paidDebt)} paid of {usd(initialDebt)}</p></div>
         </section>
         <div className="grid min-w-0 gap-5">
           <div data-tour="work" className={`${card} flex min-w-0 flex-col justify-between gap-4 md:p-7`}>
@@ -129,10 +132,10 @@ function Home() {
             })}
           </ul>
         </section>
-        <aside className="leaf-lg flex min-w-0 flex-col gap-6 bg-tip-solid p-7 text-tip-foreground md:p-8">
+        <aside className="leaf-lg flex min-w-0 flex-col gap-6 bg-home-tip p-7 text-foreground md:p-8">
           <div className="flex items-center justify-between gap-3"><p className="font-heading text-lg font-semibold">Sprout's tip</p><Sprout mood="thinking" size={78} /></div>
-          <p className="font-heading text-2xl font-semibold leading-snug">Pay {usd(tipAmount)} more a month{impact.monthsSooner !== null && impact.monthsSooner > 0 ? ` and be debt free ${impact.monthsSooner} ${impact.monthsSooner === 1 ? "month" : "months"} sooner.` : impact.nextDate ? ` and work towards ${formatMonth(impact.nextDate)}.` : " and bring your free day closer."}</p>
-          <Button asChild variant="link" className="group mt-auto h-auto justify-start whitespace-normal p-0 text-left text-tip-foreground"><Link to="/pay-faster" search={{ extra: extraFromIdea(options, tipAmount) }}>See ways to pay faster <ArrowRight className="shrink-0 transition group-hover:translate-x-1" /></Link></Button>
+          <p className="font-heading text-2xl font-semibold leading-snug">Pay <span className="text-tip">{usd(tipAmount)}</span> more a month{impact.monthsSooner !== null && impact.monthsSooner > 0 ? <> and be debt free <span className="text-tip">{impact.monthsSooner} {impact.monthsSooner === 1 ? "month" : "months"}</span> sooner.</> : impact.nextDate ? <> and work towards <span className="text-tip">{formatMonth(impact.nextDate)}</span>.</> : " and bring your free day closer."}</p>
+          <Button asChild variant="link" className="group mt-auto h-auto justify-start whitespace-normal p-0 text-left text-foreground"><Link to="/pay-faster" search={{ extra: extraFromIdea(options, tipAmount) }}>See ways to pay faster <ArrowRight className="shrink-0 transition group-hover:translate-x-1" /></Link></Button>
         </aside>
       </div>
     </div>
