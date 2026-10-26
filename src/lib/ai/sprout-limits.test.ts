@@ -4,8 +4,10 @@ import { PGlite } from "@electric-sql/pglite";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 // Execute the deployed claim SQL only in memory: no credentials or real counters.
+// The claim SQL is kept as a fixture so tests never consume the real demo allowance;
+// point this back at the migration file if it is recreated.
 const migration = readFileSync(
-  new URL("../../../drizzle/migrations/0005_sprout_demo_visitor_and_total_limits.sql", import.meta.url),
+  new URL("./claim-sprout-question.fixture.sql", import.meta.url),
   "utf8",
 );
 let db: PGlite;
