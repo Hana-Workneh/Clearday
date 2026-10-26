@@ -1,48 +1,5 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1792135670407,
-      "tag": "0000_ai_advice_gate",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1792136662179,
-      "tag": "0001_private_clearday_profiles",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1792139142493,
-      "tag": "0002_enforce_private_profile_inputs",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1792163404535,
-      "tag": "0003_ai_advice_daily_limit",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1792257382998,
-      "tag": "0004_ask_sprout_history_and_limits",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1792279446876,
-      "tag": "0005_sprout_demo_visitor_and_total_limits",
-      "breakpoints": true
-    }
-  ]
+  "entries": []
 }
