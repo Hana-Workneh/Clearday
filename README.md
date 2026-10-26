@@ -9,7 +9,7 @@ I built it solo in 72 hours for **Lovable SheBuilds Season 04** (October 2026) i
 **Live app:** https://myclearday.lovable.app
 You can try the demo with no sign up.
 
-![Clearday landing page](screenshots/landing.png)
+![Clearday landing page](landing.png)
 
 ## Why I built it
 
@@ -27,8 +27,8 @@ Most people with small loans pay something every month but have no idea when it 
 | Ask Sprout | A chat assistant that answers questions using your own numbers |
 | Demo | Four sample people with different jobs and loans, no sign up needed |
 
-![Home](screenshots/home.png)
-![Progress road](screenshots/progress.png)
+![Home](home.png)
+![Progress road](progress.png)
 
 ## How it's built
 
